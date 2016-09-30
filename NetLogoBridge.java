@@ -1,6 +1,7 @@
-package Py2NetLogo;
-
 import py4j.GatewayServer;
+import java.io.IOException;
+import org.nlogo.api.CompilerException;
+import org.nlogo.api.LogoException;
 import org.nlogo.headless.HeadlessWorkspace;
 
 public class NetLogoBridge {
@@ -16,7 +17,15 @@ public class NetLogoBridge {
 	 * @param path: Path to the .nlogo file to load.
 	 */
 	public void openModel(String path) {
-		ws.open(path);
+		try {
+			ws.open(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CompilerException e) {
+			e.printStackTrace();
+		} catch (LogoException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -24,7 +33,13 @@ public class NetLogoBridge {
 	 * @param command: NetLogo command syntax.
 	 */
 	public void command(String command) {
-		ws.command(command);
+		try {
+			ws.command(command);
+		} catch (CompilerException e) {
+			e.printStackTrace();
+		} catch (LogoException e) {
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.
@@ -32,7 +47,15 @@ public class NetLogoBridge {
 	 * @return Floating point number
 	 */
 	public Double report(String command) {
-		return (Double)ws.report(command);
+		double report = 0.0;
+		try {
+			report = (Double)ws.report(command);
+		} catch (CompilerException e) {
+			e.printStackTrace();
+		} catch (LogoException e) {
+			e.printStackTrace();
+		}
+		return report;
 	}
 	
 	/**
