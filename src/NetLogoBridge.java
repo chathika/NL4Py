@@ -1,46 +1,51 @@
+//Originally authored by D Masad
+//Customized for EMD by Chathika Gunaratne <chathikagunaratne@gmail.com>
+package emd.server;
+
 import py4j.GatewayServer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
+import bsearch.space.*;
+import java.util.HashMap;
+import org.nlogo.headless.HeadlessWorkspace; 
 
-import org.nlogo.api.CompilerException;
-import org.nlogo.api.LogoException;
-import org.nlogo.headless.HeadlessWorkspace;
 
-public class NetLogoBridge {
+public class HeadlessWorkspaceController {
 	
 	HeadlessWorkspace ws;
 	
-	public NetLogoBridge() {
+	public HeadlessWorkspaceController() {
 		ws = HeadlessWorkspace.newInstance();
 	}
 
 	/**
-	 * Load a NetLogo model file into the headless workspace.
+	 * Create a new workspace
+	 * Load a NetLogo model file into the headless workspace
 	 * @param path: Path to the .nlogo file to load.
 	 */
 	public void openModel(String path) {
+		//Create new workspace instance
+		ws = HeadlessWorkspace.newInstance();
 		System.out.println("opening" + path);
 		try {
 			ws.open(path);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (CompilerException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (LogoException e) {
-			e.printStackTrace();
-		}
+		} 
 	}
 	
 	/**
 	 * Close the Netlogo file.
-	 * 
+	 * @param unique id for this model
 	 */
 	public void closeModel(){
-		try {
+		try {			
 			ws.dispose();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -77,11 +82,9 @@ public class NetLogoBridge {
 	public void command(String command) {
 		try {
 			ws.command(command);
-		} catch (CompilerException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (LogoException e) {
-			e.printStackTrace();
-		}
+		} 
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.
@@ -92,22 +95,26 @@ public class NetLogoBridge {
 		double report = 0.0;
 		try {
 			report = (Double)ws.report(command);
-		} catch (CompilerException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (LogoException e) {
-			e.printStackTrace();
-		}
+		} 
 		return report;
 	}
 	
-	/**
-	 * Launch the Gateway Server.
-	 */
-	public static void main(String[] args) {
-		GatewayServer gs = new GatewayServer(new NetLogoBridge());
-		gs.start();
-		System.out.println("Server running");
-
+	public SearchSpace getParamList(String path) {
+		String constraintsText = "";
+		SearchSpace ss = null;
+		try{
+		constraintsText = bsearch.nlogolink.Utils.getDefaultConstraintsText(path);
+		
+		ss = new SearchSpace(java.util.Arrays.asList(constraintsText.split("\n")));
+		for(ParameterSpec paramSpec : ss.getParamSpecs()) {
+			System.out.println(paramSpec.getClass());
+		}
+		} catch (NetLogoLinkException e)
+		{
+			e.printStackTrace();			
+		}
+		return ss;
 	}
-
 }
