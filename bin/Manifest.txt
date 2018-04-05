@@ -1,0 +1,2 @@
+Main-Class: emd.server.NetLogoControllerServer
+Class-Path: py4j0.10.6.jar netlogo-6.0.2.jar
