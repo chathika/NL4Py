@@ -1,5 +1,6 @@
 #!pip install py4j
 from py4j.java_gateway import JavaGateway
+from py4j.protocol import Py4JNetworkError
 import subprocess
 import threading
 import os
@@ -51,7 +52,10 @@ class NetLogo_HeadlessWorkspace:
     '''Opens a NetLogo model and creates a headless workspace controller on the server'''
     '''Returns a session id for this controller to be used for further use of this ABM'''
     def openModel(self, path):
-        self.__session = self.__bridge.openModel(path)
+        try:
+            self.__session = self.__bridge.openModel(path)
+        except Py4JNetworkError:
+            raise NL4PyControllerServerException("Did you copy the NetLogoControllerServer.jar into your NetLogo/app folder?")
     '''Sends a signal to the server to tell the respective controller to close its'''
     '''HeadlessWorkspace object'''
     def closeModel(self):
@@ -98,7 +102,11 @@ class NetLogo_HeadlessWorkspace:
             print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             self.__bridge.command(self.__session, "set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             
-            
+class NL4PyControllerServerException(Exception):
+    def __init___(self,dErrorArguments):
+        Exception.__init__(self,"{0}".format(dErrArguments))
+        self.dErrorArguments = dErrorArguements
+        
 
 NLCSStarter = NetLogo_Controller_Server_Starter()
 
