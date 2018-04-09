@@ -19,7 +19,7 @@ public class NetLogoControllerServer {
 	
 	static GatewayServer gs;
 	long startTime;
-	boolean serverOn = false;
+	static boolean serverOn = false;
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
 		startTime = System.currentTimeMillis();
@@ -28,7 +28,7 @@ public class NetLogoControllerServer {
 		Thread statusThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(false){
+				while(serverOn){
 					try{
 						Thread.sleep(20000);
 					} catch (InterruptedException e) {
