@@ -55,6 +55,7 @@ public class NetLogoControllerServer {
 	public void shutdownServer(){
 		System.out.println("Shutting Down Server");
 		gs.shutdown();
+		System.exit(0);
 	}
 	
 	
