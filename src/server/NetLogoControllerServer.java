@@ -53,6 +53,7 @@ public class NetLogoControllerServer {
 	* Shutdown GatewayServer
 	**/
 	public void shutdownServer(){
+		GatewayServer.turnLoggingOff();
 		System.out.println("Shutting Down Server");
 		gs.shutdown();
 		System.exit(0);
