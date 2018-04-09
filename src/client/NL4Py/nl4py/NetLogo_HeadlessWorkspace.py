@@ -1,40 +1,27 @@
-#!pip install py4j
+'''NL4Py, A NetLogo controller for Python
+Copyright (C) 2018  Chathika Gunaratne
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
+
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JNetworkError
 import subprocess
 import threading
 import os
 import atexit
-##############################################################################
-'''Responsible for starting and stopping the NetLogo Controller Server'''
-class NetLogo_Controller_Server_Starter:
-    
-    __gw = JavaGateway()# New gateway connection 
-    ##server is in netlogo app folder
-    __server_name = "C:/Program Files/NetLogo 6.0.2/app/NetLogoControllerServer.jar"
-    
-    def __init__(self):
-        atexit.register(self.shutdownServer)
-    '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
-    def __runServer(self): 
-        
-        env = dict(os.environ)
-        env['JAVA_OPTS'] = ''
-        print(subprocess.call(['java', '-jar', self.__server_name]))
-    
-    '''Starts JavaGateway server'''
-    def startServer(self):
-        #Fire up the NetLogo Controller server through python
-        thread = threading.Thread(target=self.__runServer, args=())
-        thread.start()
-        
-    '''Send shutdown signal to the JavaGateway server. No further communication is possible unless server is restarted'''
-    def shutdownServer(self):
-        print('Shutting Down Server')
-        self.__gw.shutdown(True)
-    
-    
-##############################################################################
+import sys
+
 
 '''Responsible for communicating with the NetLogo controller, a Java executable'''
 class NetLogo_HeadlessWorkspace:
@@ -52,10 +39,10 @@ class NetLogo_HeadlessWorkspace:
     '''Opens a NetLogo model and creates a headless workspace controller on the server'''
     '''Returns a session id for this controller to be used for further use of this ABM'''
     def openModel(self, path):
-        try:
+        #try:
             self.__session = self.__bridge.openModel(path)
-        except Py4JNetworkError:
-            raise NL4PyControllerServerException("Did you copy the NetLogoControllerServer.jar into your NetLogo/app folder?")
+        #except Py4JNetworkError, e:
+            #raise NL4PyControllerServerException("Did you copy the NetLogoControllerServer.jar into your NetLogo/app folder? Or maybe the socket is busy? Trying running NL4Py.NLCSStarter.shutdownServer()"), None, sys.exc_info()[2]
     '''Sends a signal to the server to tell the respective controller to close its'''
     '''HeadlessWorkspace object'''
     def closeModel(self):
@@ -101,13 +88,3 @@ class NetLogo_HeadlessWorkspace:
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
             print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             self.__bridge.command(self.__session, "set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
-            
-class NL4PyControllerServerException(Exception):
-    def __init___(self,dErrorArguments):
-        Exception.__init__(self,"{0}".format(dErrArguments))
-        self.dErrorArguments = dErrorArguements
-        
-
-NLCSStarter = NetLogo_Controller_Server_Starter()
-
-NLCSStarter.startServer()
