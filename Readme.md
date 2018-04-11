@@ -4,9 +4,59 @@ A Python controller interface to NetLogo. NL4Py uses a client-server architectur
 
 At the moment, only HeadlessWorkspaces are supported.
 
+###Requirements
+* NL4Py works with NetLogo 6.0.2
+* NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
+	You can install py4j with 
+	```python
+	pip install py4j
+	``` 
+
+###Installation
+Please set the environment variable on your system NETLOGO_APP to point to the 'app' directory in your NetLogo installation folder.
+
+For example, on Windows, this is typically at: 'C:\Program Files\NetLogo 6.0.2\app'
+
+You can install NL4Py using pip-tools:
+	```python
+	pip install nl4py
+	```
+
+###Usage
+To use nl4py in your python code use:
+
+	```python
+	import nl4py 
+	```
+####Functions
+
+You can now create NetLogo HeadlessWorkspaces from Python:
+
+	```python
+	n = nl4py.NetLogo_HeadlessWorkspace()
+	```
+
+The following core controller functions are available:
+
+	1. nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
+	2. nl4py.NetLogo_HeadlessWorkspace.closeModel()
+	3. nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
+	4. nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
+	5. nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
+	6. nl4py.NetLogo_HeadlessWorkspace.getParamNames()
+	7. nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
+	
+You can create multiple workspaces as required
+
+####Example
+
+For an example please see this [demo jupyter notebook]()
+	
+###Additional:
+
 NL4Py is based off of David Masad's Py2NetLogo.
 
-## Py2NetLogo
+#### Py2NetLogo
 
 A hacked-together interface for controlling [NetLogo](https://ccl.northwestern.edu/netlogo/) from Python, using [Py4J](py4j.sourceforge.net/). Inspired by [RNetLogo](http://cran.r-project.org/web/packages/RNetLogo/index.html). 
 
