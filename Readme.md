@@ -48,11 +48,11 @@ You can create multiple workspaces as required
 
 #### Example
 
-For an example please see this [demo jupyter notebook]()
+For an example please see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 	
 ### Additional:
 
-NL4Py is based off of David Masad's Py2NetLogo.
+NL4Py is based off of David Masad's [Py2NetLogo](https://github.com/dmasad/Py2NetLogo).
 
 #### Py2NetLogo
 
