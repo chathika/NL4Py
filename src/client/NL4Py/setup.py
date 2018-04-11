@@ -10,6 +10,7 @@ setup(
     license='GPL',
     description='A NetLogo connector for Python.',
     long_description=open('README.txt').read(),
+	long_description_content_type='text/markdown',
 	project_urls={
 	'Source': 'https://github.com/chathika/NL4Py',
     'Thanks!': 'https://github.com/dmasad/Py2NetLogo',
