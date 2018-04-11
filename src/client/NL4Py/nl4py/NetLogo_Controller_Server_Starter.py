@@ -40,7 +40,7 @@ class NetLogo_Controller_Server_Starter:
         atexit.register(self.shutdownServer)
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
     def __runServer(self): 
-        __server_name = "emd.server.NetLogoControllerServer"
+        __server_name = "nl4py.server.NetLogoControllerServer"
         nl_path = os.environ['NETLOGO_APP']
         nl_path = os.path.join(os.path.abspath(os.environ['NETLOGO_APP']),"*")
         os.pathsep

@@ -14,9 +14,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-import py4j
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JNetworkError
+import py4j.java_gateway as jg
 import subprocess
 import threading
 import os
@@ -24,8 +24,8 @@ import atexit
 import sys
 
 
-'''Responsible for communicating with the NetLogo controller, a Java executable'''
-class NetLogo_HeadlessWorkspace:
+'''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
+class _NetLogo_HeadlessWorkspace:
     __bridge = None
     __gateway = None 
     __session = None
@@ -62,7 +62,7 @@ class NetLogo_HeadlessWorkspace:
     '''Sends a signal to the server to tell the respective controller to send a'''
     '''NetLogo command to its HeadlessWorkspace object'''
     def command(self, command):
-        self.__bridge.command(self.__session,command)
+        self.__bridge.command(self.__session, command)
     '''Sends a signal to the server to tell the respective controller to execute a'''
     '''reporter on its HeadlessWorkspace object'''
     def report(self, command):
@@ -80,15 +80,52 @@ class NetLogo_HeadlessWorkspace:
         
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
-            if py4j.java_gateway.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if py4j.java_gateway.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if py4j.java_gateway.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
                 if type(paramValue) != bool:#isinstance(data[i][k], bool)
                     paramValue = '"{}"'.format(paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
-            if py4j.java_gateway.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
             print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             self.__bridge.command(self.__session, "set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
+            
+    '''Returns the names of the parameters in the model'''
+    def getParamNames(self):
+        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
+        
+        parameterNames = []
+        ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
+        for paramSpec in paramSpecs:
+            parameterNames.append(paramSpec.getParameterName())
+        return parameterNames
+    
+    '''Returns the parameter ranges'''
+    def getParamRanges(self):
+        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
+        paramRanges = []
+        ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
+        for paramSpec in paramSpecs:
+            paramRange = []
+            if (jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec") | jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec")) :
+                count = paramSpec.choiceCount()
+                val_min = paramSpec.getValueFromChoice(0,count)
+                val_max = paramSpec.getValueFromChoice(count - 1,count)
+                step = (val_max - val_min)/(count - 1)
+                paramRange = [val_max,step,val_max]
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+                count = paramSpec.choiceCount()
+                paramRange = []
+                for choice in range(0,count):
+                    paramRange.append(paramSpec.getValueFromChoice(choice,count))
+            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
+                paramRange = [paramSpec.getValueFromChoice(0,1)]
+            paramRanges.append(paramRange)
+        return paramRanges
+    
+	'''Kills the Workspace and its controller on the server'''
+	def deleteWorkspace(self):
+		removeControllerFromStore(self.__session)
