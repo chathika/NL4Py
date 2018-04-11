@@ -1,6 +1,6 @@
 //Originally authored by D Masad
-//Customized for EMD by Chathika Gunaratne <chathikagunaratne@gmail.com>
-package emd.server;
+//Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
+package nl4py.server;
 
 import py4j.GatewayServer;
 
@@ -12,14 +12,16 @@ import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
-
+import java.util.ArrayList;
 
 public class HeadlessWorkspaceController {
 	
 	HeadlessWorkspace ws;
+	private Thread lastCommandThread;
 	
 	public HeadlessWorkspaceController() {
 		ws = HeadlessWorkspace.newInstance();
+		lastCommandThread = null;
 	}
 
 	/**
@@ -81,10 +83,32 @@ public class HeadlessWorkspaceController {
 	 */
 	public void command(String command) {
 		try {
-			ws.command(command);
+			this.scheduleCommand(command);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
+	}
+	private void scheduleCommand(String command) {
+		Thread newCommandThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("command thread started");
+				/*try{
+					if (lastCommandThread != null){
+						lastCommandThread.join();
+						lastCommandThread = Thread.currentThread();
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}*/
+					System.out.println("command sent");
+					ws.command(command);
+					System.out.println("command done");
+				
+			}
+		});		
+		newCommandThread.start();
+		
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.

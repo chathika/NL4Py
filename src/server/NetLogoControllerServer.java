@@ -1,6 +1,6 @@
 
-//Customized for EMD by Chathika Gunaratne <chathikagunaratne@gmail.com>
-package emd.server;
+//Customized for nl4py by Chathika Gunaratne <chathikagunaratne@gmail.com>
+package nl4py.server;
 import py4j.GatewayServer;
 
 import java.awt.image.BufferedImage;
@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
-import emd.server.HeadlessWorkspaceController;
+import nl4py.server.HeadlessWorkspaceController;
 
 public class NetLogoControllerServer {
 	
@@ -23,12 +23,12 @@ public class NetLogoControllerServer {
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
 		startTime = System.currentTimeMillis();
-		
+		System.out.println("Start");
 		//Start monitor thread
 		Thread statusThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(serverOn){
+				while(true){
 					try{
 						Thread.sleep(20000);
 					} catch (InterruptedException e) {
@@ -55,7 +55,7 @@ public class NetLogoControllerServer {
 	**/
 	public void shutdownServer(){
 		GatewayServer.turnLoggingOff();
-		System.out.println("Shutting Down Server");
+		System.out.println("Shutting down Server");
 		gs.shutdown(false);
 		System.exit(0);
 	}
@@ -87,7 +87,6 @@ public class NetLogoControllerServer {
 	 */
 	public void closeModel(int session){
 		getControllerFromStore(session).closeModel();
-		removeControllerFromStore(session);
 	}
 	
 	/**
@@ -112,7 +111,8 @@ public class NetLogoControllerServer {
 	 * @param command: NetLogo command syntax.
 	 */
 	public void command(int session, String command) {
-		getControllerFromStore(session).command(command);
+		HeadlessWorkspaceController workSpaceController = getControllerFromStore(session);	
+		workSpaceController.command(command);
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.
@@ -145,7 +145,7 @@ public class NetLogoControllerServer {
 	 * Internal method to remove the controller from the store
 	 * @param session id to get
 	 */
-	private void removeControllerFromStore(int session){
+	public void removeControllerFromStore(int session){
 		controllerStore.remove(session);
 	}
 	
