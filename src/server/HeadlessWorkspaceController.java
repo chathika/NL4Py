@@ -12,16 +12,16 @@ import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
-import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class HeadlessWorkspaceController {
 	
 	HeadlessWorkspace ws;
-	private Thread lastCommandThread;
-	
+	private ArrayBlockingQueue<String> commandQueue;
+	boolean modelOpen = false;
 	public HeadlessWorkspaceController() {
 		ws = HeadlessWorkspace.newInstance();
-		lastCommandThread = null;
+		commandQueue = new ArrayBlockingQueue<String>(100);
 	}
 
 	/**
@@ -40,6 +40,27 @@ public class HeadlessWorkspaceController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
+		modelOpen = true;
+		Thread newCommandThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("command thread started");
+				while (modelOpen) {
+					//get next command out of queue
+					try{
+						System.out.println("taking next command");
+						String nextCommand = commandQueue.take();
+						System.out.println("sending next command");
+						ws.command(nextCommand);
+						System.out.println("command done");
+					} catch (InterruptedException e){
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		});	
+		newCommandThread.start();
 	}
 	
 	/**
@@ -47,6 +68,7 @@ public class HeadlessWorkspaceController {
 	 * @param unique id for this model
 	 */
 	public void closeModel(){
+		modelOpen = false;
 		try {			
 			ws.dispose();
 		} catch (InterruptedException e) {
@@ -88,27 +110,12 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();
 		} 
 	}
-	private void scheduleCommand(String command) {
-		Thread newCommandThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("command thread started");
-				/*try{
-					if (lastCommandThread != null){
-						lastCommandThread.join();
-						lastCommandThread = Thread.currentThread();
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}*/
-					System.out.println("command sent");
-					ws.command(command);
-					System.out.println("command done");
-				
-			}
-		});		
-		newCommandThread.start();
-		
+	private void scheduleCommand(String newCommand) {
+		try{
+			commandQueue.put(newCommand);
+		} catch (InterruptedException e){
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.

@@ -120,6 +120,7 @@ public class NetLogoControllerServer {
 	 * @return Floating point number
 	 */
 	public Double report(int session, String command) {
+		System.out.println(session + " " + command);
 		return getControllerFromStore(session).report(command);
 	}
 	
