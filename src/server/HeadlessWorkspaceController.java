@@ -18,10 +18,40 @@ public class HeadlessWorkspaceController {
 	
 	HeadlessWorkspace ws;
 	private ArrayBlockingQueue<String> commandQueue;
-	boolean modelOpen = false;
+	private Thread commandThread;
+	boolean controllerNeeded = false;
 	public HeadlessWorkspaceController() {
+		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
 		commandQueue = new ArrayBlockingQueue<String>(100);
+		commandThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("command thread started");
+				controllerNeeded = true;
+				while (controllerNeeded || !Thread.currentThread().interrupted()) {
+					//get next command out of queue
+					try{
+						//System.out.println("taking next command");
+						String nextCommand = commandQueue.take();
+						if(nextCommand != "~stop~") {
+							System.out.println("sending next command");							
+							ws.command(nextCommand);
+							System.out.println("command done");
+						} else {
+							controllerNeeded = false;
+							Thread.currentThread().interrupt();
+						}
+					} catch (InterruptedException e){
+						System.out.println("Shutting down command thread" + Thread.currentThread().getName());
+						controllerNeeded = false;
+						Thread.currentThread().interrupt();
+						break;
+					}
+				}
+			}
+		});
+		commandThread.start();
 	}
 
 	/**
@@ -30,8 +60,7 @@ public class HeadlessWorkspaceController {
 	 * @param path: Path to the .nlogo file to load.
 	 */
 	public void openModel(String path) {
-		//Create new workspace instance
-		ws = HeadlessWorkspace.newInstance();
+		
 		System.out.println("opening" + path);
 		try {
 			ws.open(path);
@@ -39,28 +68,7 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
-		modelOpen = true;
-		Thread newCommandThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("command thread started");
-				while (modelOpen) {
-					//get next command out of queue
-					try{
-						System.out.println("taking next command");
-						String nextCommand = commandQueue.take();
-						System.out.println("sending next command");
-						ws.command(nextCommand);
-						System.out.println("command done");
-					} catch (InterruptedException e){
-						e.printStackTrace();
-					}
-					
-				}
-			}
-		});	
-		newCommandThread.start();
+		} 		
 	}
 	
 	/**
@@ -68,8 +76,7 @@ public class HeadlessWorkspaceController {
 	 * @param unique id for this model
 	 */
 	public void closeModel(){
-		modelOpen = false;
-		try {			
+		try {
 			ws.dispose();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -82,6 +89,11 @@ public class HeadlessWorkspaceController {
 	 * new instance of Netlogo. Great for multiple runs!
 	 */
 	public void refresh(){
+		try {
+			ws.dispose();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		ws = HeadlessWorkspace.newInstance();
 	}
 	
@@ -147,5 +159,17 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();			
 		}
 		return ss;
+	}
+	
+	protected void disposeWorkspace(){
+		this.closeModel();
+		ws = null;
+		try{
+			commandQueue.put("~stop~");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		controllerNeeded = false;
+		commandThread.interrupt();
 	}
 }

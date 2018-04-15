@@ -28,7 +28,7 @@ public class NetLogoControllerServer {
 		Thread statusThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(!Thread.interrupted()){
 					try{
 						Thread.sleep(20000);
 					} catch (InterruptedException e) {
@@ -45,9 +45,22 @@ public class NetLogoControllerServer {
 	 * Launch the Gateway Server.
 	 */
 	public static void main(String[] args) {
-		gs = new GatewayServer(new NetLogoControllerServer());
-		serverOn = true;
-		gs.start();
+		try {
+			NetLogoControllerServer ncs = new NetLogoControllerServer();
+			gs = new GatewayServer(ncs);
+			serverOn = true;
+			gs.start();
+			//diagnose
+			String model_path = System.getenv("NETLOGO_APP") + "/models/Sample Models/Earth Science/Fire.nlogo";
+			int s = ncs.newHeadlessWorkspaceController();
+			ncs.openModel(s,model_path);
+			ncs.closeModel(s);
+			ncs.removeControllerFromStore(s);
+		} catch (Exception e){
+			System.out.println("Server didn't start right!");
+			e.printStackTrace();
+			System.exit(1);
+		}
 		System.out.println("Server running");
 	}
 	/** 
@@ -59,26 +72,28 @@ public class NetLogoControllerServer {
 		gs.shutdown(false);
 		System.exit(0);
 	}
-	
-	
-	//Below functions take the session id and call the 
-	//requested method on the corresponding controller
 	/**
 	 * Create a new workspace for this request
-	 * Load a NetLogo model file into the headless workspace
-	 * Return a unique session id for this request
-	 * @param path: Path to the .nlogo file to load.
 	 * @return the session id of the model 
 	 */
-	public int openModel(String path) {
+	public int newHeadlessWorkspaceController(){
 		//Create new controller instance
 		HeadlessWorkspaceController controller = new HeadlessWorkspaceController();
 		//Add it to controllerStore
 		int session = controller.hashCode();
 		controllerStore.put(session, controller);
-		
-		controller.openModel(path);
 		return session;
+	}
+	//Below functions take the session id and call the 
+	//requested method on the corresponding controller
+	/**
+	 * Load a NetLogo model file into the headless workspace
+	 * Return a unique session id for this request
+	 * @param path: Path to the .nlogo file to load.
+	 * 
+	 */
+	public void openModel(int session, String path) {
+		controllerStore.get(session).openModel(path);
 	}
 	
 	/**
@@ -120,7 +135,6 @@ public class NetLogoControllerServer {
 	 * @return Floating point number
 	 */
 	public Double report(int session, String command) {
-		System.out.println(session + " " + command);
 		return getControllerFromStore(session).report(command);
 	}
 	
@@ -147,6 +161,8 @@ public class NetLogoControllerServer {
 	 * @param session id to get
 	 */
 	public void removeControllerFromStore(int session){
+		controllerStore.get(session).closeModel();
+		controllerStore.get(session).disposeWorkspace();
 		controllerStore.remove(session);
 	}
 	
