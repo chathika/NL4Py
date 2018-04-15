@@ -24,9 +24,6 @@ import atexit
 import sys
 import logging
 from contextlib import suppress
-import time
-import psutil
-import math
 ##############################################################################
 '''Responsible for starting and stopping the NetLogo Controller Server'''
 class NetLogo_Controller_Server_Starter:
@@ -36,31 +33,23 @@ class NetLogo_Controller_Server_Starter:
     
     
     def __init__(self):
+        logger = logging.getLogger("py4j")
+        logger.propagate = False
         self.__gw = JavaGateway()
         self.shutdownServer()
         atexit.register(self.shutdownServer)
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
     def __runServer(self): 
-        __server_name = "nl4py.server.NetLogoControllerServer"
-        try:
-            nl_path = os.environ['NETLOGO_APP']
-        except KeyError:
-            #looks like the NETLOGO_APP variable isn't set... 
-            #Trying to use os dependent defaults
-            import platform
-            if(platform.system() == "Windows"):
-                nl_path = "C:/Program Files/NetLogo 6.0.2/app"
-            pass
-        
-        nl_path = os.path.join(os.path.abspath(nl_path),"*")
+        __server_name = "emd.server.NetLogoControllerServer"
+        nl_path = os.environ['NETLOGO_APP']
+        nl_path = os.path.join(os.path.abspath(os.environ['NETLOGO_APP']),"*")
         os.pathsep
         server_path = "./server/*"
         classpath = nl_path + os.pathsep + server_path
-        xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
-        xms = "-Xms" + str(math.floor(xmx - 2048)) + "G"
-        xmx = "-Xmx" + str(math.floor(xmx)) + "G"
-        print(xmx)
-        pipe = subprocess.Popen(["java",xms,xmx,"-Xss100k","-XX:-UseGCOverheadLimit","-cp", classpath,__server_name], stdout=subprocess.PIPE)
+        result = subprocess.call(["java", "-cp",  classpath , __server_name])
+        print(result)
+        if (result == '1'):
+            raise NL4PyControllerServerException("The controller server couldn't start")
         
     '''Starts JavaGateway server'''
     def startServer(self):
@@ -70,7 +59,9 @@ class NetLogo_Controller_Server_Starter:
         
     '''Send shutdown signal to the JavaGateway server. No further communication is possible unless server is restarted'''
     def shutdownServer(self):
-        print('Shutting down any old server instances...')
+        logger = logging.getLogger("py4j")
+        logger.propagate = False
+        print('Shutting down old server instances...')
         __bridge = self.__gw.entry_point
         try:
             self.__gw.shutdown()

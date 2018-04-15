@@ -16,6 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JNetworkError
+from py4j.protocol import Py4JJavaError
+from .NL4PyControllerServerException import NL4PyControllerServerException
 import py4j.java_gateway as jg
 import subprocess
 import threading
@@ -25,28 +27,36 @@ import sys
 
 
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
-class _NetLogo_HeadlessWorkspace:
+class NetLogo_HeadlessWorkspace:
     __bridge = None
     __gateway = None 
     __session = None
     __path = None
-
-    def __init__(self):
-        self.__gateway = JavaGateway()# New gateway connection
-        self.__bridge = self.__gateway.entry_point
     
+    '''and creates a headless workspace controller on the server'''
+    '''Returns a session id for this controller to be used for further use of this ABM'''
+    def __init__(self, java_gateway):
+        self.__gateway = java_gateway# New gateway connection
+        self.__bridge = self.__gateway.entry_point
+        self.__session = self.__bridge.newHeadlessWorkspaceController()
     #######################################################
     ###Below are public functions of the NL4Py interface###
     #######################################################
     
-    '''Opens a NetLogo model and creates a headless workspace controller on the server'''
-    '''Returns a session id for this controller to be used for further use of this ABM'''
+    '''Opens a NetLogo model'''
     def openModel(self, path):
-        #try:
-        self.__path = path
-        self.__session = self.__bridge.openModel(path)
-        #except Py4JNetworkError, e:
-            #raise NL4PyControllerServerException("Did you copy the NetLogoControllerServer.jar into your NetLogo/app folder? Or maybe the socket is busy? Trying running NL4Py.NLCSStarter.shutdownServer()"), None, sys.exc_info()[2]
+        try:
+            self.__path = path
+            self.__bridge.openModel(self.__session,self.__path)
+        except Py4JNetworkError as e:
+            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running NL4Py.NLCSStarter.shutdownServer() and trying again.")#, None, sys.exc_info()[2])
+        #except Py4JJavaError as e:
+        #    raise NL4PyControllerServerException("Looks like the server couldn't find NetLogo. Perhaps you didn't set the NETLOGO_APP environment variable? Try setting it on your system and restarting Python.")#, None, sys.exc_info()[2])
+        #Also, just in case, check if this model actually exists and responds
+        #try: 
+        #    self.getParamRanges()
+        #except AttributeError as e:
+        #    raise NL4PyControllerServerException("There doesn't seem to be a NetLogo model under that name! Please recheck the .nlogo model path.")
     '''Sends a signal to the server to tell the respective controller to close its'''
     '''HeadlessWorkspace object'''
     def closeModel(self):
@@ -126,6 +136,7 @@ class _NetLogo_HeadlessWorkspace:
             paramRanges.append(paramRange)
         return paramRanges
     
-	'''Kills the Workspace and its controller on the server'''
-	def deleteWorkspace(self):
-		removeControllerFromStore(self.__session)
+    '''Kills the Workspace and its controller on the server'''
+    def deleteWorkspace(self):
+        self.__bridge.removeControllerFromStore(self.__session)
+        #self.__gateway.close()

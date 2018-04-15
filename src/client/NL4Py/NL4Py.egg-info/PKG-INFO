@@ -1,0 +1,28 @@
+Metadata-Version: 1.2
+Name: NL4Py
+Version: 0.1.3
+Summary: A NetLogo connector for Python.
+Home-page: http://pypi.org/project/nl4py
+Author: Chathika Gunaratne
+Author-email: chathikagunaratne@gmail.com
+License: GPL
+Description-Content-Type: UNKNOWN
+Description: ===========
+        NL4Py
+        ===========
+        
+        A Python controller interface to `NetLogo <https://ccl.northwestern.edu/netlogo/>`. NL4Py uses a client-server architecture, allowing Python client code to control NetLogo workspaces on a controller server. NL4Py supports controlling multiple workspaces through a single Python client.
+        
+        At the moment, only HeadlessWorkspaces are supported.
+        
+        NL4Py is based off of David Masad's Py2NetLogo.
+        
+        
+        Py2NetLogo
+        =========
+        
+        Please visit `Py2NetLogo <https://github.com/dmasad/Py2NetLogo` for more on David Masad's Py2NetLogo
+        
+        
+Platform: UNKNOWN
+Requires-Python: >=3

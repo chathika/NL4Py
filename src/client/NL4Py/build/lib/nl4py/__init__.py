@@ -14,9 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-from .NetLogo_HeadlessWorkspace import NetLogo_HeadlessWorkspace
-from .NetLogo_Controller_Server_Starter import NetLogo_Controller_Server_Starter
-from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
+from nl4py.NetLogo_HeadlessWorkspace import NetLogo_HeadlessWorkspace
+from nl4py.NetLogo_Controller_Server_Starter import NetLogo_Controller_Server_Starter
 
 import urllib.request
 import shutil
@@ -35,9 +34,7 @@ url = 'https://github.com/chathika/NL4Py/raw/master/lib/py4j0.10.6.jar'
 with urllib.request.urlopen(url) as response, open('./server/py4j0.10.6.jar', 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
 print("Dependencies installed successfully!")
-NLCSStarter = NetLogo_Controller_Server_Starter()
 print("Starting up server...")
+NLCSStarter = NetLogo_Controller_Server_Starter()
 NLCSStarter.startServer()
-print("Server started!")
-
-netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
+print("Server up and ready!")

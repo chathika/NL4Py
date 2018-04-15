@@ -24,20 +24,10 @@ import atexit
 import sys
 
 #import NetLogo_Controller_Server_Starter
-import NetLogo_HeadlessWorkspace
+#import NetLogo_HeadlessWorkspace
 #import NL4PyControllerServerException
 
-__all_workspaces= []
 
-'''Create a new Headless Workspace and get a pointer to it'''
-def newNetLogoHeadlessWorkspace():
-    n = nl4py.NetLogo_HeadlessWorkspace()
-    __all_workspaces.append(n)
-    return n
-
-'''Get a list of all existing Headless Workspaces on the server'''
-def getAllExistingWorkspaces():
-    return __all_workspaces
     
 ##############################################################################
 

@@ -19,6 +19,7 @@ setup(
     install_requires=[
         'matplotlib >= 2.0.2',
         'py4j >= 0.10.6',
+        'psutil >= 5.4.3',
     ],
 	python_requires='>=3',
 )
