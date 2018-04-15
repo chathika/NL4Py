@@ -132,12 +132,12 @@ public class HeadlessWorkspaceController {
 	/**
 	 * Get the value of a variable in the NetLogo model.
 	 * @param command: The value to report.
-	 * @return Floating point number
+	 * @return Java Object containing return info
 	 */
-	public Double report(String command) {
-		double report = 0.0;
+	public Object report(String command) {
+		Object report = null;
 		try {
-			report = (Double)ws.report(command);
+			report = ws.report(command);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 

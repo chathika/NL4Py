@@ -132,9 +132,9 @@ public class NetLogoControllerServer {
 	/**
 	 * Get the value of a variable in the NetLogo model.
 	 * @param command: The value to report.
-	 * @return Floating point number
+	 * @return Java Object containing return info
 	 */
-	public Double report(int session, String command) {
+	public Object report(int session, String command) {
 		return getControllerFromStore(session).report(command);
 	}
 	
