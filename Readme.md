@@ -8,9 +8,9 @@ At the moment, only HeadlessWorkspaces are supported.
 * NL4Py works with NetLogo 6.0.2
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
-	```
-	pip install py4j
-	``` 
+```
+pip install py4j
+``` 
 
 ### Installation
 Please set the environment variable on your system NETLOGO_APP to point to the 'app' directory in your NetLogo installation folder.
@@ -18,39 +18,43 @@ Please set the environment variable on your system NETLOGO_APP to point to the '
 For example, on Windows, this is typically at: 'C:\Program Files\NetLogo 6.0.2\app'
 
 You can install NL4Py using pip-tools: 
-	```
-	pip install nl4py
-	```
+```
+pip install nl4py
+```
 
 ### Usage
 To use nl4py in your python code use: 
-	```
-	import nl4py 
-	```
+
+```python
+import nl4py 
+```
+
 #### Functions
 
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
-	```
-	nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
-	```
+
+```python
+nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
+```
 
 The following HeadlessWorkspace functions are available:
 
-	```
-	nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
-	nl4py.NetLogo_HeadlessWorkspace.closeModel()
-	nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
-	nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
-	nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
-	nl4py.NetLogo_HeadlessWorkspace.getParamNames()
-	nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
-	```
+```python
+nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
+nl4py.NetLogo_HeadlessWorkspace.closeModel()
+nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
+nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
+nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
+nl4py.NetLogo_HeadlessWorkspace.getParamNames()
+nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
+```
 
 Additionally, the netLogoWorkspaceFactory provides the following functions:
-	```
-	nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
-	nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces()
-	```
+
+```python
+nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
+nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces()
+```
 
 #### Example
 
