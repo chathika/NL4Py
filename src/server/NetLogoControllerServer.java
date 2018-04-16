@@ -67,10 +67,7 @@ public class NetLogoControllerServer {
 	* Shutdown GatewayServer
 	**/
 	public void shutdownServer(){
-		GatewayServer.turnLoggingOff();
-		System.out.println("Shutting down Server");
-		gs.shutdown(false);
-		System.exit(0);
+		serverOn = false;
 	}
 	/**
 	 * Create a new workspace for this request
@@ -174,5 +171,12 @@ public class NetLogoControllerServer {
 		
 		System.out.println("This server has been up for " + ( System.currentTimeMillis() - startTime ) + " milliseconds. " ); 
 		System.out.println("There are currently " + controllerStore.size() + " NetLogo workspaces on this server");
+		
+		if(!serverOn) {
+			GatewayServer.turnLoggingOff();
+			System.out.println("Shutting down Server");
+			gs.shutdown(false);
+			System.exit(0);
+		}
 	}	
 }
