@@ -135,7 +135,7 @@ public class HeadlessWorkspaceController {
 	 * @return Java Object containing return info
 	 */
 	public Object report(String command) {
-		Object report = null;
+		Object report = new Double(0.0);
 		try {
 			report = ws.report(command);
 		} catch (Exception e) {

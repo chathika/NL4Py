@@ -57,7 +57,7 @@ public class NetLogoControllerServer {
 			ncs.closeModel(s);
 			ncs.removeControllerFromStore(s);
 		} catch (Exception e){
-			System.out.println("Server didn't start right!");
+			System.out.println("NETLOGO_APP not set right!");
 			e.printStackTrace();
 			System.exit(1);
 		}
