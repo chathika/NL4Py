@@ -10,17 +10,17 @@ setup(
     license='GPL',
     description='A NetLogo connector for Python.',
     long_description=open('README.txt').read(),
-	long_description_content_type='text/markdown',
-	project_urls={
-	'Source': 'https://github.com/chathika/NL4Py',
+    long_description_content_type='text/markdown',
+    project_urls={
+    'Source': 'https://github.com/chathika/NL4Py',
     'Thanks!': 'https://github.com/dmasad/Py2NetLogo',
     'Thanks!': 'http://complexity.cecs.ucf.edu/',
-	},
+    },
     install_requires=[
         'matplotlib >= 2.0.2',
         'py4j >= 0.10.6',
         'psutil >= 5.4.3',
     ],
-	python_requires='>=3',
+    python_requires='>=3',
 )
 
