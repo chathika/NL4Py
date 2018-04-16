@@ -64,7 +64,7 @@ For an example please see this [demo jupyter notebook](https://github.com/chathi
 
 If you use NL4Py in your work please cite it as Gunaratne, C. (2018). NL4Py. https://github.com/chathika/NL4Py. Complex Adaptive Systems Lab, University of Central Florida, Orlando, FL.
 
-NL4Py is based off of David Masad's [Py2NetLogo](https://github.com/dmasad/Py2NetLogo).
+NL4Py is based off of David Masad's [Py2NetLogo](https://github.com/dmasad/Py2NetLogo), available at: (https://github.com/dmasad/Py2NetLogo)
 
 ### Copyright
 
