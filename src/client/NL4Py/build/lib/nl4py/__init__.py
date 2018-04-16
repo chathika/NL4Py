@@ -18,8 +18,7 @@ from .NetLogo_HeadlessWorkspace import NetLogo_HeadlessWorkspace
 from .NetLogo_Controller_Server_Starter import NetLogo_Controller_Server_Starter
 from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 
-import six.moves.urllib.request as urlrq
-#import urllib
+import urllib.request
 import shutil
 import os
 if not os.path.exists("./server/"):
@@ -28,26 +27,13 @@ if not os.path.exists("./server/"):
 print("Downloading the NetLogo Controller Server jar file...")
 url = 'https://github.com/chathika/NL4Py/raw/master/bin/NetLogoControllerServer.jar'
 # Download the file from `url` and save it locally under `file_name`:
-try:
-    response = urlrq.urlopen(url)
-    out_file = open('./server/NetLogoControllerServer.jar', 'wb')
+with urllib.request.urlopen(url) as response, open('./server/NetLogoControllerServer.jar', 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
-    out_file.flush()
-    out_file.close()
-except:
-    print("cannot download dependencies")
 print("Downloading the Py4j jar file...")
 url = 'https://github.com/chathika/NL4Py/raw/master/lib/py4j0.10.6.jar'
 # Download the file from `url` and save it locally under `file_name`:
-try:
-    response = urlrq.urlopen(url)
-    out_file = open('./server/py4j0.10.6.jar', 'wb')
+with urllib.request.urlopen(url) as response, open('./server/py4j0.10.6.jar', 'wb') as out_file:
     shutil.copyfileobj(response, out_file)
-    out_file.flush()
-    out_file.close()
-except:
-    print("cannot download dependencies")
-    
 print("Dependencies installed successfully!")
 NLCSStarter = NetLogo_Controller_Server_Starter()
 print("Starting up server...")

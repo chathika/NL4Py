@@ -23,6 +23,7 @@ import os
 import atexit
 import sys
 import logging
+from contextlib import suppress
 import time
 import psutil
 import math
@@ -56,12 +57,10 @@ class NetLogo_Controller_Server_Starter:
         server_path = "./server/*"
         classpath = nl_path + os.pathsep + server_path
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
-        xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
-        xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        print("starting")
-        result = subprocess.call(["java",xms,xmx,"-Xss100k","-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
-        print(result)
-        print("done")
+        xms = "-Xms" + str(math.floor(xmx - 2)) + "G"
+        xmx = "-Xmx" + str(math.floor(xmx)) + "G"
+        pipe = subprocess.Popen(["java",xms,xmx,"-Xss100k","-XX:-UseGCOverheadLimit","-cp", classpath,__server_name], stdout=subprocess.PIPE)
+        print(pipe.communicate()[0])
         
     '''Starts JavaGateway server'''
     def startServer(self):
