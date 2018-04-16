@@ -139,11 +139,10 @@ public class HeadlessWorkspaceController {
 		try {
 			report = ws.report(command);
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = new Double(0.0);
-		}
+			e.printStackTrace();
+		} 
 		return report;
 	}
 	
