@@ -29,41 +29,50 @@ To use nl4py in your python code use:
 	```
 #### Functions
 
-You can now create NetLogo HeadlessWorkspaces from Python: 
+You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 	```
-	n = nl4py.NetLogo_HeadlessWorkspace()
+	nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 	```
 
-The following core controller functions are available:
+The following HeadlessWorkspace functions are available:
 
-	1. nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
-	2. nl4py.NetLogo_HeadlessWorkspace.closeModel()
-	3. nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
-	4. nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
-	5. nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
-	6. nl4py.NetLogo_HeadlessWorkspace.getParamNames()
-	7. nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
-	
-You can create multiple workspaces as required
+	```
+	nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
+	nl4py.NetLogo_HeadlessWorkspace.closeModel()
+	nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
+	nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
+	nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
+	nl4py.NetLogo_HeadlessWorkspace.getParamNames()
+	nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
+	```
+
+Additionally, the netLogoWorkspaceFactory provides the following functions:
+	```
+	nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
+	nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces()
+	```
 
 #### Example
 
 For an example please see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 	
-### Additional:
+### Referencing:
+
+If you use NL4Py in your work please cite it as Gunaratne, C. (2018). NL4Py. https://github.com/chathika/NL4Py. Complex Adaptive Systems Lab, University of Central Florida, Orlando, FL.
 
 NL4Py is based off of David Masad's [Py2NetLogo](https://github.com/dmasad/Py2NetLogo).
 
-#### Py2NetLogo
+### Copyright
 
-A hacked-together interface for controlling [NetLogo](https://ccl.northwestern.edu/netlogo/) from Python, using [Py4J](py4j.sourceforge.net/). Inspired by [RNetLogo](http://cran.r-project.org/web/packages/RNetLogo/index.html). 
+Copyright (C) 2018 Chathika Gunaratne, Complex Adaptive Systems Lab, University of Central Florida.
 
-The project (such as it is) is described in [this blog post](http://davidmasad.com/blog/netlogo-from-python). You can also view the [test IPython Notebook](http://nbviewer.ipython.org/github/dmasad/Py2NetLogo/blob/master/NetLogo%20Connection.ipynb).
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-### Requirements
-* Python
-* Java
-* Py4J
-* NetLogo 5.x
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
 
 
