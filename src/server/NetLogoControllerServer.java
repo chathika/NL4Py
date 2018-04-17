@@ -23,7 +23,7 @@ public class NetLogoControllerServer {
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
 		startTime = System.currentTimeMillis();
-		System.out.println("Start");
+		//System.out.println("Start");
 		//Start monitor thread
 		Thread statusThread = new Thread(new Runnable() {
 			@Override
@@ -34,7 +34,7 @@ public class NetLogoControllerServer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					System.out.println("Status checking...");
+					//System.out.println("Status checking...");
 					statusCheck();
 				}
 			}
@@ -61,7 +61,7 @@ public class NetLogoControllerServer {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		System.out.println("Server running");
+		//System.out.println("Server running");
 	}
 	/** 
 	* Shutdown GatewayServer
@@ -169,8 +169,8 @@ public class NetLogoControllerServer {
 	 */
 	private void statusCheck(){
 		
-		System.out.println("This server has been up for " + ( System.currentTimeMillis() - startTime ) + " milliseconds. " ); 
-		System.out.println("There are currently " + controllerStore.size() + " NetLogo workspaces on this server");
+		//System.out.println("This server has been up for " + ( System.currentTimeMillis() - startTime ) + " milliseconds. " ); 
+		//System.out.println("There are currently " + controllerStore.size() + " NetLogo workspaces on this server");
 		
 		if(!serverOn) {
 			GatewayServer.turnLoggingOff();

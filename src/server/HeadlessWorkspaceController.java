@@ -27,7 +27,7 @@ public class HeadlessWorkspaceController {
 		commandThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("command thread started");
+				//System.out.println("command thread started");
 				controllerNeeded = true;
 				while (controllerNeeded || !Thread.currentThread().interrupted()) {
 					//get next command out of queue
@@ -35,15 +35,15 @@ public class HeadlessWorkspaceController {
 						//System.out.println("taking next command");
 						String nextCommand = commandQueue.take();
 						if(nextCommand != "~stop~") {
-							System.out.println("sending next command");							
+							//System.out.println("sending next command");							
 							ws.command(nextCommand);
-							System.out.println("command done");
+							//System.out.println("command done");
 						} else {
 							controllerNeeded = false;
 							Thread.currentThread().interrupt();
 						}
 					} catch (InterruptedException e){
-						System.out.println("Shutting down command thread" + Thread.currentThread().getName());
+						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
 						Thread.currentThread().interrupt();
 						break;
@@ -61,7 +61,7 @@ public class HeadlessWorkspaceController {
 	 */
 	public void openModel(String path) {
 		
-		System.out.println("opening" + path);
+		//System.out.println("opening" + path);
 		try {
 			ws.open(path);
 		} catch (IOException e) {
@@ -154,7 +154,7 @@ public class HeadlessWorkspaceController {
 		
 		ss = new SearchSpace(java.util.Arrays.asList(constraintsText.split("\n")));
 		for(ParameterSpec paramSpec : ss.getParamSpecs()) {
-			System.out.println(paramSpec.getClass());
+			//System.out.println(paramSpec.getClass());
 		}
 		} catch (NetLogoLinkException e)
 		{
