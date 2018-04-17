@@ -14,8 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-from .NetLogo_HeadlessWorkspace import NetLogo_HeadlessWorkspace
-from .NetLogo_Controller_Server_Starter import NetLogo_Controller_Server_Starter
+from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
+from .NetLogoControllerServerStarter import NetLogoControllerServerStarter
 from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 
 import six.moves.urllib.request as urlrq
@@ -48,10 +48,23 @@ try:
 except:
     print("cannot download dependencies")
     
-print("Dependencies installed successfully!")
-NLCSStarter = NetLogo_Controller_Server_Starter()
-print("Starting up server...")
-NLCSStarter.startServer()
-print("Server started!")
+print("Dependencies installed successfully! \nStart the NetLogoControllerServer using nl4py.serverStarter.startServer().")
+def startServer():
+    serverStarter = NetLogoControllerServerStarter()
+    try:
+        serverStarter.startServer()
+        print("Server started.")
+    except:
+        print("Server failed to start!")
+def stopServer():
+    serverStarter = NetLogoControllerServerStarter()
+    try:
+        serverStarter.shutdownServer()
+        print("Server stopped.")
+    except:
+        print("Server failed to stop!")
+#print("Starting up server...")
+#NLCSStarter.startServer()
+#print("Server started!")
 
 netlogoWorkspaceFactory = NetLogoWorkspaceFactory()

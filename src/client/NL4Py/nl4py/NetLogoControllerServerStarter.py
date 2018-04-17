@@ -28,7 +28,7 @@ import psutil
 import math
 ##############################################################################
 '''Responsible for starting and stopping the NetLogo Controller Server'''
-class NetLogo_Controller_Server_Starter:
+class NetLogoControllerServerStarter:
     
     __gw = None# New gateway connection 
     ##server is in netlogo app folder
@@ -46,9 +46,11 @@ class NetLogo_Controller_Server_Starter:
         except KeyError:
             #looks like the NETLOGO_APP variable isn't set... 
             #Trying to use os dependent defaults
+            print("NETLOGO_APP was not set, trying to find NetLogo .jar files")
             import platform
             if(platform.system() == "Windows"):
                 nl_path = "C:/Program Files/NetLogo 6.0.2/app"
+            
             pass
         
         nl_path = os.path.join(os.path.abspath(nl_path),"*")
@@ -58,10 +60,7 @@ class NetLogo_Controller_Server_Starter:
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        print("starting")
-        result = subprocess.call(["java",xms,xmx,"-Xss100k","-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
-        print(result)
-        print("done")
+        result = subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
         
     '''Starts JavaGateway server'''
     def startServer(self):

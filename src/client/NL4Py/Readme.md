@@ -2,7 +2,7 @@
 
 A Python controller interface to NetLogo. NL4Py uses a client-server architecture, allowing Python client code to control NetLogo workspaces on a controller server. NL4Py supports controlling multiple workspaces through a single Python client. 
 
-At the moment, only HeadlessWorkspaces are supported.
+At the moment, only HeadlessWorkspaces are supported. NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
 * NL4Py works with NetLogo 6.0.2

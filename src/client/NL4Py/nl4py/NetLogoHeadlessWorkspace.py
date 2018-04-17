@@ -27,7 +27,7 @@ import sys
 
 
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
-class NetLogo_HeadlessWorkspace:
+class NetLogoHeadlessWorkspace:
     __bridge = None
     __gateway = None 
     __session = None

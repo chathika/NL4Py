@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 #!pip install py4j
 #import NetLogo_Controller_Server_Starter
-from .NetLogo_HeadlessWorkspace import NetLogo_HeadlessWorkspace
+from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 #import NL4PyControllerServerException
 from py4j.java_gateway import JavaGateway
 
@@ -28,7 +28,7 @@ class NetLogoWorkspaceFactory:
         return
     '''Create a new Headless Workspace and get a pointer to it'''
     def newNetLogoHeadlessWorkspace(self):
-        n = NetLogo_HeadlessWorkspace(self.__java_gateway)
+        n = NetLogoHeadlessWorkspace(self.__java_gateway)
         self.__all_workspaces.append(n)
         return n
 

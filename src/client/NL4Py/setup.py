@@ -2,7 +2,7 @@ from setuptools  import setup
 
 setup(
     name='NL4Py',
-    version='0.1.5',
+    version='0.1.6',
     author='Chathika Gunaratne',
     author_email='chathikagunaratne@gmail.com',
     packages=['nl4py', 'nl4py.test'],
@@ -21,6 +21,6 @@ setup(
         'py4j >= 0.10.6',
         'psutil >= 5.4.3',
     ],
-    python_requires=' >= 3',
+    python_requires='>=3.6,>=2.7',
 )
 
