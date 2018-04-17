@@ -20,19 +20,21 @@ public class NetLogoControllerServer {
 	static GatewayServer gs;
 	long startTime;
 	static boolean serverOn = false;
+	Thread statusThread;
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
 		startTime = System.currentTimeMillis();
 		//System.out.println("Start");
 		//Start monitor thread
-		Thread statusThread = new Thread(new Runnable() {
+		statusThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while(!Thread.interrupted()){
 					try{
 						Thread.sleep(20000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
+						Thread.currentThread().interrupt();
 					}
 					//System.out.println("Status checking...");
 					statusCheck();
@@ -51,11 +53,11 @@ public class NetLogoControllerServer {
 			serverOn = true;
 			gs.start();
 			//diagnose
-			String model_path = System.getenv("NETLOGO_APP") + "/models/Sample Models/Earth Science/Fire.nlogo";
-			int s = ncs.newHeadlessWorkspaceController();
-			ncs.openModel(s,model_path);
-			ncs.closeModel(s);
-			ncs.removeControllerFromStore(s);
+			//String model_path = System.getenv("NETLOGO_APP") + "/models/Sample Models/Earth Science/Fire.nlogo";
+			//int s = ncs.newHeadlessWorkspaceController();
+			//ncs.openModel(s,model_path);
+			//ncs.closeModel(s);
+			//ncs.removeControllerFromStore(s);
 		} catch (Exception e){
 			System.out.println("NETLOGO_APP not set right!");
 			e.printStackTrace();
@@ -68,6 +70,7 @@ public class NetLogoControllerServer {
 	**/
 	public void shutdownServer(){
 		serverOn = false;
+		statusThread.interrupt();
 	}
 	/**
 	 * Create a new workspace for this request
