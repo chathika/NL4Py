@@ -69,7 +69,7 @@ public class NetLogoControllerServer {
 	* Shutdown GatewayServer
 	**/
 	public void shutdownServer(){
-		gs.shutdown();
+		gs.shutdown(true);
 		serverOn = false;
 		
 		//statusThread.interrupt();
