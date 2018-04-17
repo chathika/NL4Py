@@ -71,8 +71,7 @@ public class NetLogoControllerServer {
 	public void shutdownServer(){
 		gs.shutdown(true);
 		serverOn = false;
-		
-		//statusThread.interrupt();
+		statusThread.interrupt();
 	}
 	/**
 	 * Create a new workspace for this request
