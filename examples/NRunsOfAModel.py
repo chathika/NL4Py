@@ -41,3 +41,4 @@ for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
 nl4py.stopServer()
+print('\n\n------------------------ Thanks for trying NL4PY -------------------------\n')
