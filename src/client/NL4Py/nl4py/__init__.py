@@ -28,8 +28,11 @@ if not os.path.exists("./server/"):
 print("Downloading the NetLogo Controller Server jar file...")
 url = 'https://github.com/chathika/NL4Py/raw/master/bin/NetLogoControllerServer.jar'
 # Download the file from `url` and save it locally under `file_name`:
+#Create a context that doesn't require a certificate for download (some mac instances complain without this)
+import ssl
+context = ssl._create_unverified_context()
 try:
-    response = urlrq.urlopen(url)
+    response = urlrq.urlopen(url, context=context)
     out_file = open('./server/NetLogoControllerServer.jar', 'wb')
     shutil.copyfileobj(response, out_file)
     out_file.flush()
@@ -40,7 +43,7 @@ print("Downloading the Py4j jar file...")
 url = 'https://github.com/chathika/NL4Py/raw/master/lib/py4j0.10.6.jar'
 # Download the file from `url` and save it locally under `file_name`:
 try:
-    response = urlrq.urlopen(url)
+    response = urlrq.urlopen(url, context=context)
     out_file = open('./server/py4j0.10.6.jar', 'wb')
     shutil.copyfileobj(response, out_file)
     out_file.flush()
@@ -48,21 +51,20 @@ try:
 except:
     print("cannot download dependencies")
     
-print("Dependencies installed successfully! \nStart the NetLogoControllerServer using nl4py.serverStarter.startServer().")
+print("Dependencies installed successfully! \nStart the NetLogoControllerServer using nl4py.startServer()")
+serverStarter = NetLogoControllerServerStarter()
 def startServer():
-    serverStarter = NetLogoControllerServerStarter()
     try:
         serverStarter.startServer()
         print("Server started.")
     except:
         print("Server failed to start!")
 def stopServer():
-    serverStarter = NetLogoControllerServerStarter()
     try:
         serverStarter.shutdownServer()
-        print("Server stopped.")
+        #print("Server stopped.")
     except:
-        print("Server failed to stop!")
+        pass
 #print("Starting up server...")
 #NLCSStarter.startServer()
 #print("Server started!")

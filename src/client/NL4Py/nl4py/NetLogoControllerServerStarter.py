@@ -36,8 +36,9 @@ class NetLogoControllerServerStarter:
     
     def __init__(self):
         self.__gw = JavaGateway()
+        print('Shutting down old server instance...')
         self.shutdownServer()
-        atexit.register(self.shutdownServer)
+        #atexit.register(self.shutdownServer)
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
     def __runServer(self): 
         __server_name = "nl4py.server.NetLogoControllerServer"
@@ -50,7 +51,8 @@ class NetLogoControllerServerStarter:
             import platform
             if(platform.system() == "Windows"):
                 nl_path = "C:/Program Files/NetLogo 6.0.2/app"
-            
+            if(platform.system() == "Darwin"):
+                nl_path = "/Applications/NetLogo 6.0.2/Java"
             pass
         
         nl_path = os.path.join(os.path.abspath(nl_path),"*")
@@ -60,20 +62,23 @@ class NetLogoControllerServerStarter:
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        result = subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
+        subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
         
     '''Starts JavaGateway server'''
     def startServer(self):
         #Fire up the NetLogo Controller server through python
         thread = threading.Thread(target=self.__runServer, args=())
         thread.start()
+        time.sleep(3)
         
     '''Send shutdown signal to the JavaGateway server. No further communication is possible unless server is restarted'''
     def shutdownServer(self):
-        print('Shutting down old server instance...')
-        __bridge = self.__gw.entry_point
-        try:
-            #self.__gw.shutdown()
-            __bridge.shutdownServer()
-        except Exception as e:
-            pass
+         if(self.__gw != None):    
+            try:
+                logging.disable(logging.CRITICAL)
+                __bridge = self.__gw.entry_point
+                __bridge.shutdownServer()
+                self.__gw.close(keep_callback_server=False, close_callback_server_connections=True)
+                self.__gw = None
+            except Exception as e:
+                pass
