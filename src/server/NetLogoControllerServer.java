@@ -31,7 +31,7 @@ public class NetLogoControllerServer {
 			public void run() {
 				while(!Thread.interrupted()){
 					try{
-						Thread.sleep(20000);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						//e.printStackTrace();
 						Thread.currentThread().interrupt();
