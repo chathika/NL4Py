@@ -42,7 +42,9 @@ public class HeadlessWorkspaceController {
 							if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
 								//Read in the schedule
 								ArrayList<String> reporters = new ArrayList<String>();
+								nextCommand = commandQueue.take();
 								while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
+									System.out.println(nextCommand);
 									reporters.add(nextCommand);
 									nextCommand = commandQueue.take();
 								} 
@@ -69,7 +71,9 @@ public class HeadlessWorkspaceController {
 										//run reporters
 										for(String reporter : reporters) {
 											//record results
-											scheduledReporterResults.put(ws.report(reporter).toString());
+											String reporterResult = ws.report(reporter).toString();
+											scheduledReporterResults.put(reporterResult);
+											System.out.println(reporterResult);
 										}
 									}
 								}
@@ -187,6 +191,7 @@ public class HeadlessWorkspaceController {
 	}
 	
 	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		
 		try{
 			commandQueue.put("~ScheduledReporters~");
 			for (String reporter : reporters) {
