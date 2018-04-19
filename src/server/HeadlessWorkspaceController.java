@@ -14,6 +14,7 @@ import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HeadlessWorkspaceController {
 	
@@ -203,14 +204,14 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();
 		}
 	}
-	public Object[] getScheduledReporterResults () {
+	public List<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			scheduledReporterResults.drainTo(results);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return results.toArray();
+		return results;
 	}	
 	
 	public SearchSpace getParamList(String path) {

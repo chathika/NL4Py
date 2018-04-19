@@ -12,6 +12,7 @@ import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
+import java.util.List;
 
 public class NetLogoControllerServer {
 	
@@ -142,7 +143,7 @@ public class NetLogoControllerServer {
 		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
 	}
 	
-	public Object[] getScheduledReporterResults (int session){
+	public List<String> getScheduledReporterResults (int session){
 		return getControllerFromStore(session).getScheduledReporterResults();
 	}
 	
