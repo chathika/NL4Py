@@ -4,3 +4,4 @@ v0.1.3, 9th April 2018 -- Fixed resource leak during shutdown.
 v0.1.4, 16th April 2018 -- Fixed threads shutdown and HeadlessWorkspaceController creation.
 v0.1.5, 16th April 2018 -- Pypi related fix.
 v0.1.6, 16th April 2018 -- Python 2.7 now supported.
+v0.1.7, 19th April 2018 -- Linux and MacOS support. Scheduled reporters added, users can now schedule multiple reporters over simulation runs. 
