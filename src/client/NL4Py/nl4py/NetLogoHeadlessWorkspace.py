@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JNetworkError
 from py4j.protocol import Py4JJavaError
+
 from .NL4PyControllerServerException import NL4PyControllerServerException
 import py4j.java_gateway as jg
+import py4j.java_collections as jcol
 import subprocess
 import threading
 import os
@@ -32,7 +34,7 @@ class NetLogoHeadlessWorkspace:
     __gateway = None 
     __session = None
     __path = None
-    
+    __reporters_length = 0
     '''and creates a headless workspace controller on the server'''
     '''Returns a session id for this controller to be used for further use of this ABM'''
     def __init__(self, java_gateway):
@@ -77,6 +79,20 @@ class NetLogoHeadlessWorkspace:
     '''reporter on its HeadlessWorkspace object'''
     def report(self, command):
         result = self.__bridge.report(self.__session, command)
+        return result
+    '''Schedules a set of reporters at a start tick for an interval until a stop tick'''
+    def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
+        self.__reporters_length = len(reporters)
+        reporterArray = self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
+        for idx, reporter in enumerate(reporters):
+            reporterArray[idx] = reporter
+        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+    '''Gets back results from scheduled reporters as a Java Array'''
+    def getScheduledReporterResults (self):
+        result = self.__bridge.getScheduledReporterResults(self.__session)
+        ticks_returned = len(result) / self.__reporters_length
+        import numpy as np
+        result = np.reshape(np.ravel(list(result), order='F'), (self.__reporters_length,ticks_returned), order='F')
         return result
     '''Sends a signal to the server to tell the respective controller to get the'''
     '''parameter specs of its HeadlessWorkspace object'''
