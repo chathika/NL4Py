@@ -28,6 +28,15 @@ To use nl4py in your python code use:
 ```python
 import nl4py 
 ```
+#### Examples
+
+For an example please see run this [Python file](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) with the number of desired concurrent runs as a command line argument:
+
+```
+python Example1_NRunsOfFireSampleModel.py 200
+```
+
+Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 
 #### Functions
 
@@ -57,10 +66,6 @@ Additionally, the netLogoWorkspaceFactory provides the following functions:
 nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
 nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces()
 ```
-
-#### Example
-
-For an example please see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 	
 ### Referencing:
 
