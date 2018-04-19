@@ -30,7 +30,7 @@ import nl4py
 ```
 #### Examples
 
-For an example please see run this [Python file] (https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) with the number of desired concurrent runs as a command line argument:
+For an example please see run this [Python file](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) with the number of desired concurrent runs as a command line argument:
 
 ```
 python Example1_NRunsOfFireSampleModel.py 200
