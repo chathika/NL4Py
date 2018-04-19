@@ -25,7 +25,7 @@ except:
 model = "./Fire.nlogo"
 
 print('\n2.1) Creating ' + n + ' NetLogo HeadlessWorkspaces with: nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()')
-print('\n2.2) Opening ' + model + ' copies of the model at ' + str(n) + ' on the NetLogo HeadlessWorkspaces with: nl4py.NetLogoHeadlessWorkspace.openModel("model")')
+print('\n2.2) Opening ' + str(n) + ' copies of the model at ' + model + ' on the NetLogo HeadlessWorkspaces with: nl4py.NetLogoHeadlessWorkspace.openModel("model")')
 for i in range(0,int(n)):
 	n = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 	n.openModel(model)
