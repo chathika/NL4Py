@@ -138,6 +138,13 @@ public class NetLogoControllerServer {
 	public Object report(int session, String command) {
 		return getControllerFromStore(session).report(command);
 	}
+	public void scheduleReportersAndRun(int session, String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
+	}
+	
+	public Object[] getScheduledReporterResults (int session){
+		return getControllerFromStore(session).getScheduledReporterResults();
+	}
 	
 	public SearchSpace getParamList(int session, String path) {
 		return getControllerFromStore(session).getParamList(path);
