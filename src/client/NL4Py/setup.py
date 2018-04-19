@@ -6,10 +6,10 @@ setup(
     author='Chathika Gunaratne',
     author_email='chathikagunaratne@gmail.com',
     packages=['nl4py', 'nl4py.test'],
-    url='http://pypi.org/project/nl4py',
+    url='https://github.com/chathika/NL4Py',
     license='GPL',
     description='A NetLogo connector for Python.',
-    long_description=open('README.md').read(),
+    long_description="""https://github.com/chathika/NL4Py""",
     long_description_content_type='text/markdown',
     project_urls={
     'Source': 'https://github.com/chathika/NL4Py',
@@ -20,7 +20,6 @@ setup(
         'matplotlib >= 2.0.2',
         'py4j >= 0.10.6',
         'psutil >= 5.4.3',
-    ],
-    python_requires='>=3.6,>=2.7',
+    ]
 )
 
