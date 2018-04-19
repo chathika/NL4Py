@@ -204,7 +204,7 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();
 		}
 	}
-	public List<String> getScheduledReporterResults () {
+	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			scheduledReporterResults.drainTo(results);
