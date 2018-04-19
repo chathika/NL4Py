@@ -17,8 +17,12 @@ import sys
 
 print('\n2) Starting the model runs... ')
 
-n = sys.argv[1]
-model = sys.argv[2]
+try:
+	n = sys.argv[1]
+except:
+	print("ERROR: Please provide the number of concurrent model runs required as a commandline argument.")
+
+model = "./Fire.nlogo"
 
 print('\n2.1) Creating ' + n + ' NetLogo HeadlessWorkspaces with: nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()')
 print('\n2.2) Opening ' + model + ' copies of the model at ' + str(n) + ' on the NetLogo HeadlessWorkspaces with: nl4py.NetLogoHeadlessWorkspace.openModel("model")')
