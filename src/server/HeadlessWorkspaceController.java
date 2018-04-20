@@ -45,7 +45,6 @@ public class HeadlessWorkspaceController {
 								ArrayList<String> reporters = new ArrayList<String>();
 								nextCommand = commandQueue.take();
 								while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
-									System.out.println(nextCommand);
 									reporters.add(nextCommand);
 									nextCommand = commandQueue.take();
 								} 
