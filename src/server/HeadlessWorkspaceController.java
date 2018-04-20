@@ -69,11 +69,20 @@ public class HeadlessWorkspaceController {
 											tickCounter++;
 										}
 										//run reporters
-										for(String reporter : reporters) {
-											//record results
-											String reporterResult = ws.report(reporter).toString();
-											scheduledReporterResults.put(reporterResult);
+										ArrayList<String> reporterResults = new ArrayList<String>();
+										try{
+											for(String reporter : reporters) {
+												//record results
+												String reporterResult = ws.report(reporter).toString();
+												reporterResults.add(reporterResult);
+											}
+											for(String resultI : reporterResults) {
+												scheduledReporterResults.put(resultI);
+											}
+										} catch (Exception e) {
+											//This can throw a netlogo exception if the model is done running due to custom stop condition
 										}
+										
 									}
 								}
 							} else {
