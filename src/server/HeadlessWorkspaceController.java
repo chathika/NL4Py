@@ -22,7 +22,7 @@ public class HeadlessWorkspaceController {
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
-	ArrayBlockingQueue<String> scheduledReporterResults = new ArrayBlockingQueue<String>(100);
+	ArrayBlockingQueue<String> scheduledReporterResults = new ArrayBlockingQueue<String>( 2147483647);
 	
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
@@ -123,7 +123,7 @@ public class HeadlessWorkspaceController {
 		try {
 			ws.dispose();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
