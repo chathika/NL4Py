@@ -20,9 +20,9 @@ n = 1
 
 model = "./Wolf Sheep Predation.nlogo"
 
-print('\n2.1) Creating ' + str(n) + ' NetLogo HeadlessWorkspaces with: nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()')
+print('\n2.1) Creating ' + str(n) + ' NetLogo HeadlessWorkspaces with: nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()\n and clearing any old workspaces with nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces()')
 print('\n2.2) Opening the ' + model + ' model on the NetLogo HeadlessWorkspace with: nl4py.NetLogoHeadlessWorkspace.openModel("model")')
-
+nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
 n = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 n.openModel(model)
 
@@ -47,14 +47,14 @@ print("\tticksSoFar = n.report('ticks')")
 print("n.closeModel()")
 
 import time
-#time.sleep(2) #give the workspace a second to run the commands
+time.sleep(2) #give the workspace a second to run the commands
 ticksSoFar = n.report('ticks')
 while(ticksSoFar < 100 ):	
 	print(n.report('ticks'))
 	ticksSoFar = n.report('ticks')
 	time.sleep(2)
 	if(n.report('ticks') == ticksSoFar):
-		n.closeModel()
+		#n.closeModel()
 		break
 print('\n2.6) Get back all the results from the scheduling process: result = n.getScheduledReporterResults()')
 print('\t and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
