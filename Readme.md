@@ -30,10 +30,16 @@ import nl4py
 ```
 #### Examples
 
-For an example please see run this [Python file](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) with the number of desired concurrent runs as a command line argument:
+[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs as a command line argument:
 
 ```
 python Example1_NRunsOfFireSampleModel.py 200
+```
+
+[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run:
+
+```
+python Example2_ScheduledReporters.py
 ```
 
 Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
