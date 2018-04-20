@@ -74,7 +74,6 @@ public class HeadlessWorkspaceController {
 											//record results
 											String reporterResult = ws.report(reporter).toString();
 											scheduledReporterResults.put(reporterResult);
-											System.out.println(reporterResult);
 										}
 									}
 								}
