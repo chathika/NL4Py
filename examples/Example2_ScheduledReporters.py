@@ -1,8 +1,7 @@
 ########Demonstration of NL4Py#################
-#This example takes two commandline arguments n and model
-#n : number of concurrent model runs required.
-#model: path to model file
-#example usage: python NRunsOfAModel.py 100 "/path/to/model.nlogo"
+#This example schedules reporters for 100 ticks or until stop
+# for the Wolf Sheep Predation Sample Model
+#example usage: python Example2_ScheduledReporters.py
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
