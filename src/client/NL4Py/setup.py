@@ -2,7 +2,7 @@ from setuptools  import setup
 
 setup(
     name='NL4Py',
-    version='0.1.6.a1',
+    version='0.2.0',
     author='Chathika Gunaratne',
     author_email='chathikagunaratne@gmail.com',
     packages=['nl4py', 'nl4py.test'],
@@ -20,6 +20,8 @@ setup(
         'matplotlib >= 2.0.2',
         'py4j >= 0.10.6',
         'psutil >= 5.4.3',
+		'pandas >= 0.20.1',
+		'numpy >= 1.13.3',
     ]
 )
 
