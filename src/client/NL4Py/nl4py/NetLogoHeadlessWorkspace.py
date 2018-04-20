@@ -93,7 +93,7 @@ class NetLogoHeadlessWorkspace:
         ticks_returned = len(result) / self.__reporters_length
         import numpy as np
         result = np.reshape(np.ravel(list(result), order='F'), (self.__reporters_length,ticks_returned), order='F')
-        return result
+        return list(result.transpose())
     '''Sends a signal to the server to tell the respective controller to get the'''
     '''parameter specs of its HeadlessWorkspace object'''
     def getParamSpace(self):
