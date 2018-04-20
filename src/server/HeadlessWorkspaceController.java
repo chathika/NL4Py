@@ -13,6 +13,7 @@ import bsearch.space.*;
 import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class HeadlessWorkspaceController {
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
-	ArrayBlockingQueue<String> scheduledReporterResults = new ArrayBlockingQueue<String>( 2147483647);
+	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
