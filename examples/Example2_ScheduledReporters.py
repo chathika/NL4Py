@@ -62,7 +62,7 @@ print('\t and put these results into a pandas dataframe: import pandas as pd \n 
 result = n.getScheduledReporterResults()
 import pandas as pd
 resultframe = pd.DataFrame(result)
-
+resultframe.columns = ['ticks','sheep','wolves','mean_x_sheep','mean_y_sheep','mean_x_wolves','mean_y_wolves']
 print(resultframe)
 
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
