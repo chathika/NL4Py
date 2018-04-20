@@ -6,6 +6,7 @@ At the moment, only HeadlessWorkspaces are supported. NL4Py has been tested on b
 
 ### Requirements
 * NL4Py works with NetLogo 6.0.2
+* NL4Py requires JDK 1.8 or higher
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
 ```
