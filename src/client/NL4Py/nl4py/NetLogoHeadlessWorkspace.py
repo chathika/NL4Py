@@ -92,8 +92,6 @@ class NetLogoHeadlessWorkspace:
         result = self.__bridge.getScheduledReporterResults(self.__session)
         ticks_returned = len(result) / self.__reporters_length
         import numpy as np
-        print(type(self.__reporters_length))
-        print(type(ticks_returned))
         result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
         return result
     '''Sends a signal to the server to tell the respective controller to get the'''
