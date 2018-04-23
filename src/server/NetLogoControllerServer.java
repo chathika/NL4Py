@@ -173,6 +173,7 @@ public class NetLogoControllerServer {
 		controllerStore.get(session).closeModel();
 		controllerStore.get(session).disposeWorkspace();
 		controllerStore.remove(session);
+		System.gc ();
 	}
 	
 	/**
