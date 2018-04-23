@@ -96,7 +96,7 @@ public class HeadlessWorkspaceController {
 							controllerNeeded = false;
 							Thread.currentThread().interrupt();
 						}
-						Thread.sleep(1);
+						//Thread.sleep(1);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
