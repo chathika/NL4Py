@@ -43,18 +43,19 @@ public class HeadlessWorkspaceController {
 							if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
 								//Read in the schedule
 								ArrayList<String> reporters = new ArrayList<String>();
-								nextCommand = commandQueue.take();
+								nextCommand = commandQueue.poll();
 								while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
 									reporters.add(nextCommand);
-									nextCommand = commandQueue.take();
+									nextCommand = commandQueue.poll();
+									if (nextCommand == null ) {nextCommand = "";}
 								} 
-								int startAtTick = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								int intervalTicks = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								int stopAtTick = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								String goCommand = commandQueue.take();
+								int startAtTick = Integer.parseInt(commandQueue.poll());
+								nextCommand = commandQueue.poll();
+								int intervalTicks = Integer.parseInt(commandQueue.poll());
+								nextCommand = commandQueue.poll();
+								int stopAtTick = Integer.parseInt(commandQueue.poll());
+								nextCommand = commandQueue.poll();
+								String goCommand = commandQueue.poll();
 								//Now execute the schedule
 								//Has start time passed?
 								int ticksAtStart = ((Double)ws.report("ticks")).intValue();
