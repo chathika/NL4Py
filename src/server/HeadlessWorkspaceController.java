@@ -62,12 +62,14 @@ public class HeadlessWorkspaceController {
 									int tickCounter = ticksAtStart;
 									while (tickCounter < stopAtTick || stopAtTick < 0) {
 										//tick the interval
-										for (int i = 0; i < intervalTicks; i ++ ){
+										//for (int i = 0; i < intervalTicks; i ++ ){
 											//go
-											ws.command(goCommand);
+										//	ws.command(goCommand);
 											//increment counter
-											tickCounter++;
-										}
+										//	tickCounter++;
+										//}
+										ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+										tickCounter+=intervalTicks;
 										//run reporters
 										ArrayList<String> reporterResults = new ArrayList<String>();
 										try{
@@ -94,6 +96,7 @@ public class HeadlessWorkspaceController {
 							controllerNeeded = false;
 							Thread.currentThread().interrupt();
 						}
+						Thread.sleep(1);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
@@ -254,6 +257,5 @@ public class HeadlessWorkspaceController {
 		}
 		controllerNeeded = false;
 		commandThread.interrupt();
-		System.gc();
 	}
 }
