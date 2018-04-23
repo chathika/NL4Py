@@ -17,9 +17,8 @@ def doNRuns(runsNeeded):
 	model = "./Fire.nlogo"
 	startTime = int(round(time.time() * 1000))
 	runsDone = 0
-	result = []
 	while runsDone != runsNeeded:
-		workspaceCount = int(runsNeeded - runsDone if (runsNeeded - runsDone) <= 8 else 8)
+		workspaceCount = int(runsNeeded - runsDone if (runsNeeded - runsDone) <= 256 else 256)
 		for i in range(0,workspaceCount):
 			n = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
@@ -28,6 +27,7 @@ def doNRuns(runsNeeded):
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 			workspace.command("setup")
 			workspace.command("go")
+		result = []
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 			result.append(workspace.report("burned-trees"))
 		runsDone = runsDone + workspaceCount
@@ -53,8 +53,8 @@ for j in range(0,30):
 	print(allTimes)
 print(allTimes)
 import pandas as pd
-p = pd.DataFrame(allTimes)
-p.to_csv("AllTimes_Fire.csv")
+pd.DataFrame(allTimes)
+pd.to_csv("AllTimes_Fire.csv")
 
 print("DONE____________________________________________________ALL DONE____________________________________________________")
 print(allTimes)
