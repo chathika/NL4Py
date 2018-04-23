@@ -254,5 +254,6 @@ public class HeadlessWorkspaceController {
 		}
 		controllerNeeded = false;
 		commandThread.interrupt();
+		System.gc();
 	}
 }
