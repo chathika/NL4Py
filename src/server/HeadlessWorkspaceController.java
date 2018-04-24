@@ -77,13 +77,13 @@ public class HeadlessWorkspaceController {
 								int tickCounter = ticksAtStart;
 								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
-									for (int i = 0; i < intervalTicks; i ++ ){
+									/*for (int i = 0; i < intervalTicks; i ++ ){
 										//go
 										ws.command(goCommand);
 										//increment counter
 										tickCounter++;
-									}
-									//ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									}*/
+									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									try{
