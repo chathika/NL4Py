@@ -105,7 +105,8 @@ public class HeadlessWorkspaceController {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
 							//System.out.println("command done");
-						}							
+						}	
+						Thread.sleep(1);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
