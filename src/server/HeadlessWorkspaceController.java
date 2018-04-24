@@ -1,3 +1,4 @@
+//Originally authored by D Masad
 //Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
 
@@ -16,15 +17,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeadlessWorkspaceController extends NetLogoController {
+public class HeadlessWorkspaceController {
 	
 	HeadlessWorkspace ws;
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
-	volatile String mon = new String("wait");
-	volatile boolean scheduleDone = true;
+	
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
@@ -55,7 +55,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						//System.out.println("taking next command");
 						String nextCommand = safelyGetNextCommand();
 						if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
-							scheduleDone = false;
 							//Read in the schedule
 							ArrayList<String> reporters = new ArrayList<String>();
 							nextCommand = safelyGetNextCommand();
@@ -73,38 +72,41 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							String goCommand = safelyGetNextCommand();
 							//Now execute the schedule
 							//Has start time passed?
-							int ticksOnModel = ((Double)ws.report("ticks")).intValue();
-							if(ticksOnModel <= startAtTick ){
-								boolean modelStopped = false;
-								if(ticksOnModel < startAtTick) {
-									//catch up if necessary
-									ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [go]");
-								}
-								String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
-								for(String reporter : reporters) {
-									commandString = commandString + "(" +reporter + ") ";
-								}
-								commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
-								ws.command(commandString);
-								
-								scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
-								synchronized(scheduledReporterResults){	
-									while(resultsIterator.hasNext()) {
-										org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
-										scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
-										while(resultsThisTickIterator.hasNext()){
-											scheduledReporterResults.put(resultsThisTickIterator.next().toString());
-										}										
+							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
+							if(ticksAtStart <= startAtTick ){
+								int tickCounter = ticksAtStart;
+								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
+									//tick the interval
+									/*for (int i = 0; i < intervalTicks; i ++ ){
+										//go
+										ws.command(goCommand);
+										//increment counter
+										tickCounter++;
+									}*/
+									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									//run reporters
+									ArrayList<String> reporterResults = new ArrayList<String>();
+									try{
+										for(String reporter : reporters) {
+											//record results
+											String reporterResult = ws.report(reporter).toString();
+											reporterResults.add(reporterResult);
+										}
+										for(String resultI : reporterResults) {
+											scheduledReporterResults.put(resultI);
+										}
+									} catch (Exception e) {
+										//This can throw a netlogo exception if the model is done running due to custom stop condition
 									}
+									
 								}
-								ws.command("ask patch 0 0 [set plabel 0]");
 							}
-							scheduleDone = true;				
 						} else {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
 							//System.out.println("command done");
 						}	
+						Thread.sleep(10);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
@@ -114,7 +116,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						if (ws == null) {
 							break;
 						}
-					} finally {scheduleDone = true;}
+					}
 				}
 			}
 		});
@@ -143,11 +145,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * @param unique id for this model
 	 */
 	public void closeModel(){
-		//try {
-			//ws.dispose();
-		//} catch (InterruptedException e) {
+		try {
+			ws.dispose();
+		} catch (InterruptedException e) {
 			//e.printStackTrace();
-		//}
+		}
 	}
 	
 	/**
@@ -204,18 +206,17 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public Object report(String command) {
 		Object report = new Double(0.0);
 		try {
-			//Thread.sleep(1);
 			report = ws.report(command);
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
-			report = "NetLogo Exception";//new Double(0.0);
-			return report;
-			//e.printStackTrace();
+			report = new Double(0.0);
+			e.printStackTrace();
 		} 
 		return report;
 	}
 	
 	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		
 		try{
 			commandQueue.put("~ScheduledReporters~");
 			for (String reporter : reporters) {
@@ -234,16 +235,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		}
 	}
 	public ArrayList<String> getScheduledReporterResults () {
-		ArrayList<String> results  = new ArrayList<String>();		
-		try {	
-			if(scheduleDone) {
-				synchronized(scheduledReporterResults){
-					scheduledReporterResults.drainTo(results);
-				}
-			} 
+		ArrayList<String> results  = new ArrayList<String>();
+		try {
+			scheduledReporterResults.drainTo(results);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 		return results;
 	}	
 	
