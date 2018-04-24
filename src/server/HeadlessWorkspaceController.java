@@ -30,6 +30,21 @@ public class HeadlessWorkspaceController {
 		ws = HeadlessWorkspace.newInstance();
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
+			/**
+			* Checks if the queue has been poisoned with the thread stop condition
+			* If yes, interrupt and free resources.
+			* If no, return the intended command String
+			* Blocks on the commandQueue
+			*/
+			private String safelyGetNextCommand() throws InterruptedException{
+				String nextCommand = commandQueue.take();
+				if(nextCommand.equalsIgnoreCase("~stop~")) {
+					nextCommand = "";
+					controllerNeeded = false;
+					Thread.currentThread().interrupt();
+				}
+				return nextCommand;
+			}
 			@Override
 			public void run() {
 				//System.out.println("command thread started");
@@ -38,74 +53,76 @@ public class HeadlessWorkspaceController {
 					//get next command out of queue
 					try{
 						//System.out.println("taking next command");
-						String nextCommand = commandQueue.take();
-						if(!nextCommand.equalsIgnoreCase("~stop~")) {
-							if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
-								//Read in the schedule
-								ArrayList<String> reporters = new ArrayList<String>();
-								nextCommand = commandQueue.take();
-								while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
-									reporters.add(nextCommand);
-									nextCommand = commandQueue.take();
-								} 
-								int startAtTick = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								int intervalTicks = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								int stopAtTick = Integer.parseInt(commandQueue.take());
-								nextCommand = commandQueue.take();
-								String goCommand = commandQueue.take();
-								//Now execute the schedule
-								//Has start time passed?
-								int ticksAtStart = ((Double)ws.report("ticks")).intValue();
-								if(ticksAtStart <= startAtTick ){
-									int tickCounter = ticksAtStart;
-									while (tickCounter < stopAtTick || stopAtTick < 0) {
-										//tick the interval
-										for (int i = 0; i < intervalTicks; i ++ ){
-											//go
-											ws.command(goCommand);
-											//increment counter
-											tickCounter++;
+						String nextCommand = safelyGetNextCommand();
+						if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
+							//Read in the schedule
+							ArrayList<String> reporters = new ArrayList<String>();
+							nextCommand = safelyGetNextCommand();
+							while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
+								reporters.add(nextCommand);
+								nextCommand = safelyGetNextCommand();
+								if (nextCommand == null ) {nextCommand = "";}
+							} 
+							int startAtTick = Integer.parseInt(safelyGetNextCommand());
+							nextCommand = safelyGetNextCommand();
+							int intervalTicks = Integer.parseInt(safelyGetNextCommand());
+							nextCommand = safelyGetNextCommand();
+							int stopAtTick = Integer.parseInt(safelyGetNextCommand());
+							nextCommand = safelyGetNextCommand();
+							String goCommand = safelyGetNextCommand();
+							//Now execute the schedule
+							//Has start time passed?
+							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
+							if(ticksAtStart <= startAtTick ){
+								int tickCounter = ticksAtStart;
+								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
+									//tick the interval
+									/*for (int i = 0; i < intervalTicks; i ++ ){
+										//go
+										ws.command(goCommand);
+										//increment counter
+										tickCounter++;
+									}*/
+									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									//run reporters
+									ArrayList<String> reporterResults = new ArrayList<String>();
+									try{
+										for(String reporter : reporters) {
+											//record results
+											String reporterResult = ws.report(reporter).toString();
+											reporterResults.add(reporterResult);
 										}
-										//run reporters
-										ArrayList<String> reporterResults = new ArrayList<String>();
-										try{
-											for(String reporter : reporters) {
-												//record results
-												String reporterResult = ws.report(reporter).toString();
-												reporterResults.add(reporterResult);
-											}
-											for(String resultI : reporterResults) {
-												scheduledReporterResults.put(resultI);
-											}
-										} catch (Exception e) {
-											//This can throw a netlogo exception if the model is done running due to custom stop condition
+										for(String resultI : reporterResults) {
+											scheduledReporterResults.put(resultI);
 										}
-										
+									} catch (Exception e) {
+										//This can throw a netlogo exception if the model is done running due to custom stop condition
 									}
+									
 								}
-							} else {
-								//System.out.println("sending next command");
-								ws.command(nextCommand);
-								//System.out.println("command done");
-							}							
+							}
 						} else {
-							controllerNeeded = false;
-							Thread.currentThread().interrupt();
-						}
+							//System.out.println("sending next command");
+							ws.command(nextCommand);
+							//System.out.println("command done");
+						}	
+						Thread.sleep(10);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
 						Thread.currentThread().interrupt();
 						break;
+					} catch (NullPointerException e){
+						if (ws == null) {
+							break;
+						}
 					}
 				}
 			}
 		});
 		commandThread.start();
 	}
-
+	
 	/**
 	 * Create a new workspace
 	 * Load a NetLogo model file into the headless workspace
@@ -254,5 +271,6 @@ public class HeadlessWorkspaceController {
 		}
 		controllerNeeded = false;
 		commandThread.interrupt();
+		System.gc();
 	}
 }
