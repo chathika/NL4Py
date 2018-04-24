@@ -75,7 +75,7 @@ public class HeadlessWorkspaceController {
 							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
 							if(ticksAtStart <= startAtTick ){
 								int tickCounter = ticksAtStart;
-								while (tickCounter < stopAtTick || stopAtTick < 0) {
+								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
 									/*for (int i = 0; i < intervalTicks; i ++ ){
 										//go
