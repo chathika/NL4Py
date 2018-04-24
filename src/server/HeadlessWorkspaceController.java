@@ -111,6 +111,10 @@ public class HeadlessWorkspaceController {
 						controllerNeeded = false;
 						Thread.currentThread().interrupt();
 						break;
+					} catch (NullPointerException e){
+						if (ws == null) {
+							break;
+						}
 					}
 				}
 			}
