@@ -92,13 +92,13 @@ public class HeadlessWorkspaceController {
 											String reporterResult = ws.report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
-										for(String resultI : reporterResults) {
-											scheduledReporterResults.put(resultI);
-										}
-									} catch (Exception e) {
+									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
+										continue;
 									}
-									
+									for(String resultI : reporterResults) {
+										scheduledReporterResults.put(resultI);
+									}
 								}
 							}
 						} else {
@@ -210,7 +210,7 @@ public class HeadlessWorkspaceController {
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = new Double(0.0);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} 
 		return report;
 	}
