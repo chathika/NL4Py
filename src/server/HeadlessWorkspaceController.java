@@ -206,6 +206,7 @@ public class HeadlessWorkspaceController {
 	public Object report(String command) {
 		Object report = new Double(0.0);
 		try {
+			Thread.sleep(1);
 			report = ws.report(command);
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
