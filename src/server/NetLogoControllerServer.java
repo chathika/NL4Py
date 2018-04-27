@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetLogoControllerServer {
 	
@@ -22,6 +23,8 @@ public class NetLogoControllerServer {
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
+	LinkedBlockingQueue<Integer> deadWorkspaceSessions = new LinkedBlockingQueue<Integer>();
+	
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
 		startTime = System.currentTimeMillis();
@@ -170,9 +173,11 @@ public class NetLogoControllerServer {
 	 * @param session id to get
 	 */
 	public void removeControllerFromStore(int session){
-		controllerStore.get(session).closeModel();
-		controllerStore.get(session).disposeWorkspace();
-		controllerStore.remove(session);
+		try{
+			deadWorkspaceSessions.put(session);
+		} catch (InterruptedException e) {
+			
+		}
 		System.gc();
 	}
 	
@@ -185,6 +190,13 @@ public class NetLogoControllerServer {
 		//System.out.println("This server has been up for " + ( System.currentTimeMillis() - startTime ) + " milliseconds. " ); 
 		//System.out.println("There are currently " + controllerStore.size() + " NetLogo workspaces on this server");
 		
+		//clean up dead workspaces.
+		for (Integer deadWorkspaceSession : deadWorkspaceSessions){
+			controllerStore.get(deadWorkspaceSession).closeModel();
+			controllerStore.get(deadWorkspaceSession).disposeWorkspace();
+			controllerStore.remove(deadWorkspaceSession);
+		}
+		deadWorkspaceSessions.clear();
 		if(!serverOn) {
 			GatewayServer.turnLoggingOff();
 			System.out.println("Shutting down Server");
