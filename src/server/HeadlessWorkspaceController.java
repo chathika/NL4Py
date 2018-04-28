@@ -85,6 +85,7 @@ public class HeadlessWorkspaceController {
 									}*/
 									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
 									System.out.println("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									System.out.println(tickCounter + " " + stopAtTick);
 									tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
