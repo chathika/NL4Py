@@ -40,7 +40,6 @@ def doNRuns(runsNeeded, threadCount_):
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 			try:
 				workspaceResults = workspace.getScheduledReporterResults()
-				print(workspaceResults)
 				if len(workspaceResults) > 0:
 					ticks = int(float(workspaceResults[-1][0]))
 					stop1 = str(workspaceResults[-1][1]).lower() == "true"
@@ -52,7 +51,7 @@ def doNRuns(runsNeeded, threadCount_):
 						workspace.deleteWorkspace()
 						workspace = None
 						runsDone = runsDone + 1
-						print(str(ticks), stop1, stop2)
+						print(runsDone, str(ticks), stop1, stop2)
 						if(runsDone == runsNeeded):
 							break
 						if(runsStarted != runsNeeded):
@@ -64,10 +63,9 @@ def doNRuns(runsNeeded, threadCount_):
 				nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces().remove(workspace)
 				workspace.deleteWorkspace()
 				if(runsStarted != runsNeeded):
-					print("solve")
+					print("restarted")
 					replacement = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 					openModelAndRun(replacement,model)
-				print("done: ", runsDone, " started: " , runsStarted)
 	stopTime = int(round(time.time() * 1000))
 	totalTime = stopTime - startTime
 #	print(sheepCount)
