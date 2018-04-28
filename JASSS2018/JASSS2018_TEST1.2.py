@@ -14,6 +14,7 @@ import math
 def openModelAndRun(workspace_, model_):
 	workspace_.openModel(model_)
 	workspace_.setParamsRandom()
+	workspace_.command('set model-version "sheep-wolves-grass"') # make sure we run the right version of the model 
 	reporters = ["ticks", "not any? turtles", "not any? wolves and count sheep > max-sheep"]
 	workspace_.command("setup")
 	workspace_.scheduleReportersAndRun(reporters, 0,1,100, "go")
@@ -39,15 +40,19 @@ def doNRuns(runsNeeded, threadCount_):
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 			try:
 				workspaceResults = workspace.getScheduledReporterResults()
+				print(workspaceResults)
 				if len(workspaceResults) > 0:
-					if workspaceResults[0][0] == 100 or workspaceResults[0][1] or workspaceResults[0][2]:
+					ticks = int(float(workspaceResults[-1][0]))
+					stop1 = str(workspaceResults[-1][1]).lower() == "true"
+					stop2 = str(workspaceResults[-1][2]).lower() == "true"
+					if (ticks == 100) or stop1 or stop2:
 						sheepCount.append(workspace.report("count sheep"))
 						wolfCount.append(workspace.report("count wolves"))
 						nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces().remove(workspace)
 						workspace.deleteWorkspace()
 						workspace = None
 						runsDone = runsDone + 1
-						print(runsDone)
+						print(str(ticks), stop1, stop2)
 						if(runsDone == runsNeeded):
 							break
 						if(runsStarted != runsNeeded):
@@ -78,7 +83,7 @@ allTimes = []
 import pandas as pd
 for j in range(0,5):
 	for i in [10000,12000,13000,14000,15000]:
-		for threadCount in [4,8,16]:
+		for threadCount in [1,4,8,16]:
 			print("Runs ", i, "Threads " , threadCount)
 			timeTaken = doNRuns(i, threadCount)
 			allTimes.append([i,threadCount,timeTaken])
