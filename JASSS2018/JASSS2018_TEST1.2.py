@@ -33,8 +33,9 @@ def doNRuns(runsNeeded, threadCount_):
 		openModelAndRun(workspace, model)
 	runsStarted = len(nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces())
 #	time.sleep(0.05)
-	while(runsDone < runsNeeded):
+	while(runsDone != runsNeeded):
 #		print(runsDone)
+		time.sleep(0.5)
 		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
 			try:
 				workspaceResults = workspace.getScheduledReporterResults()
@@ -46,6 +47,7 @@ def doNRuns(runsNeeded, threadCount_):
 						workspace.deleteWorkspace()
 						workspace = None
 						runsDone = runsDone + 1
+						print(runsDone)
 						if(runsDone == runsNeeded):
 							break
 						if(runsStarted != runsNeeded):
@@ -57,9 +59,10 @@ def doNRuns(runsNeeded, threadCount_):
 				nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces().remove(workspace)
 				workspace.deleteWorkspace()
 				if(runsStarted != runsNeeded):
-					runsStarted = runsStarted + 1
+					print("solve")
 					replacement = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 					openModelAndRun(replacement,model)
+				print("done: ", runsDone, " started: " , runsStarted)
 	stopTime = int(round(time.time() * 1000))
 	totalTime = stopTime - startTime
 #	print(sheepCount)
@@ -72,21 +75,21 @@ print("\n1 Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 nl4py.startServer()
 time.sleep(2)
 allTimes = []
+import pandas as pd
 for j in range(0,5):
-	for i in range(10,16):
-		for threadCount in [1,2,4,8,16]:
-			print("Runs ", i*1000, "Threads " , threadCount)
-			timeTaken = doNRuns(i*1000, threadCount)
+	for i in [10000,12000,13000,14000,15000]:
+		for threadCount in [4,8,16]:
+			print("Runs ", i, "Threads " , threadCount)
+			timeTaken = doNRuns(i, threadCount)
 			allTimes.append([i,threadCount,timeTaken])
 			print(allTimes)
+			p = pd.DataFrame(allTimes)
+			p.to_csv("AllTimes_WolfSheepPredation.csv")
 			try:
 				nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
 			except:
 				pass
 print(allTimes)
-import pandas as pd
-p = pd.DataFrame(allTimes)
-p.to_csv("AllTimes_WolfSheepPredation.csv")
 print("DONE____________________________________________________ALL DONE____________________________________________________")
 print(allTimes)
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
