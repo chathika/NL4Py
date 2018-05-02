@@ -79,9 +79,9 @@ nl4py.startServer()
 time.sleep(2)
 allTimes = []
 import pandas as pd
-for j in range(0,5):
+for j in range(0,11):
 	for i in [10000,12000,13000,14000,15000]:
-		for threadCount in [1,4,8,16]:
+		for threadCount in [16]:
 			print("Runs ", i, "Threads " , threadCount)
 			timeTaken = doNRuns(i, threadCount)
 			allTimes.append([i,threadCount,timeTaken])
