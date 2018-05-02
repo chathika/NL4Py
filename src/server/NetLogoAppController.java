@@ -1,4 +1,4 @@
-//Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
+//Authored by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
 
 import py4j.GatewayServer;
@@ -10,23 +10,21 @@ import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.HashMap;
-import org.nlogo.headless.HeadlessWorkspace; 
+import org.nlogo.app.App;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeadlessWorkspaceController {
-	
-	HeadlessWorkspace ws;
+public class NetLogoAppController {
+
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	
-	public HeadlessWorkspaceController() {
-		//Create new workspace instance
-		ws = HeadlessWorkspace.newInstance();
+	public NetLogoAppController() {
+		App.main(new String[]{""});
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
 			/**
@@ -71,7 +69,7 @@ public class HeadlessWorkspaceController {
 							String goCommand = safelyGetNextCommand();
 							//Now execute the schedule
 							//Has start time passed?
-							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
+							int ticksAtStart = ((Double)App.app().report("ticks")).intValue();
 							if(ticksAtStart <= startAtTick ){
 								int tickCounter = ticksAtStart;
 								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
@@ -82,14 +80,14 @@ public class HeadlessWorkspaceController {
 										//increment counter
 										tickCounter++;
 									}*/
-									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									App.app().command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
 									tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									try{
 										for(String reporter : reporters) {
 											//record results
-											String reporterResult = ws.report(reporter).toString();
+											String reporterResult = App.app().report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
 									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
@@ -103,7 +101,7 @@ public class HeadlessWorkspaceController {
 							}
 						} else {
 							//System.out.println("sending next command");
-							ws.command(nextCommand);
+							App.app().command(nextCommand);
 							//System.out.println("command done");
 						}	
 						Thread.sleep(10);
@@ -113,7 +111,7 @@ public class HeadlessWorkspaceController {
 						Thread.currentThread().interrupt();
 						break;
 					} catch (NullPointerException e){
-						if (ws == null) {
+						if (App.app() == null) {
 							break;
 						}
 					}
@@ -132,12 +130,20 @@ public class HeadlessWorkspaceController {
 		
 		//System.out.println("opening" + path);
 		try {
-			ws.open(path);
-		} catch (IOException e) {
-			e.printStackTrace();
+			java.awt.EventQueue.invokeAndWait(
+			new Runnable() {
+				public void run() {
+					try {
+						App.app().open(path);
+					}
+					catch(java.io.IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 		
+		}
 	}
 	
 	/**
@@ -146,17 +152,17 @@ public class HeadlessWorkspaceController {
 	 */
 	public void closeModel(){
 		try {
-			ws.dispose();
-		} catch (InterruptedException e) {
+			App.app().quit();
+		} catch (Exception e) {
 			//e.printStackTrace();
 		}
 	}
-	
+	/*
 	/**
 	 * Create a new headless instance. 
 	 * Use this after closeModel() to instantiate a
 	 * new instance of Netlogo. Great for multiple runs!
-	 */
+	 
 	public void refresh(){
 		try {
 			ws.dispose();
@@ -169,7 +175,7 @@ public class HeadlessWorkspaceController {
 	/**
 	 * Export a view (the visualization area) to the Java file's working directory.
 	 * @param filename: Name used to save the file. Include .png (ex: file.png)
-	 */
+	 
 	public void exportView(String filename){
 		try {
 			BufferedImage img = ws.exportView();
@@ -183,7 +189,7 @@ public class HeadlessWorkspaceController {
 	/**
 	 * Send a command to the open NetLogo model.
 	 * @param command: NetLogo command syntax.
-	 */
+	 
 	public void command(String command) {
 		try {
 			this.scheduleCommand(command);
@@ -202,7 +208,7 @@ public class HeadlessWorkspaceController {
 	 * Get the value of a variable in the NetLogo model.
 	 * @param command: The value to report.
 	 * @return Java Object containing return info
-	 */
+	 
 	public Object report(String command) {
 		Object report = new Double(0.0);
 		try {
@@ -245,6 +251,21 @@ public class HeadlessWorkspaceController {
 		return results;
 	}	
 	
+	
+	
+	protected void disposeWorkspace(){
+		this.closeModel();
+		ws = null;
+		try{
+			commandQueue.put("~stop~");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		controllerNeeded = false;
+		commandThread.interrupt();
+		System.gc();
+	}
+	*/
 	public SearchSpace getParamList(String path) {
 		String constraintsText = "";
 		SearchSpace ss = null;
@@ -260,18 +281,5 @@ public class HeadlessWorkspaceController {
 			e.printStackTrace();			
 		}
 		return ss;
-	}
-	
-	protected void disposeWorkspace(){
-		this.closeModel();
-		ws = null;
-		try{
-			commandQueue.put("~stop~");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		controllerNeeded = false;
-		commandThread.interrupt();
-		System.gc();
 	}
 }

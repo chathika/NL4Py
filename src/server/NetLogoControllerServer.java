@@ -1,4 +1,3 @@
-
 //Customized for nl4py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
 import py4j.GatewayServer;
@@ -192,4 +191,17 @@ public class NetLogoControllerServer {
 			System.exit(0);
 		}
 	}	
+	
+	/**
+	 * Create a new workspace for this request
+	 * @return the session id of the model 
+	 */
+	public int newNetLogoApp(){
+		//Create new controller instance
+		NetLogoAppController controller = new NetLogoAppController();
+		//Add it to controllerStore
+		int session = controller.hashCode();
+		controllerStore.put(session, controller);
+		return session;
+	}
 }
