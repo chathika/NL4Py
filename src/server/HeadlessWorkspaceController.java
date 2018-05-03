@@ -86,13 +86,16 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
+									String reporterResult= "";
 									try{
 										for(String reporter : reporters) {
 											//record results
-											String reporterResult = ws.report(reporter).toString();
+											reporterResult = ws.report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
 									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
+										System.out.println(reporterResult);
+										System.out.println(reporterResults);
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									}
