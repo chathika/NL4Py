@@ -193,13 +193,13 @@ public class NetLogoAppController extends NetLogoController {
 	 * @param filename: Name used to save the file. Include .png (ex: file.png)
 	 */
 	public void exportView(String filename){
-		try {
-			BufferedImage img = App.app().exportView();
-		    File outputfile = new File(filename);
-			ImageIO.write(img, "png", outputfile);
-		} catch (IOException e) {
-		    e.printStackTrace();
-		}		
+		//try {
+		//	BufferedImage img = App.app().exportView();
+		//    File outputfile = new File(filename);
+		//	ImageIO.write(img, "png", outputfile);
+		//} catch (IOException e) {
+		//    e.printStackTrace();
+		//}		
 	}
 	
 	/**
