@@ -103,7 +103,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									synchronized (scheduledReporterResults) {
 										for(String resultI : reporterResults) {
 											scheduledReporterResults.put(resultI);
-											System.out.println(resultI);
 										}
 									}
 								}
@@ -246,8 +245,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			synchronized(scheduledReporterResults){
-				scheduledReporterResults.drainTo(results);
-			//System.out.println(results);
+				String result = scheduledReporterResults.poll();
+				while(result != null) {
+					results.add(result);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
