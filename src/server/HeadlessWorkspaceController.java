@@ -240,6 +240,7 @@ public class HeadlessWorkspaceController {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			scheduledReporterResults.drainTo(results);
+			System.out.println(results)
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
