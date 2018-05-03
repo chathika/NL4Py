@@ -58,22 +58,23 @@ nl4py.newNetLogoHeadlessWorkspace()
 The following HeadlessWorkspace functions are available:
 
 ```python
-nl4py.NetLogo_HeadlessWorkspace.openModel(path_to_model)
-nl4py.NetLogo_HeadlessWorkspace.closeModel()
-nl4py.NetLogo_HeadlessWorkspace.command(netlogo_command_string)
-nl4py.NetLogo_HeadlessWorkspace.report(netlogo_command_string)
-nl4py.NetLogo_HeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
-nl4py.NetLogo_HeadlessWorkspace.getScheduledReporterResults()
-nl4py.NetLogo_HeadlessWorkspace.setParamsRandom()
-nl4py.NetLogo_HeadlessWorkspace.getParamNames()
-nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
+nl4py.NetLogoHeadlessWorkspace.openModel(path_to_model)
+nl4py.NetLogoHeadlessWorkspace.closeModel()
+nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
+nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
+nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
+nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults()
+nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
+nl4py.NetLogoHeadlessWorkspace.getParamNames()
+nl4py.NetLogoHeadlessWorkspace.getParamRanges()
 ```
 
-Additionally, the netLogoWorkspaceFactory provides the following functions:
+Additionally, the nl4py provides the following functions:
 
 ```python
 nl4py.deleteAllHeadlessWorkspaces() 
 nl4py.getAllHeadlessWorkspaces()
+nl4py.deleteHeadlessWorkspace(nl4py.NetLogoHeadlessWorkspace)
 ```
 
 To open the NetLogo application in GUI mode use:
