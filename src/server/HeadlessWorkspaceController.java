@@ -100,8 +100,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									}
-									for(String resultI : reporterResults) {
-										scheduledReporterResults.put(resultI);
+									synchronized (scheduledReporterResults) {
+										for(String resultI : reporterResults) {
+											scheduledReporterResults.put(resultI);
+										}
 									}
 								}
 							}
