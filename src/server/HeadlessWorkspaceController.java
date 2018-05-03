@@ -103,6 +103,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									synchronized (scheduledReporterResults) {
 										for(String resultI : reporterResults) {
 											scheduledReporterResults.put(resultI);
+											System.out.println(resultI);
 										}
 									}
 								}
