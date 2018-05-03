@@ -1,4 +1,4 @@
-//Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
+//Authored by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
 
 import py4j.GatewayServer;
@@ -10,23 +10,22 @@ import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.HashMap;
-import org.nlogo.headless.HeadlessWorkspace; 
+import org.nlogo.app.App;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
+public class NetLogoAppController extends NetLogoController {
 
-public class HeadlessWorkspaceController extends NetLogoController {
-	
-	HeadlessWorkspace ws;
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	
-	public HeadlessWorkspaceController() {
-		//Create new workspace instance
-		ws = HeadlessWorkspace.newInstance();
+	public NetLogoAppController() {
+		
+		App.main(new String[]{});
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
 			/**
@@ -71,25 +70,25 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							String goCommand = safelyGetNextCommand();
 							//Now execute the schedule
 							//Has start time passed?
-							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
+							int ticksAtStart = ((Double)App.app().report("ticks")).intValue();
 							if(ticksAtStart <= startAtTick ){
 								int tickCounter = ticksAtStart;
 								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
 									/*for (int i = 0; i < intervalTicks; i ++ ){
 										//go
-										ws.command(goCommand);
+										App.app.command(goCommand);
 										//increment counter
 										tickCounter++;
 									}*/
-									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									App.app().command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
 									tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									try{
 										for(String reporter : reporters) {
 											//record results
-											String reporterResult = ws.report(reporter).toString();
+											String reporterResult = App.app().report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
 									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
@@ -103,7 +102,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							}
 						} else {
 							//System.out.println("sending next command");
-							ws.command(nextCommand);
+							App.app().command(nextCommand);
 							//System.out.println("command done");
 						}	
 						Thread.sleep(10);
@@ -113,7 +112,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						Thread.currentThread().interrupt();
 						break;
 					} catch (NullPointerException e){
-						if (ws == null) {
+						if (App.app() == null) {
 							break;
 						}
 					}
@@ -130,14 +129,34 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 */
 	public void openModel(String path) {
 		
+		NL4PySecutiryManager secManager = new NL4PySecutiryManager();
+		System.setSecurityManager(secManager);
+
+		
+		
 		//System.out.println("opening" + path);
 		try {
-			ws.open(path);
-		} catch (IOException e) {
-			e.printStackTrace();
+			java.awt.EventQueue.invokeAndWait(
+			new Runnable() {
+				public void run() {
+					try {
+						App.app().getLinkParent().setVisible(true);
+						App.app().getLinkParent().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						App.app().open(path);					
+					}
+					catch(java.io.IOException ex) {
+						System.out.println("You can only open one model at a time in GUI mode");
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} catch (SecurityException e) {
+		
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 		
+		}
 	}
 	
 	/**
@@ -146,9 +165,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 */
 	public void closeModel(){
 		try {
-			ws.dispose();
-		} catch (InterruptedException e) {
-			//e.printStackTrace();
+			App.app().getLinkParent().setVisible(false);
+			//App.app().workspace.dispose();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -156,14 +178,14 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * Create a new headless instance. 
 	 * Use this after closeModel() to instantiate a
 	 * new instance of Netlogo. Great for multiple runs!
-	 */
+	 */ 
 	public void refresh(){
-		try {
-			ws.dispose();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		ws = HeadlessWorkspace.newInstance();
+		//try {
+		//	App.app().dispose();
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
+		//App.app() = HeadlessWorkspace.newInstance();
 	}
 	
 	/**
@@ -172,9 +194,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 */
 	public void exportView(String filename){
 		try {
-			BufferedImage img = ws.exportView();
+			BufferedImage img = App.app().exportView();
 		    File outputfile = new File(filename);
-		    ImageIO.write(img, "png", outputfile);
+			ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}		
@@ -207,7 +229,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		Object report = new Double(0.0);
 		try {
 			Thread.sleep(1);
-			report = ws.report(command);
+			report = App.app().report(command);
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = new Double(0.0);
@@ -239,12 +261,25 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			scheduledReporterResults.drainTo(results);
-			System.out.println(results)
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return results;
 	}	
+	
+	
+	protected void disposeWorkspace(){
+		this.closeModel();
+		//App.app() = null;
+		try{
+			commandQueue.put("~stop~");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		controllerNeeded = false;
+		commandThread.interrupt();
+		System.gc();
+	}
 	
 	public SearchSpace getParamList(String path) {
 		String constraintsText = "";
@@ -262,17 +297,14 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		}
 		return ss;
 	}
-	
-	protected void disposeWorkspace(){
-		this.closeModel();
-		ws = null;
-		try{
-			commandQueue.put("~stop~");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		controllerNeeded = false;
-		commandThread.interrupt();
-		System.gc();
-	}
+}
+
+class NL4PySecutiryManager extends SecurityManager {
+  @Override public void checkExit(int status) {
+    throw new SecurityException();
+  }
+
+  @Override public void checkPermission(java.security.Permission perm) {
+      // Allow other activities by default
+  }
 }
