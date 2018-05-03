@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeadlessWorkspaceController {
+public class HeadlessWorkspaceController extends NetLogoController {
 	
 	HeadlessWorkspace ws;
 	private ArrayBlockingQueue<String> commandQueue;

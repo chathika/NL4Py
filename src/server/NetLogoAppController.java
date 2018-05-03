@@ -15,8 +15,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
-
-public class NetLogoAppController {
+import javax.swing.JFrame;
+public class NetLogoAppController extends NetLogoController {
 
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
@@ -24,7 +24,8 @@ public class NetLogoAppController {
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	
 	public NetLogoAppController() {
-		App.main(new String[]{""});
+		
+		App.main(new String[]{});
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
 			/**
@@ -76,7 +77,7 @@ public class NetLogoAppController {
 									//tick the interval
 									/*for (int i = 0; i < intervalTicks; i ++ ){
 										//go
-										ws.command(goCommand);
+										App.app.command(goCommand);
 										//increment counter
 										tickCounter++;
 									}*/
@@ -128,19 +129,31 @@ public class NetLogoAppController {
 	 */
 	public void openModel(String path) {
 		
+		NL4PySecutiryManager secManager = new NL4PySecutiryManager();
+		System.setSecurityManager(secManager);
+
+		
+		
 		//System.out.println("opening" + path);
 		try {
 			java.awt.EventQueue.invokeAndWait(
 			new Runnable() {
 				public void run() {
 					try {
-						App.app().open(path);
+						App.app().getLinkParent().setVisible(true);
+						App.app().getLinkParent().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						App.app().open(path);					
 					}
 					catch(java.io.IOException ex) {
-						ex.printStackTrace();
+						System.out.println("You can only open one model at a time in GUI mode");
+					}
+					catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			});
+		} catch (SecurityException e) {
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,35 +165,38 @@ public class NetLogoAppController {
 	 */
 	public void closeModel(){
 		try {
-			App.app().quit();
+			App.app().getLinkParent().setVisible(false);
+			//App.app().workspace.dispose();
+		} catch (SecurityException e) {
+			e.printStackTrace();
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
-	/*
+	
 	/**
 	 * Create a new headless instance. 
 	 * Use this after closeModel() to instantiate a
 	 * new instance of Netlogo. Great for multiple runs!
-	 
+	 */ 
 	public void refresh(){
-		try {
-			ws.dispose();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		ws = HeadlessWorkspace.newInstance();
+		//try {
+		//	App.app().dispose();
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
+		//App.app() = HeadlessWorkspace.newInstance();
 	}
 	
 	/**
 	 * Export a view (the visualization area) to the Java file's working directory.
 	 * @param filename: Name used to save the file. Include .png (ex: file.png)
-	 
+	 */
 	public void exportView(String filename){
 		try {
-			BufferedImage img = ws.exportView();
+			BufferedImage img = App.app().exportView();
 		    File outputfile = new File(filename);
-		    ImageIO.write(img, "png", outputfile);
+			ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}		
@@ -189,7 +205,7 @@ public class NetLogoAppController {
 	/**
 	 * Send a command to the open NetLogo model.
 	 * @param command: NetLogo command syntax.
-	 
+	 */
 	public void command(String command) {
 		try {
 			this.scheduleCommand(command);
@@ -208,12 +224,12 @@ public class NetLogoAppController {
 	 * Get the value of a variable in the NetLogo model.
 	 * @param command: The value to report.
 	 * @return Java Object containing return info
-	 
+	 */
 	public Object report(String command) {
 		Object report = new Double(0.0);
 		try {
 			Thread.sleep(1);
-			report = ws.report(command);
+			report = App.app().report(command);
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = new Double(0.0);
@@ -252,10 +268,9 @@ public class NetLogoAppController {
 	}	
 	
 	
-	
 	protected void disposeWorkspace(){
 		this.closeModel();
-		ws = null;
+		//App.app() = null;
 		try{
 			commandQueue.put("~stop~");
 		} catch (InterruptedException e) {
@@ -265,7 +280,7 @@ public class NetLogoAppController {
 		commandThread.interrupt();
 		System.gc();
 	}
-	*/
+	
 	public SearchSpace getParamList(String path) {
 		String constraintsText = "";
 		SearchSpace ss = null;
@@ -282,4 +297,14 @@ public class NetLogoAppController {
 		}
 		return ss;
 	}
+}
+
+class NL4PySecutiryManager extends SecurityManager {
+  @Override public void checkExit(int status) {
+    throw new SecurityException();
+  }
+
+  @Override public void checkPermission(java.security.Permission perm) {
+      // Allow other activities by default
+  }
 }
