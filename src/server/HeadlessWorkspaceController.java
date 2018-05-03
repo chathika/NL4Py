@@ -76,14 +76,14 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								int tickCounter = ticksAtStart;
 								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
-									/*for (int i = 0; i < intervalTicks; i ++ ){
+									for (int i = 0; i < intervalTicks; i ++ ){
 										//go
 										ws.command(goCommand);
 										//increment counter
 										tickCounter++;
-									}*/
-									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
-									tickCounter = tickCounter + intervalTicks;
+									}
+									//ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									//tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									String reporterResult= "";
