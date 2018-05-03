@@ -244,8 +244,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
-			scheduledReporterResults.drainTo(results);
+			synchronized(scheduledReporterResults){
+				scheduledReporterResults.drainTo(results);
 			//System.out.println(results);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
