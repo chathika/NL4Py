@@ -94,6 +94,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											reporterResults.add(reporterResult);
 										}
 									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
+										System.out.println("Exception when collecting scheduled reporter results");
 										System.out.println(reporterResult);
 										System.out.println(reporterResults);
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
