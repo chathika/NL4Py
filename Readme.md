@@ -1,8 +1,10 @@
 ## NL4Py
 
-A Python controller interface to NetLogo. NL4Py uses a client-server architecture, allowing Python client code to control NetLogo workspaces on a controller server. NL4Py supports controlling multiple workspaces through a single Python client. 
+A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call architecture, allowing Python client code to control NetLogo workspaces on a NetLogoWorkspaceController server. NL4Py supports controlling multiple workspaces through a single Python client. 
 
-At the moment, only HeadlessWorkspaces are supported. NL4Py has been tested on both Python 3.6.2 and 2.7.13
+NetLogo with GUI is now supported with NL4Py v0.3.0!
+
+NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
 * NL4Py works with NetLogo 6.0.2
@@ -50,7 +52,7 @@ Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/ma
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
-nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
+nl4py.newNetLogoHeadlessWorkspace()
 ```
 
 The following HeadlessWorkspace functions are available:
@@ -70,10 +72,16 @@ nl4py.NetLogo_HeadlessWorkspace.getParamRanges()
 Additionally, the netLogoWorkspaceFactory provides the following functions:
 
 ```python
-nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
-nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces()
+nl4py.deleteAllHeadlessWorkspaces() 
+nl4py.getAllHeadlessWorkspaces()
 ```
-	
+
+To open the NetLogo application in GUI mode use:
+
+```python
+nl4py.NetLogoApp()
+```
+
 ### Referencing:
 
 Please cite as: Gunaratne, C. (2018). NL4Py. https://github.com/chathika/NL4Py. Complex Adaptive Systems Lab, University of Central Florida, Orlando, FL.
