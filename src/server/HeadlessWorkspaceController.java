@@ -103,6 +103,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									}
+									
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
 									}
@@ -245,13 +246,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
-			synchronized(this){
-				String result = scheduledReporterResults.poll();
-				while(result != null) {
-					results.add(result);
-					System.out.println(result);
-				}
-			}
+			String result = scheduledReporterResults.poll();
+			while(result != null) {
+				results.add(result);
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
