@@ -213,7 +213,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * @return Java Object containing return info
 	 */
 	public Object report(String command) {
-		Object report = "NetLogo Exception";
+		Object report = new Double(0.0);
 		try {
 			//Thread.sleep(1);
 			report = ws.report(command);
