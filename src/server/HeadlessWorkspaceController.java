@@ -81,6 +81,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										ws.command(goCommand);
 										//increment counter
 										tickCounter++;
+										if (tickCounter == stopAtTick){
+											break;
+										}
 									}
 									//ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
 									//tickCounter = tickCounter + intervalTicks;
@@ -103,9 +106,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									synchronized (scheduledReporterResults) {
 										for(String resultI : reporterResults) {
 											scheduledReporterResults.put(resultI);
-											if (tickCounter == stopAtTick ){
-												scheduledReporterResults.put("stop");
-											}
 										}
 										
 									}
