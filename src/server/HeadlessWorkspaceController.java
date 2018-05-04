@@ -249,6 +249,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 				String result = scheduledReporterResults.poll();
 				while(result != null) {
 					results.add(result);
+					System.out.println(result);
 				}
 			}
 		} catch (Exception e) {
