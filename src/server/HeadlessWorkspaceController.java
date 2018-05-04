@@ -252,6 +252,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			results.add(e.toString());
+			return results;
 		}
 		return results;
 	}	
