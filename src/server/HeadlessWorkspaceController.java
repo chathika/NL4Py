@@ -250,7 +250,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			while(result != null) {
 				results.add(result);
 			}
-			Thread.sleep(500);
+			Thread.sleep(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
