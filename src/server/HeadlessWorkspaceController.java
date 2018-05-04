@@ -220,6 +220,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = "NetLogo Exception";//new Double(0.0);
+			return report;
 			//e.printStackTrace();
 		} 
 		return report;
