@@ -100,17 +100,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									String reporterResult= "";
-									try{
-										for(String reporter : reporters) {
-											//record results
-											reporterResult = report(reporter).toString();
-											reporterResults.add(reporterResult);
-										}
-									} catch (Exception e) {
-										scheduledReporterResults.put("~Exception~");					
-										modelStopped = true;
-										continue;
-									} 
+									for(String reporter : reporters) {
+										//record results
+										reporterResult = report(reporter).toString();
+										reporterResults.add(reporterResult);
+									}
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
 									}
