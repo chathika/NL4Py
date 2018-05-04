@@ -99,10 +99,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									}
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
-									String reporterResult= "";
 									for(String reporter : reporters) {
 										//record results
-										reporterResult = report(reporter).toString();
+										String reporterResult = report(reporter).toString();
 										reporterResults.add(reporterResult);
 									}
 									for(String resultI : reporterResults) {
@@ -253,13 +252,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		for(String result : results) {
-			if (result.equals("~Exception~")){
-				results  = new ArrayList<String>();
-				results.add("Exception");
-				return results;
-			}
 		}
 		return results;
 	}	
