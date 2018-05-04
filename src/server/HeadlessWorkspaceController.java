@@ -103,7 +103,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									try{
 										for(String reporter : reporters) {
 											//record results
-											reporterResult = ws.report("carefully [show " + reporter+"][show 0]").toString();
+											reporterResult = ws.report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
 									} catch (Exception e) {
