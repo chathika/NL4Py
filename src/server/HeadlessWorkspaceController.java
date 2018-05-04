@@ -107,6 +107,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
 									}
+									Thread.sleep(1);
 								}
 							}
 						} else {
