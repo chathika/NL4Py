@@ -77,6 +77,17 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								double ticksOnModel = ticksAtStart;
 								boolean modelStopped = false;
 								while (!modelStopped && controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
+									
+									//run reporters
+									ArrayList<String> reporterResults = new ArrayList<String>();
+									for(String reporter : reporters) {
+										//record results
+										String reporterResult = report(reporter).toString();
+										reporterResults.add(reporterResult);
+									}
+									for(String resultI : reporterResults) {
+										scheduledReporterResults.put(resultI);
+									}
 									//tick the interval
 									for (int i = 0; i < intervalTicks; i ++ ){
 										//go
@@ -97,17 +108,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											ticksOnModel = ticksOnModelNew;
 										}
 									}
-									//run reporters
-									ArrayList<String> reporterResults = new ArrayList<String>();
-									for(String reporter : reporters) {
-										//record results
-										String reporterResult = report(reporter).toString();
-										reporterResults.add(reporterResult);
-									}
-									for(String resultI : reporterResults) {
-										scheduledReporterResults.put(resultI);
-									}
-									
 								}
 							}
 						} else {
