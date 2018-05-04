@@ -256,10 +256,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		try {
 			Thread.sleep(1);
 			scheduledReporterResults.drainTo(results);
-			if (results.contains("~Exception~")){
-				results  = new ArrayList<String>();
-				results.add("Exception");
-				return results;
+			for(String result : results) {
+				if (result.equals("~Exception~")){
+					results  = new ArrayList<String>();
+					results.add("Exception");
+					return results;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
