@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 #!pip install py4j
 #import NetLogo_Controller_Server_Starter
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
+
 #import NL4PyControllerServerException
 from py4j.java_gateway import JavaGateway
 
@@ -40,4 +41,8 @@ class NetLogoWorkspaceFactory:
         for __workspace in self.__all_workspaces:
             __workspace.deleteWorkspace()
         self.__all_workspaces = []
+    def deleteHeadlessWorkspace(self,headlessWorkspace):
+        headlessWorkspace.deleteWorkspace()
+        self.__all_workspaces.remove(headlessWorkspace)
+
 ##############################################################################
