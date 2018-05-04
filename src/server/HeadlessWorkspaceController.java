@@ -114,6 +114,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										System.out.println("Exception when collecting scheduled reporter results");
 										System.out.println(reporterResult);
 										System.out.println(reporterResults);
+										System.exit(10);
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									} catch (Exception e) {
@@ -121,6 +122,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										for(String reporter : reporters) {
 											reporterResults.add("Bad NetLogo syntax caused exception");					
 										}
+										System.exit(10);
 									} finally {
 										for(String resultI : reporterResults) {
 											scheduledReporterResults.put(resultI);
