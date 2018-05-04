@@ -100,20 +100,20 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									String reporterResult= "";
-									try{
+									//try{
 										for(String reporter : reporters) {
 											//record results
 											reporterResult = ws.report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
-									} catch (Exception e) {
+									/*} catch (Exception e) {
 										reporterResults = new ArrayList<String>();
 										for(String reporter : reporters) {
 											scheduledReporterResults.put("Bad NetLogo syntax caused exception");					
 										}
 										modelStopped = true;
 										continue;
-									} 
+									} */
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
 									}
