@@ -248,12 +248,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
 			Thread.sleep(1);
-			String result = scheduledReporterResults.poll();
-			while(result != null) {
-				results.add(result);
-			}
+			scheduledReporterResults.drainTo(results);
 		} catch (Exception e) {
 			e.printStackTrace();
+			results.add(e.toString());
 		}
 		return results;
 	}	
