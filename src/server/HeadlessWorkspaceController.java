@@ -94,6 +94,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										modelStopped = true;
 									} else {
 										tickCounter = tickCounter + intervalTicks;
+										ticksOnModel = ticksOnModelNew;
 									}
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
