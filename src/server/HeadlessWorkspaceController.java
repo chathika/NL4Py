@@ -83,7 +83,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										ws.command(goCommand);
 										//increment counter
 										tickCounter++;
-										if (tickCounter == stopAtTick){
+										if (tickCounter > stopAtTick){
 											modelStopped = true;
 											break;
 										}
