@@ -76,7 +76,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								int tickCounter = ticksAtStart;
 								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
-									for (int i = 0; i < intervalTicks; i ++ ){
+									/*for (int i = 0; i < intervalTicks; i ++ ){
 										//go
 										ws.command(goCommand);
 										//increment counter
@@ -84,9 +84,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										if (tickCounter == stopAtTick){
 											break;
 										}
-									}
-									//ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
-									//tickCounter = tickCounter + intervalTicks;
+									}*/
+									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+									tickCounter = tickCounter + intervalTicks;
 									//run reporters
 									ArrayList<String> reporterResults = new ArrayList<String>();
 									String reporterResult= "";
@@ -106,6 +106,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
 									}
+									Thread.sleep(1);
 								}
 							}
 						} else {
@@ -243,13 +244,14 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		}
 	}
 	public ArrayList<String> getScheduledReporterResults () {
+		
 		ArrayList<String> results  = new ArrayList<String>();
 		try {
+			Thread.sleep(1);
 			String result = scheduledReporterResults.poll();
 			while(result != null) {
 				results.add(result);
 			}
-			Thread.sleep(1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
