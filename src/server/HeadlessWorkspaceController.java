@@ -103,7 +103,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									try{
 										for(String reporter : reporters) {
 											//record results
-											reporterResult = ws.report(reporter).toString();
+											reporterResult = report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
 									} catch (Exception e) {
@@ -222,7 +222,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public Object report(String command) {
 		Object report = new Double(0.0);
 		try {
-			Thread.sleep(1);
+			//Thread.sleep(1);
 			report = ws.report(command);
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
