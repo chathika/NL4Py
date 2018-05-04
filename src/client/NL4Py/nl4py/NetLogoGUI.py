@@ -26,10 +26,10 @@ import threading
 import os
 import atexit
 import sys
-import time
+
 
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
-class NetLogoHeadlessWorkspace:
+class NetLogoGUI:
     __bridge = None
     __gateway = None 
     __session = None
@@ -40,7 +40,7 @@ class NetLogoHeadlessWorkspace:
     def __init__(self, java_gateway):
         self.__gateway = java_gateway# New gateway connection
         self.__bridge = self.__gateway.entry_point
-        self.__session = self.__bridge.newHeadlessWorkspaceController()
+        self.__session = self.__bridge.newNetLogoApp()
     #######################################################
     ###Below are public functions of the NL4Py interface###
     #######################################################
@@ -63,14 +63,6 @@ class NetLogoHeadlessWorkspace:
     '''HeadlessWorkspace object'''
     def closeModel(self):
         self.__bridge.closeModel(self.__session)
-    '''Sends a signal to the server to tell the respective controller to create a'''
-    '''new instance of its HeadlessWorkspace object'''
-    def refresh(self):
-        self.__bridge.refresh(self.__session)
-    '''Sends a signal to the server to tell the respective controller to export the view'''
-    ''' of its HeadlessWorkspace object'''
-    def exportView(self, filename):
-        self.exportView(self.__session, filename)
     '''Sends a signal to the server to tell the respective controller to send a'''
     '''NetLogo command to its HeadlessWorkspace object'''
     def command(self, command):
@@ -89,7 +81,6 @@ class NetLogoHeadlessWorkspace:
         self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
-        time.sleep(1)
         result = self.__bridge.getScheduledReporterResults(self.__session)
         ticks_returned = len(result) / self.__reporters_length
         import numpy as np
@@ -152,8 +143,3 @@ class NetLogoHeadlessWorkspace:
                 paramRange = [paramSpec.getValueFromChoice(0,1)]
             paramRanges.append(paramRange)
         return paramRanges
-    
-    '''Kills the Workspace and its controller on the server'''
-    def deleteWorkspace(self):
-        self.__bridge.removeControllerFromStore(self.__session)
-        #self.__gateway.close()

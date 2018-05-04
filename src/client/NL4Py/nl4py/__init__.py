@@ -17,13 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 from .NetLogoControllerServerStarter import NetLogoControllerServerStarter
 from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
-
+from .NetLogoGUI import NetLogoGUI
+from py4j.java_gateway import JavaGateway
 import six.moves.urllib.request as urlrq
 #import urllib
 import shutil
 import os
-if not os.path.exists("./server/"):
-    os.makedirs("./server/")
+if not os.path.exists("./nl4pyServer/"):
+    os.makedirs("./nl4pyServer/")
 
 print("Downloading the NetLogo Controller Server jar file...")
 url = 'https://github.com/chathika/NL4Py/raw/master/bin/NetLogoControllerServer.jar'
@@ -33,7 +34,7 @@ import ssl
 context = ssl._create_unverified_context()
 try:
     response = urlrq.urlopen(url, context=context)
-    out_file = open('./server/NetLogoControllerServer.jar', 'wb')
+    out_file = open('./nl4pyServer/NetLogoControllerServer.jar', 'wb')
     shutil.copyfileobj(response, out_file)
     out_file.flush()
     out_file.close()
@@ -44,7 +45,7 @@ url = 'https://github.com/chathika/NL4Py/raw/master/lib/py4j0.10.6.jar'
 # Download the file from `url` and save it locally under `file_name`:
 try:
     response = urlrq.urlopen(url, context=context)
-    out_file = open('./server/py4j0.10.6.jar', 'wb')
+    out_file = open('./nl4pyServer/py4j0.10.6.jar', 'wb')
     shutil.copyfileobj(response, out_file)
     out_file.flush()
     out_file.close()
@@ -70,3 +71,22 @@ def stopServer():
 #print("Server started!")
 
 netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
+'''Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it'''
+def newNetLogoHeadlessWorkspace():
+    return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
+'''Returns a list of all live HeadlessWorkspaces'''
+def getAllHeadlessWorkspaces():
+    return netlogoWorkspaceFactory.getAllExistingWorkspaces()
+'''Deletes all existing HeadlessWorkspaces'''
+def deleteAllHeadlessWorkspaces():
+    netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
+'''deletes the headlessworkspace given as an argument'''
+def deleteHeadlessWorkspace(headlessWorkspace):
+    netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+'''Opens the NetLogo Application'''
+nApp = -1
+def NetLogoApp():
+    global nApp
+    if nApp == -1:
+        nApp = NetLogoGUI(JavaGateway())
+    return nApp

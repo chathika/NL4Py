@@ -57,7 +57,7 @@ class NetLogoControllerServerStarter:
         
         nl_path = os.path.join(os.path.abspath(nl_path),"*")
         os.pathsep
-        server_path = "./server/*"
+        server_path = "./nl4pyServer/*"
         classpath = nl_path + os.pathsep + server_path
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
