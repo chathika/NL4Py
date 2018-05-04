@@ -97,9 +97,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											ticksOnModel = ticksOnModelNew;
 										}
 									}
-									if(ticksOnModel == ticksOnModelNew){
-										//Model has stopped, no tick progression
-										modelStopped = true;
+									if(modelStopped){
 										break;
 									}
 									//run reporters
