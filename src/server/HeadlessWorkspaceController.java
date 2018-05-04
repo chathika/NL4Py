@@ -106,25 +106,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											reporterResult = ws.report("carefully [show " + reporter+"][show 0]").toString();
 											reporterResults.add(reporterResult);
 										}
-									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
-										reporterResults = new ArrayList<String>();
-										for(String reporter : reporters) {
-											scheduledReporterResults.put("Bad NetLogo syntax caused exception");					
-										}
-										System.out.println("Exception when collecting scheduled reporter results");
-										System.out.println(reporterResult);
-										System.out.println(reporterResults);
-										//This can throw a netlogo exception if the model is done running due to custom stop condition
-										modelStopped = true;
-										disposeWorkspace();
-										continue;
 									} catch (Exception e) {
 										reporterResults = new ArrayList<String>();
 										for(String reporter : reporters) {
 											scheduledReporterResults.put("Bad NetLogo syntax caused exception");					
 										}
 										modelStopped = true;
-										disposeWorkspace();
 										continue;
 									} 
 									for(String resultI : reporterResults) {
