@@ -20,38 +20,44 @@ n = 1
 
 model = "./Wolf Sheep Predation.nlogo"
 
-print('\n2.1) Creating ' + str(n) + ' NetLogo HeadlessWorkspaces with: nl4py.newNetLogoHeadlessWorkspace()\n and clearing any old workspaces with nl4py.deleteAllExistingWorkspaces()')
-print('\n2.2) Opening the ' + model + ' model on the NetLogo HeadlessWorkspace with: nl4py.NetLogoHeadlessWorkspace.openModel("model")')
+print('\n2.1) Creating ' + str(n) + ' NetLogo HeadlessWorkspaces with: workspace = nl4py.newNetLogoHeadlessWorkspace()\n and clearing any old workspaces with nl4py.deleteAllHeadlessWorkspaces()')
+print('\n2.2) Opening the ' + model + ' model on the NetLogo HeadlessWorkspace with: workspace.openModel("model")')
 nl4py.deleteAllHeadlessWorkspaces() 
-n = nl4py.newNetLogoHeadlessWorkspace()
-n.openModel(model)
+workspace = nl4py.newNetLogoHeadlessWorkspace()
+workspace.openModel(model)
 
-print("\n2.3) Setting the parameters to random values with nl4py.NetLogoHeadlessWorkspace.setParamsRandom()")
+print("\n2.3) Setting the parameters to random values with workspace.setParamsRandom()")
 
-n.setParamsRandom()
-n.command('set model-version "sheep-wolves-grass"')
-print('\n2.4) Send setup command to model using: nl4py.NetLogoHeadlessWorkspace.command("setup")')
+workspace.setParamsRandom()
+workspace.command('set model-version "sheep-wolves-grass"')
+print('\n2.4) Send setup command to model using: workspace.command("setup")')
 
-n.command("setup")
+workspace.command("setup")
 
-print('\n2.4) Schedule reporters to the model to report the number of sheep and wolves for each tick and their mean positions for 100 ticks,\n using: n.scheduleReportersAndRun(reporters,0,1,100,"go")')
-print("\t The reporters are: reporters = ['ticks','count sheep','count wolves','mean [xcor] of sheep','mean [ycor] of sheep','mean [xcor] of wolves','mean [ycor] of wolves']")
+print('\n2.4) Schedule reporters to the model to report the ticks passed, the model\'s two stop conditions and number of sheep and wolves for each tick for 100 ticks,\n using: workspace.scheduleReportersAndRun(reporters,0,1,100,"go")')
+print("\t The reporters are: reporters = ['ticks','not any? turtles','not any? wolves and count sheep > max-sheep','count sheep','count wolves']")
 
-reporters = ['ticks','not any? turtles','not any? wolves and count sheep > max-sheep','count sheep','count wolves']#,'mean [xcor] of sheep','mean [ycor] of sheep','mean [xcor] of wolves','mean [ycor] of wolves']
-n.scheduleReportersAndRun(reporters,0,1,100,"go")
+reporters = ['ticks','not any? turtles','not any? wolves and count sheep > max-sheep','count sheep','count wolves']
+workspace.scheduleReportersAndRun(reporters,0,1,100,"go")
 
-print("\n2.5) Periodically check the number of ticks passed and if the ticks haven't changed, close the model:")
-print("ticksSoFar = n.report('ticks')\nwhile(ticksSoFar < 100 or n.report('ticks') != ticksSoFar ): ")
-print("\ttime.sleep(2)")
-print("\tticksSoFar = n.report('ticks')")
-print("n.closeModel()")
+print("\n2.5) Periodically check the number of ticks passed or if stop conditions are met and... ")
+print('\n2.6) Get back all the results from the scheduling process: result = workspace.getScheduledReporterResults():')
+print("while(ticksSoFar < 100 ):")
+print("\tmoreResults = n.getScheduledReporterResults()")
+print("\tif moreResults.size > 0:")
+print("\t\tresults.extend(moreResults)")
+print("\tticksSoFar = int(float(results[-1][0]))")
+print("\tstop1 = str(results[-1][1]).lower()")
+print("\tstop2 = str(results[-1][2]).lower()")
+print("\tif ticksSoFar == 100 or stop1 == 'true' or stop2 == 'true':")
+print("\t\tbreak;")
 
 import time
 time.sleep(2) #give the workspace a second to run the commands
 ticksSoFar = 0
 results = []
 while(ticksSoFar < 100 ):
-	moreResults = n.getScheduledReporterResults()	
+	moreResults = workspace.getScheduledReporterResults()	
 	if moreResults.size > 0:
 		results.extend(moreResults)
 	ticksSoFar = int(float(results[-1][0]))
@@ -60,11 +66,10 @@ while(ticksSoFar < 100 ):
 	print(ticksSoFar)
 	if ticksSoFar == 100 or stop1 == "true" or stop2 == "true":
 		break;
-print('\n2.6) Get back all the results from the scheduling process: result = n.getScheduledReporterResults()')
-print('\t and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
+print('\t...and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
 import pandas as pd
 resultframe = pd.DataFrame(results)
-resultframe.columns = ['ticks','stop1','stop2','sheep','wolves']#,'mean_x_sheep','mean_y_sheep','mean_x_wolves','mean_y_wolves']
+resultframe.columns = ['ticks','stop1','stop2','sheep','wolves']
 print(resultframe)
 
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')

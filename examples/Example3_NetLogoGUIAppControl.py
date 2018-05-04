@@ -1,8 +1,6 @@
 ########Demonstration of NL4Py#################
-#This example takes two commandline arguments n and model
-#n : number of concurrent model runs required.
-#model: path to model file
-#example usage: python NRunsOfAModel.py 100 "/path/to/model.nlogo"
+#This example demonstrates NetLogo Application Control with GUI through NL4Py
+#example usage: python Example3_NetLogoGUIAppControl.py
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
