@@ -97,6 +97,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											reporterResults.add(reporterResult);
 										}
 									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
+										scheduledReporterResults.put("exception");
 										System.out.println("Exception when collecting scheduled reporter results");
 										System.out.println(reporterResult);
 										System.out.println(reporterResults);
