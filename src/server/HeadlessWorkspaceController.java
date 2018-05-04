@@ -78,7 +78,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								boolean modelStopped = false;
 								while (!modelStopped && controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
 									//tick the interval
-									double ticksOnModelNew=(Double)ws.report("ticks");
 									for (int i = 0; i < intervalTicks; i ++ ){
 										//go
 										ws.command(goCommand);
@@ -88,7 +87,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											modelStopped = true;
 											break;
 										}
-										ticksOnModelNew = (Double)ws.report("ticks");
+										double ticksOnModelNew = (Double)ws.report("ticks");
 										if(ticksOnModel == ticksOnModelNew){
 											//Model has stopped, no tick progression
 											modelStopped = true;
