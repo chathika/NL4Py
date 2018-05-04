@@ -113,6 +113,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										System.out.println(reporterResults);
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
+									} catch (Exception e) {
+										for(String reporter : reporters) {
+											scheduledReporterResults.put("Bad NetLogo syntax caused exception");					
+										}
 									}
 									for(String resultI : reporterResults) {
 										scheduledReporterResults.put(resultI);
