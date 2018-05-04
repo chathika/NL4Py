@@ -103,7 +103,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									synchronized (scheduledReporterResults) {
 										for(String resultI : reporterResults) {
 											scheduledReporterResults.put(resultI);
+											if (tickCounter == stopAtTick ){
+												scheduledReporterResults.put("stop");
+											}
 										}
+										
 									}
 								}
 							}
