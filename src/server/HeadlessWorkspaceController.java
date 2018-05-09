@@ -74,7 +74,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							//Now execute the schedule
 							//Has start time passed?
 							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
-							synchronized(mon) {
+							//synchronized(mon) {
 								if(ticksAtStart <= startAtTick ){
 									int tickCounter = ticksAtStart;
 									double ticksOnModel = ticksAtStart;
@@ -112,14 +112,16 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											String reporterResult = report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
-										for(String resultI : reporterResults) {
-											scheduledReporterResults.put(resultI);
+										synchronized(scheduledReporterResults){
+											for(String resultI : reporterResults) {
+												scheduledReporterResults.put(resultI);
+											}
 										}
 									}
 								}
 								scheduleDone = true;
 								mon.notifyAll();
-							}
+							//}
 						} else {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
