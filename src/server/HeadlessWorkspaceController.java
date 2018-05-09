@@ -24,6 +24,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	String mon = new String("wait");
+	volatile boolean scheduleDone = true;
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
@@ -54,6 +55,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						//System.out.println("taking next command");
 						String nextCommand = safelyGetNextCommand();
 						if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
+							scheduleDone = false;
 							//Read in the schedule
 							ArrayList<String> reporters = new ArrayList<String>();
 							nextCommand = safelyGetNextCommand();
@@ -110,14 +112,13 @@ public class HeadlessWorkspaceController extends NetLogoController {
 											String reporterResult = report(reporter).toString();
 											reporterResults.add(reporterResult);
 										}
-										synchronized(scheduledReporterResults) {
-											for(String resultI : reporterResults) {
-												scheduledReporterResults.put(resultI);
-											}
+										for(String resultI : reporterResults) {
+											scheduledReporterResults.put(resultI);
 										}
 									}
 								}
-								mon.notify();
+								scheduleDone = true;
+								mon.notifyAll();
 							}
 						} else {
 							//System.out.println("sending next command");
@@ -236,34 +237,36 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	}
 	
 	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		synchronized(mon) {
-			try{
-				mon.wait();
-				commandQueue.put("~ScheduledReporters~");
-				for (String reporter : reporters) {
-					commandQueue.put(reporter);
-				}
-				commandQueue.put("~StartAt~");
-				commandQueue.put(Integer.toString(startAtTick));
-				commandQueue.put("~Interval~");
-				commandQueue.put(Integer.toString(intervalTicks));
-				commandQueue.put("~StopAt~");
-				commandQueue.put(Integer.toString(stopAtTick));
-				commandQueue.put("~RunReporters~");
-				commandQueue.put(goCommand);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		try{
+			commandQueue.put("~ScheduledReporters~");
+			for (String reporter : reporters) {
+				commandQueue.put(reporter);
 			}
+			commandQueue.put("~StartAt~");
+			commandQueue.put(Integer.toString(startAtTick));
+			commandQueue.put("~Interval~");
+			commandQueue.put(Integer.toString(intervalTicks));
+			commandQueue.put("~StopAt~");
+			commandQueue.put(Integer.toString(stopAtTick));
+			commandQueue.put("~RunReporters~");
+			commandQueue.put(goCommand);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();
-		try {
-			Thread.sleep(1);
-			scheduledReporterResults.drainTo(results);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (scheduleDone){
+			try{
+				mon.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			try {	
+				scheduledReporterResults.drainTo(results);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return results;
 	}	
