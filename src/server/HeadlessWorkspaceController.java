@@ -258,7 +258,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<String> results  = new ArrayList<String>();
 		if (scheduleDone){
 			try{
-				mon.wait();
+				synchronized(mon){
+					mon.wait();
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
