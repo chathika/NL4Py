@@ -23,7 +23,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	private Thread commandThread;
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
-	
+	String mon = new String("wait");
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
@@ -72,20 +72,25 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							//Now execute the schedule
 							//Has start time passed?
 							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
-							if(ticksAtStart <= startAtTick ){
-								int tickCounter = ticksAtStart;
-								double ticksOnModel = ticksAtStart;
-								boolean modelStopped = false;
-								while (!modelStopped && controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
-									//tick the interval
-									for (int i = 0; i < intervalTicks; i ++ ){
-										//go
-										ws.command(goCommand);
-										//increment counter
-										tickCounter++;
+							synchronized(mon) {
+								if(ticksAtStart <= startAtTick ){
+									int tickCounter = ticksAtStart;
+									double ticksOnModel = ticksAtStart;
+									boolean modelStopped = false;
+									while (!modelStopped && controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
+										//tick the interval
+										/*for (int i = 0; i < intervalTicks; i ++ ){
+											//go
+											ws.command(goCommand);
+											//increment counter
+											tickCounter++;
+										}*/
+										
+										ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
+										tickCounter += tickCounter + intervalTicks;
 										if (tickCounter > stopAtTick){
-											modelStopped = true;
-											break;
+												modelStopped = true;
+												break;
 										}
 										double ticksOnModelNew = (Double)ws.report("ticks");
 										if(ticksOnModel == ticksOnModelNew){
@@ -95,22 +100,24 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										} else {
 											ticksOnModel = ticksOnModelNew;
 										}
+										if(modelStopped){
+											break;
+										}
+										//run reporters
+										ArrayList<String> reporterResults = new ArrayList<String>();
+										for(String reporter : reporters) {
+											//record results
+											String reporterResult = report(reporter).toString();
+											reporterResults.add(reporterResult);
+										}
+										synchronized(scheduledReporterResults) {
+											for(String resultI : reporterResults) {
+												scheduledReporterResults.put(resultI);
+											}
+										}
 									}
-									if(modelStopped){
-										break;
-									}
-									//run reporters
-									ArrayList<String> reporterResults = new ArrayList<String>();
-									for(String reporter : reporters) {
-										//record results
-										String reporterResult = report(reporter).toString();
-										reporterResults.add(reporterResult);
-									}
-									for(String resultI : reporterResults) {
-										scheduledReporterResults.put(resultI);
-									}
-									
 								}
+								mon.notify();
 							}
 						} else {
 							//System.out.println("sending next command");
@@ -156,11 +163,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * @param unique id for this model
 	 */
 	public void closeModel(){
-		try {
-			ws.dispose();
-		} catch (InterruptedException e) {
+		//try {
+			//ws.dispose();
+		//} catch (InterruptedException e) {
 			//e.printStackTrace();
-		}
+		//}
 	}
 	
 	/**
@@ -229,22 +236,24 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	}
 	
 	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		
-		try{
-			commandQueue.put("~ScheduledReporters~");
-			for (String reporter : reporters) {
-				commandQueue.put(reporter);
+		synchronized(mon) {
+			try{
+				mon.wait();
+				commandQueue.put("~ScheduledReporters~");
+				for (String reporter : reporters) {
+					commandQueue.put(reporter);
+				}
+				commandQueue.put("~StartAt~");
+				commandQueue.put(Integer.toString(startAtTick));
+				commandQueue.put("~Interval~");
+				commandQueue.put(Integer.toString(intervalTicks));
+				commandQueue.put("~StopAt~");
+				commandQueue.put(Integer.toString(stopAtTick));
+				commandQueue.put("~RunReporters~");
+				commandQueue.put(goCommand);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			commandQueue.put("~StartAt~");
-			commandQueue.put(Integer.toString(startAtTick));
-			commandQueue.put("~Interval~");
-			commandQueue.put(Integer.toString(intervalTicks));
-			commandQueue.put("~StopAt~");
-			commandQueue.put(Integer.toString(stopAtTick));
-			commandQueue.put("~RunReporters~");
-			commandQueue.put(goCommand);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 	public ArrayList<String> getScheduledReporterResults () {
