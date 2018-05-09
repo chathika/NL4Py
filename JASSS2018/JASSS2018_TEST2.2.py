@@ -3,7 +3,7 @@ startTime = int(round(time.time() * 1000))
 import pyNetLogo
 workspaces = []
 for i in range(0,200):
-	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "/home/ubuntu/netlogo", netlogo_version = '6')
+	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "C:/Program Files/NetLogo 6.0.2", netlogo_version = '6')
 	n.load_model(r"./Fire.nlogo")
 	n.command("set density random 99")
 	n.command("setup")
