@@ -127,7 +127,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							ws.command(nextCommand);
 							//System.out.println("command done");
 						}	
-						Thread.sleep(10);
 					} catch (InterruptedException e){
 						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
