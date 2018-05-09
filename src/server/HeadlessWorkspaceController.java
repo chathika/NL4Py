@@ -120,7 +120,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							}
 							scheduleDone = true;
 							synchronized(mon) {
-								mon.notifyAll();
+								mon.notify();
 							}							
 						} else {
 							//System.out.println("sending next command");
@@ -137,7 +137,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						if (ws == null) {
 							break;
 						}
-					}
+					} finally {scheduleDone = true;}
 				}
 			}
 		});
@@ -257,21 +257,21 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		}
 	}
 	public ArrayList<String> getScheduledReporterResults () {
-		ArrayList<String> results  = new ArrayList<String>();
-		synchronized(this.mon){
-			try{
-				if(!scheduleDone) {
+		ArrayList<String> results  = new ArrayList<String>();		
+		try{
+			if(!scheduleDone) {
+				synchronized(this.mon){
 					this.mon.wait();
-				}	
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			try {	
-				scheduledReporterResults.drainTo(results);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+				}
+			}	
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		try {	
+			scheduledReporterResults.drainTo(results);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 		return results;
 	}	
 	
