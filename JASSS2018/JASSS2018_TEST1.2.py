@@ -54,7 +54,8 @@ def doNRuns(runsNeeded, threadCount_):
 						runsStarted = runsStarted + 1
 						runModel(workspace)
 	stopTime = int(round(time.time() * 1000))
-	totalTime = stopTime - startTimes
+	totalTime = stopTime - startTime
+	print(totalTime)
 	return totalTime
 print("\n1 Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 nl4py.startServer()
@@ -62,7 +63,7 @@ time.sleep(2)
 allTimes = []
 import pandas as pd
 for j in range(0,11):
-	for i in [14000]:
+	for i in [100]:
 		for threadCount in [8]:
 			print("Runs ", i, "Threads " , threadCount)
 			timeTaken = doNRuns(i, threadCount)
