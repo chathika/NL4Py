@@ -118,9 +118,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									}
 								}
 							}
+							scheduleDone = true;
 							synchronized(mon) {
 								mon.notifyAll();
-							}
+							}							
 						} else {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
@@ -259,7 +260,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<String> results  = new ArrayList<String>();
 		synchronized(this.mon){
 			try{
-				this.mon.wait();
+				if(!scheduleDone) {
+					this.mon.wait();
+				}	
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
