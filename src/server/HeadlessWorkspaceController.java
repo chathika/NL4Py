@@ -23,7 +23,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	private Thread commandThread;
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
-	String mon = new String("wait");
+	volatile String mon = new String("wait");
 	volatile boolean scheduleDone = true;
 	public HeadlessWorkspaceController() {
 		//Create new workspace instance
