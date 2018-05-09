@@ -42,36 +42,16 @@ workspace.scheduleReportersAndRun(reporters,0,1,100,"go")
 
 print("\n2.5) Periodically check the number of ticks passed or if stop conditions are met and... ")
 print('\n2.6) Get back all the results from the scheduling process: result = workspace.getScheduledReporterResults():')
-print("while(ticksSoFar < 100 ):")
-print("\tmoreResults = n.getScheduledReporterResults()")
-print("\tif moreResults.size > 0:")
-print("\t\tresults.extend(moreResults)")
-print("\tticksSoFar = int(float(results[-1][0]))")
-print("\tstop1 = str(results[-1][1]).lower()")
-print("\tstop2 = str(results[-1][2]).lower()")
-print("\tif ticksSoFar == 100 or stop1 == 'true' or stop2 == 'true':")
-print("\t\tbreak;")
-
+print("\tresults = n.getScheduledReporterResults()")
 import time
-time.sleep(2) #give the workspace a second to run the commands
-ticksSoFar = 0
-results = []
-while(ticksSoFar < 100 ):
-	moreResults = workspace.getScheduledReporterResults()	
-	if moreResults.size > 0:
-		results.extend(moreResults)
-	ticksSoFar = int(float(results[-1][0]))
-	stop1 = str(results[-1][1]).lower()
-	stop2 = str(results[-1][2]).lower()
-	print(ticksSoFar)
-	if ticksSoFar == 100 or stop1 == "true" or stop2 == "true":
-		break;
+results = workspace.getScheduledReporterResults()	
+
 print('\t...and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
 import pandas as pd
 resultframe = pd.DataFrame(results)
 resultframe.columns = ['ticks','stop1','stop2','sheep','wolves']
 print(resultframe)
-
+print(workspace.report("ticks"))
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
 nl4py.stopServer()
 print('\n\n------------------------ Thanks for trying NL4PY -------------------------\n')
