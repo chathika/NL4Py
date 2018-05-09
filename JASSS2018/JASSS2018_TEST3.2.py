@@ -3,7 +3,7 @@ startTime = int(round(time.time() * 1000))
 import pyNetLogo
 workspaces = []
 for i in range(0,200):
-	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "/home/ubuntu/netlogo", netlogo_version = '6')
+	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "C:\Program Files\NetLogo 6.0.2", netlogo_version = '6')
 	n.load_model("./Ethnocentrism.nlogo")
         n.command("set mutation-rate random-float 1")
         n.command("set initial-PTR random-float 1")
