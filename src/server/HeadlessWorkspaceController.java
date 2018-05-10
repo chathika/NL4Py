@@ -82,7 +82,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								}
 								String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
 								for(String reporter : reporters) {
-									commandString = commandString + reporter + " ";
+									commandString = commandString + "(" +reporter + ") ";
 								}
 								commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
 								ws.command(commandString);
