@@ -236,17 +236,19 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	}
 	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();		
-		try{
-			if(!scheduleDone) {
-				synchronized(this.mon){
-					this.mon.wait();
-				}
-			}	
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		//try{
+		//	if(!scheduleDone) {
+		//		synchronized(this.mon){
+			//		this.mon.wait();
+				//}
+			//}	
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
 		try {	
-			scheduledReporterResults.drainTo(results);
+			if(scheduleDone) {
+				scheduledReporterResults.drainTo(results);
+			} 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
