@@ -84,7 +84,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								for(String reporter : reporters) {
 									commandString = commandString + reporter + " ";
 								}
-								commandString = commandString + ") lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
+								commandString = commandString + ") lput resultsThisTick nl4pyData ]"; //ask patch 0 0 [set plabel nl4pyData]";
 								ws.command(commandString);
 								synchronized(scheduledReporterResults){
 									scheduledReporterResults.put(ws.report("[plabel] of patch 0 0").toString());
