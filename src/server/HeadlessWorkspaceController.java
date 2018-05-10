@@ -96,6 +96,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 										}										
 									}
 								}
+								ws.command("ask patch 0 0 [set plabel '']");
 							}
 							scheduleDone = true;
 							synchronized(mon) {
