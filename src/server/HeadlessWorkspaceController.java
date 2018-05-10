@@ -73,50 +73,23 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							String goCommand = safelyGetNextCommand();
 							//Now execute the schedule
 							//Has start time passed?
-							int ticksAtStart = ((Double)ws.report("ticks")).intValue();
-							if(ticksAtStart <= startAtTick ){
-								int tickCounter = ticksAtStart;
-								double ticksOnModel = ticksAtStart;
+							int ticksOnModel = ((Double)ws.report("ticks")).intValue();
+							if(ticksOnModel <= startAtTick ){
 								boolean modelStopped = false;
-								while (!modelStopped && controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
-									//tick the interval
-									/*for (int i = 0; i < intervalTicks; i ++ ){
-										//go
-										ws.command(goCommand);
-										//increment counter
-										tickCounter++;
-									}*/
-									
-									ws.command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
-									tickCounter += intervalTicks;
-									if (tickCounter > stopAtTick){
-											modelStopped = true;
-											break;
-									}
-									double ticksOnModelNew = (Double)ws.report("ticks");
-									if(ticksOnModel == ticksOnModelNew){
-										//Model has stopped, no tick progression
-										modelStopped = true;
-										break;
-									} else {
-										ticksOnModel = ticksOnModelNew;
-									}
-									if(modelStopped){
-										break;
-									}
-									//run reporters
-									ArrayList<String> reporterResults = new ArrayList<String>();
-									for(String reporter : reporters) {
-										//record results
-										String reporterResult = report(reporter).toString();
-										reporterResults.add(reporterResult);
-									}
-									synchronized(scheduledReporterResults){
-										for(String resultI : reporterResults) {
-											scheduledReporterResults.put(resultI);
-										}
-									}
+								if(ticksOnModel < startAtTick) {
+									//catch up if necessary
+									ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [go]");
 								}
+								String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
+								for(String reporter : reporters) {
+									commandString = commandString + reporter + " ";
+								}
+								commandString = commandString + ") lput resultsThisTick nl4pyData ] let nl4pyDataAgent nobody create-turtles 1 [set nl4pyDataAgent self set label nl4pyData]";
+								ws.command(commandString);
+								synchronized(scheduledReporterResults){
+									scheduledReporterResults.put(ws.report("[label] of nl4pyDataAgent").toString());
+								}								
+								ws.command("ask dataAgent [die]");
 							}
 							scheduleDone = true;
 							synchronized(mon) {
