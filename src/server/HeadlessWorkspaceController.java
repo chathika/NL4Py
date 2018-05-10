@@ -98,10 +98,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								}
 								ws.command("ask patch 0 0 [set plabel 0]");
 							}
-							scheduleDone = true;
-							synchronized(mon) {
-								mon.notify();
-							}							
+							scheduleDone = true;				
 						} else {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
@@ -237,18 +234,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	}
 	public ArrayList<String> getScheduledReporterResults () {
 		ArrayList<String> results  = new ArrayList<String>();		
-		//try{
-		//	if(!scheduleDone) {
-		//		synchronized(this.mon){
-			//		this.mon.wait();
-				//}
-			//}	
-		//} catch (InterruptedException e) {
-		//	e.printStackTrace();
-		//}
 		try {	
 			if(scheduleDone) {
-				scheduledReporterResults.drainTo(results);
+				synchronized(scheduledReporterResults){
+					scheduledReporterResults.drainTo(results);
+				}
 			} 
 		} catch (Exception e) {
 			e.printStackTrace();
