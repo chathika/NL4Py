@@ -88,7 +88,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								System.out.println(commandString);
 								//ws.command(commandString);
 								synchronized(scheduledReporterResults){
-									scheduledReporterResults.put(ws.report("[plabel] of patch 0 0").toString());
+									scheduledReporterResults.put(commandString);//ws.report("[plabel] of patch 0 0").toString());
 								}
 							}
 							scheduleDone = true;
