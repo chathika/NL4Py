@@ -86,8 +86,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								}
 								commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
 								ws.command(commandString);
-								synchronized(scheduledReporterResults){
-									scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
+								
+								scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
+								synchronized(scheduledReporterResults){	
 									while(resultsIterator.hasNext()) {
 										org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
 										scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
