@@ -1,0 +1,5 @@
+matplotlib >= 2.0.2
+py4j >= 0.10.6
+psutil >= 5.4.3
+pandas >= 0.20.1
+numpy >= 1.13.3

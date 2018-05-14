@@ -26,7 +26,7 @@ import threading
 import os
 import atexit
 import sys
-
+import time
 
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
 class NetLogoHeadlessWorkspace:
@@ -51,7 +51,7 @@ class NetLogoHeadlessWorkspace:
             self.__path = path
             self.__bridge.openModel(self.__session,self.__path)
         except Py4JNetworkError as e:
-            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running NL4Py.NLCSStarter.shutdownServer() and trying again.")#, None, sys.exc_info()[2])
+            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running nl4py.stopServer() and trying again.")#, None, sys.exc_info()[2])
         #except Py4JJavaError as e:
         #    raise NL4PyControllerServerException("Looks like the server couldn't find NetLogo. Perhaps you didn't set the NETLOGO_APP environment variable? Try setting it on your system and restarting Python.")#, None, sys.exc_info()[2])
         #Also, just in case, check if this model actually exists and responds
@@ -89,6 +89,7 @@ class NetLogoHeadlessWorkspace:
         self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
+        time.sleep(1)
         result = self.__bridge.getScheduledReporterResults(self.__session)
         ticks_returned = len(result) / self.__reporters_length
         import numpy as np
