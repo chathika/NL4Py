@@ -1,11 +1,12 @@
 import time
 startTime = int(round(time.time() * 1000))
-import pyNetLogo
+import nl4py
+nl4py.startServer()
 workspaces = []
 modelRuns = 200
 for i in range(0,modelRuns):
-	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "C:\Program Files\NetLogo 6.0.3", netlogo_version = '6')
-	n.load_model("./Ethnocentrism.nlogo")
+	n = nl4py.newNetLogoHeadlessWorkspace()
+	n.openModel("./Ethnocentrism.nlogo")
         n.command("set mutation-rate random-float 1")
         n.command("set initial-PTR random-float 1")
         n.command("set death-rate random-float 1")
@@ -31,5 +32,6 @@ while len(workspaces) > 0:
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime
 with open("Times_Comparison_Ethnocentrism.csv", "a+") as myfile:
-        myfile.write('Ethnocentrism,' + str(modelRuns) + ',PyNetLogo,' + str(totalTime) + '\n')
+        myfile.write('Ethnocentrism,' + str(modelRuns) + ',NL4Py,' + str(totalTime) + '\n')
 print(totalTime)
+nl4py.stopServer()
