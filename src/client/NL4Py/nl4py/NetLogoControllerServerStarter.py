@@ -54,17 +54,17 @@ class NetLogoControllerServerStarter:
             if(platform.system() == "Darwin"):
                 nl_path = "/Applications/NetLogo 6.0.2/Java"
             pass
-        nl_docs_path = os.path.join(nl_path,"docs")
-        nl_extensions_path = os.path.join(nl_path,"extensions")
-        nl_models_path = os.path.join(nl_path,"models")
+        nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
+        nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")
+        nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"models")
         nl_path = os.path.join(os.path.abspath(nl_path),"*")         
         os.pathsep
         server_path = "./nl4pyServer/*"
-        classpath = nl_path + os.pathsep + nl_docs_path + os.pathsep + nl_extensions_path + os.pathsep + nl_models_path + server_path 
+        classpath = nl_path + os.pathsep + server_path 
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,__server_name])
+        subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
         
     '''Starts JavaGateway server'''
     def startServer(self):
