@@ -72,7 +72,7 @@ class NetLogoControllerServerStarter:
                 nl_path = os.path.join(netlogo_home,"Java")
             else:
                 nl_path = os.path.join(netlogo_home,"app")
-        if len(glob.glob("netlogo*.jar")) == 0:
+        if len(glob.glob(os.path.join(nl_path,"netlogo*.jar"))) == 0:
             print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
             return
         #else:
