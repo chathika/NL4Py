@@ -1,7 +1,7 @@
 ########Demonstration of NL4Py#################
 #This example schedules reporters for 100 ticks or until stop
 # for the Wolf Sheep Predation Sample Model
-#example usage: python Example2_ScheduledReporters.py
+#example usage: python Example2_ScheduledReporters.py netlogo_home
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")

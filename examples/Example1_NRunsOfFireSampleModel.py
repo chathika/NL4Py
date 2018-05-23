@@ -2,7 +2,7 @@
 #This example takes two commandline arguments n and model
 #n : number of concurrent model runs required.
 #model: path to model file
-#example usage: python NRunsOfAModel.py 100 path/to/netlogo
+#example usage: python NRunsOfAModel.py 100 netlogo_home
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")

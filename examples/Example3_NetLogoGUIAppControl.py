@@ -1,17 +1,16 @@
 ########Demonstration of NL4Py#################
 #This example demonstrates NetLogo Application Control with GUI through NL4Py
-#example usage: python Example3_NetLogoGUIAppControl.py
+#example usage: python Example3_NetLogoGUIAppControl.py netlogo_home
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
 
 import nl4py 
+import sys
 
 print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 
-nl4py.startServer()
-
-import sys
+nl4py.startServer(sys.argv[1])
 
 print('\n2) Starting the model runs... ')
 
