@@ -54,11 +54,13 @@ class NetLogoControllerServerStarter:
             if(platform.system() == "Darwin"):
                 nl_path = "/Applications/NetLogo 6.0.2/Java"
             pass
-        
-        nl_path = os.path.join(os.path.abspath(nl_path),"*")
+        nl_docs_path = os.path.join(nl_path,"docs")
+        nl_extensions_path = os.path.join(nl_path,"extensions")
+        nl_models_path = os.path.join(nl_path,"models")
+        nl_path = os.path.join(os.path.abspath(nl_path),"*")         
         os.pathsep
         server_path = "./nl4pyServer/*"
-        classpath = nl_path + os.pathsep + server_path
+        classpath = nl_path + os.pathsep + nl_docs_path + os.pathsep + nl_extensions_path + os.pathsep + nl_models_path + server_path 
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"

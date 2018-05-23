@@ -27,7 +27,7 @@ import os
 import atexit
 import sys
 import time
-
+import numpy as np
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
 class NetLogoHeadlessWorkspace:
     __bridge = None
@@ -91,8 +91,9 @@ class NetLogoHeadlessWorkspace:
     def getScheduledReporterResults (self):
         time.sleep(1)
         result = self.__bridge.getScheduledReporterResults(self.__session)
-        ticks_returned = len(result) / self.__reporters_length
-        import numpy as np
+        if self.__reporters_length == 0:
+            return result
+        ticks_returned = len(result) / self.__reporters_length        
         result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
         return result
     '''Sends a signal to the server to tell the respective controller to get the'''
@@ -103,8 +104,7 @@ class NetLogoHeadlessWorkspace:
     '''Sets the parameters randomly through the JavaGateway using'''
     '''Random parameter initialization code from BehaviorSearch'''
     def setParamsRandom(self):
-        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
-        
+        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()        
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
             if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
@@ -142,7 +142,7 @@ class NetLogoHeadlessWorkspace:
                 val_min = paramSpec.getValueFromChoice(0,count)
                 val_max = paramSpec.getValueFromChoice(count - 1,count)
                 step = (val_max - val_min)/(count - 1)
-                paramRange = [val_max,step,val_max]
+                paramRange = [val_min,step,val_max]
             if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
                 count = paramSpec.choiceCount()
                 paramRange = []
