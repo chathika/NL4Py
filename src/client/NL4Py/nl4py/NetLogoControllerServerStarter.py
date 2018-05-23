@@ -74,8 +74,8 @@ class NetLogoControllerServerStarter:
 		if not os.path.isfile(os.path.join(nl_path,"NetLogo.cfg")):
 			print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
 			return
-		else:
-			print("NetLogo found...")
+		#else:
+			#print("NetLogo found")
         nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
         nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")
         nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"models")
