@@ -7,12 +7,14 @@
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
 
 import nl4py 
-
+import sys
+import pandas
+import time
 print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 
-nl4py.startServer()
+nl4py.startServer(sys.argv[1])
 
-import sys
+
 
 print('\n2) Starting the model runs... ')
 
@@ -43,12 +45,12 @@ workspace.scheduleReportersAndRun(reporters,0,1,100,"go")
 print("\n2.5) Periodically check the number of ticks passed or if stop conditions are met and... ")
 print('\n2.6) Get back all the results from the scheduling process: result = workspace.getScheduledReporterResults():')
 print("\tresults = n.getScheduledReporterResults()")
-import time
+
 results = workspace.getScheduledReporterResults()	
 
 print('\t...and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
-import pandas as pd
-resultframe = pd.DataFrame(results)
+
+resultframe = pandas.DataFrame(results)
 resultframe.columns = ['ticks','stop1','stop2','sheep','wolves']
 print(resultframe)
 print(workspace.report("ticks"))
