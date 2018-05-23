@@ -43,8 +43,9 @@ class NetLogoControllerServerStarter:
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
     def __runServer(self,netlogo_home): 
         __server_name = "nl4py.server.NetLogoControllerServer"
-        nl_path = "C:/Program Files/NetLogo 6.0.2/app"
-        if netlogo_home == "":
+        nl_path = ""
+        if netlogo_home == None:
+			#Following is legacy for 0.3.0 support and is deprecated with 0.3.1
             try:
                 nl_home = os.environ['NETLOGO_HOME']
                 if(platform.system() == "Darwin"):
@@ -64,11 +65,17 @@ class NetLogoControllerServerStarter:
                         nl_path = "/Applications/NetLogo 6.0.2/Java"
                     pass
                 pass
+			#End
         else:
             if(platform.system() == "Darwin"):
                 nl_path = os.path.join(netlogo_home,"Java")
             else:
                 nl_path = os.path.join(netlogo_home,"app")
+		if not os.path.isfile(os.path.join(nl_path,"NetLogo.cfg")):
+			print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
+			return
+		else:
+			print("NetLogo found...")
         nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
         nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")
         nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"models")
@@ -82,7 +89,7 @@ class NetLogoControllerServerStarter:
         subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
         
     '''Starts JavaGateway server'''
-    def startServer(self, netlogo_home=""):
+    def startServer(self, netlogo_home):
         #Fire up the NetLogo Controller server through python
         thread = threading.Thread(target=self.__runServer, args=[netlogo_home])
         thread.start()
