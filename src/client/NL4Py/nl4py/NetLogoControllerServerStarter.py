@@ -78,12 +78,12 @@ class NetLogoControllerServerStarter:
         #else:
             #print("NetLogo found")
         nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
-        nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")		
+        nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")
         nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"models")
-		if(platform.system() == "Darwin"):
-			nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../docs")
-			nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"../extensions")		
-			nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
+        if(platform.system() == "Darwin"):
+            nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../docs")
+            nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"../extensions")
+            nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
         nl_path = os.path.join(os.path.abspath(nl_path),"*")         
         os.pathsep
         server_path = "./nl4pyServer/*"
