@@ -8,7 +8,7 @@ NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
 * NL4Py works with NetLogo 6 or higher
-* NL4Py requires JDK 1.8 or higher
+* NL4Py requires JDK 1.8 
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
 ```
@@ -16,10 +16,6 @@ pip install py4j
 ``` 
 
 ### Installation
-Please set the environment variable on your system NETLOGO_APP to point to the 'app' directory in your NetLogo installation folder.
-
-For example, on Windows, this is typically at: 'C:\Program Files\NetLogo 6.0.2\app'
-
 You can install NL4Py using pip-tools: 
 ```
 pip install nl4py
@@ -31,8 +27,16 @@ To use nl4py in your python code use:
 ```python
 import nl4py 
 ```
-#### Examples
 
+And start the NetLogoControllerServer with:
+
+```python
+nl4py.startServer(netlogo_home)
+```
+
+Where netlogo_home refers to the top level directory of your NetLogo installation.
+
+#### Examples
 [Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs as a command line argument:
 
 ```
@@ -48,7 +52,6 @@ python Example2_ScheduledReporters.py
 Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 
 #### Functions
-
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
