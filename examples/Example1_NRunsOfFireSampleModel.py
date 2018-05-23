@@ -2,18 +2,19 @@
 #This example takes two commandline arguments n and model
 #n : number of concurrent model runs required.
 #model: path to model file
-#example usage: python NRunsOfAModel.py 100 "/path/to/model.nlogo"
+#example usage: python NRunsOfAModel.py 100 path/to/netlogo
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
 
 import nl4py 
+import sys
 
 print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 
-nl4py.startServer()
+nl4py.startServer(sys.argv[2])
 
-import sys
+
 
 print('\n2) Starting the model runs... ')
 
