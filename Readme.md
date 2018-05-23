@@ -37,16 +37,16 @@ nl4py.startServer(netlogo_home)
 Where netlogo_home refers to the top level directory of your NetLogo installation.
 
 #### Examples
-[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs as a command line argument:
+[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs and the path to your netlogo installation as command line arguments:
 
 ```
-python Example1_NRunsOfFireSampleModel.py 200
+python Example1_NRunsOfFireSampleModel.py 200 "C:\Program Files\NetLogo 6.0.2"
 ```
 
-[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run:
+[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run pass in the path to your netlogo installation as a command line argument:
 
 ```
-python Example2_ScheduledReporters.py
+python Example2_ScheduledReporters.py "C:\Program Files\NetLogo 6.0.2"
 ```
 
 Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
