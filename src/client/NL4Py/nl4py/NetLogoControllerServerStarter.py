@@ -27,6 +27,7 @@ import time
 import psutil
 import math
 import platform
+import glob
 ##############################################################################
 '''Responsible for starting and stopping the NetLogo Controller Server'''
 class NetLogoControllerServerStarter:
@@ -71,14 +72,18 @@ class NetLogoControllerServerStarter:
                 nl_path = os.path.join(netlogo_home,"Java")
             else:
                 nl_path = os.path.join(netlogo_home,"app")
-        if not os.path.isfile(os.path.join(nl_path,"NetLogo.cfg")):
+        if len(glob.glob("netlogo*.jar")) == 0:
             print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
             return
         #else:
             #print("NetLogo found")
         nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
-        nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")
+        nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"extensions")		
         nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"models")
+		if(platform.system() == "Darwin"):
+			nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../docs")
+			nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"../extensions")		
+			nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
         nl_path = os.path.join(os.path.abspath(nl_path),"*")         
         os.pathsep
         server_path = "./nl4pyServer/*"
