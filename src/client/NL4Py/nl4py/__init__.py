@@ -54,9 +54,9 @@ except:
     
 print("Dependencies installed successfully! \nStart the NetLogoControllerServer using nl4py.startServer()")
 serverStarter = NetLogoControllerServerStarter()
-def startServer():
+def startServer(netlogo_home=""):
     try:
-        serverStarter.startServer()
+        serverStarter.startServer(netlogo_home)
         print("Server started.")
     except:
         print("Server failed to start!")
