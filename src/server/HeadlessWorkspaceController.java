@@ -266,15 +266,24 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	
 	protected void disposeWorkspace(){
 		this.closeModel();
-		ws.dispose()
-		ws = null;
 		try{
-			commandQueue.put("~stop~");
+			ws.dispose()
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		ws = null;
+		commandQueue.put("~stop~");
 		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 		controllerNeeded = false;
-		commandThread.interrupt();
+		try{
+			commandThread.interrupt();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		System.gc();
 	}
 }
