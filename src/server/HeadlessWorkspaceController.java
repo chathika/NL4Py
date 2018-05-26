@@ -143,11 +143,11 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * @param unique id for this model
 	 */
 	public void closeModel(){
-		//try {
-			//ws.dispose();
-		//} catch (InterruptedException e) {
-			//e.printStackTrace();
-		//}
+		try {
+			ws.halt();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -266,13 +266,8 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	
 	protected void disposeWorkspace(){
 		this.closeModel();
-		try{
-			ws.dispose()
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		ws = null;
-		commandQueue.put("~stop~");
+		
+		try{	commandQueue.put("~stop~");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (Exception e){
@@ -284,6 +279,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+		try{
+			ws.dispose();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		ws = null;
 		System.gc();
 	}
 }
