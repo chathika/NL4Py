@@ -266,6 +266,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	
 	protected void disposeWorkspace(){
 		this.closeModel();
+		ws.dispose()
 		ws = null;
 		try{
 			commandQueue.put("~stop~");
