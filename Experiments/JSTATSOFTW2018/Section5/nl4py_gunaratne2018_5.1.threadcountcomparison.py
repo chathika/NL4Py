@@ -32,18 +32,28 @@ def measureExecutionTime(runsNeeded,threadCount):
     runsDone = 0
     runsStarted = 0
     allResults = []
+    # Create and reuse threadCount number of workspaces
     for i in range(0,threadCount):
         workspace = nl4py.newNetLogoHeadlessWorkspace()
         workspace.openModel('./Wolf Sheep Predation.nlogo')
         simulate(workspace)
         runsStarted = runsStarted + 1
+    # repeat until runsNeeded is satisfied
     while (runsDone < runsNeeded):
+        # check if workspaces are done. If so, get results and
+        #  start another model run on the workspace, keeping the 
+        #  number of workspaces constant
         for workspace in nl4py.getAllHeadlessWorkspaces():
             newResults = workspace.getScheduledReporterResults()
+            # getScheduledReporterResults() is non-blocking 
+            # and can return an empty list if the model is 
+            # still running. Check that the model is done by 
+            # checking if the list is not empty.
             if len(newResults) > 0:
                 allResults.extend(newResults)
                 runsDone = runsDone + 1
                 if runsStarted < runsNeeded:
+                    # start another simulation if required.
                     simulate(workspace)
                     runsStarted = runsStarted + 1
     stopTime = int(round(time.time() * 1000))
@@ -51,13 +61,19 @@ def measureExecutionTime(runsNeeded,threadCount):
 
 with open("Times_Comparison_Threads.csv", "a+") as myfile:
     myfile.write('model,runs,threads,connector,time.ms\n')
+# Start up the NetLogoControllerServer
 nl4py.startServer("C:/Program Files/NetLogo 6.0.3")
+# Repeat to account for ABM stochasticity and random parameters
 for j in range(0,10):
+    # Repeat for total model runs
     for modelRuns in [5000,10000,15000]:
+        # Repeat for different thread counts
         for threadCount in [1,4,8,16]:
             timeTaken = measureExecutionTime(modelRuns,threadCount)
             print(timeTaken)
             with open("Times_Comparison_Threads.csv", "a+") as myfile:
                 myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
+            # make sure the server is clean before next evaluation.
             nl4py.deleteAllHeadlessWorkspaces()
+# Release resources
 nl4py.stopServer()
