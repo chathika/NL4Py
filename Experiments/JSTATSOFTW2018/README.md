@@ -29,3 +29,19 @@ This code is completely availabe in a Jupyter notebook under the path Section3\S
 This code is completely availabe in a Jupyter notebook under the path Section3\ParameterCalibration.ipynb
 
 ### Section 5
+
+In Section 5 of the article we present results for execution time comparisons of NL4Py under different thread configurations and results for execution time comparisons between NL4Py, PyNetLogo, and PyNetLogo in combination with IPyParallel (as demonstrated by []).
+
+#### Thread count comparison
+
+In order to run the thread count comparisons
+
+#### NL4Py vs PyNetLogo execution time comparison
+
+#### NL4Py vs PyNetLogo on IPyParallel cluster execution time comparison
+
+Here we compare the execution time of NL4Py's scheduled reporters against the PyNetLogo equivalent, repeat_reporter. This code is split across two Jupyter Notebooks. 
+In order to run the NL4Py execution time measurement experiments open and run the following Jupyter notebook through Anaconda:
+(nl4py_gunaratne2018_5.3.nl4py_scheduledreporters.ipynb)[./section5/nl4py_gunaratne2018_5.3.nl4py_scheduledreporters.ipynb]
+In order to run the PyNetLogo on IPyParallel cluster execution time measurement experiments open and run the following Jupyter notebook through Anaconda:
+(nl4py_gunaratne2018_5.3.pynetlogo_repeatreporter.ipynb)[./section5/nl4py_gunaratne2018_5.3.pynetlogo_repeatreporter.ipynb]
