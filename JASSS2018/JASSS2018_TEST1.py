@@ -1,8 +1,4 @@
 ########Demonstration of NL4Py#################
-#This example takes two commandline arguments n and model
-#n : number of concurrent model runs required.
-#model: path to model file
-#example usage: python NRunsOfAModel.py 100 "/path/to/model.nlogo"
 ###############################################
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
@@ -12,51 +8,50 @@ import sys
 import time
 import math
 
+def simulate(workspace_):
+    workspace_.command("stop")
+    #Set the input parameters
+    workspace_.command("set initial-number-sheep random-float 250")
+    workspace_.command("set initial-number-wolves random-float 250")
+    workspace_.command("set grass-regrowth-time random-float 100")
+    workspace_.command("set sheep-gain-from-food random-float 50")
+    workspace_.command("set wolf-gain-from-food random 100")
+    workspace_.command("set sheep-reproduce random-float 20")
+    workspace_.command("set wolf-reproduce random-float 20")
+    workspace_.command("set show-energy? false")
+    workspace_.command('set model-version "sheep-wolves-grass"')
+    workspace_.command('setup')
+    workspace_.scheduleReportersAndRun(["ticks",'count sheep','count wolves'], 0,1,100,"go")    
 
-def doNRuns(runsNeeded):
-	model = "./Fire.nlogo"
-	startTime = int(round(time.time() * 1000))
-	runsDone = 0
-	result = []
-	while runsDone != runsNeeded:
-		workspaceCount = int(runsNeeded - runsDone if (runsNeeded - runsDone) <= 8 else 8)
-		for i in range(0,workspaceCount):
-			n = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
-		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
-			workspace.openModel(model)
-			workspace.setParamsRandom()
-		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
-			workspace.command("setup")
-			workspace.command("go")
-		for workspace in nl4py.netlogoWorkspaceFactory.getAllExistingWorkspaces():
-			result.append(workspace.report("burned-trees"))
-		runsDone = runsDone + workspaceCount
-		nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
-	stopTime = int(round(time.time() * 1000))
-	totalTime = stopTime - startTime
-	print(result)
-	result = []
-	return totalTime
-print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
-nl4py.startServer()
-time.sleep(2)
-allTimes = []
-for j in range(0,30):
-	timeIteration = []
-	for i in range(1,11):
-		timeTaken = doNRuns(math.pow(2,i))
-		timeIteration.append(timeTaken)
-		print(timeTaken)
-		nl4py.netlogoWorkspaceFactory.deleteAllExistingWorkspaces() 
-		time.sleep(5)
-	allTimes.append(timeIteration)
-	print(allTimes)
-print(allTimes)
-import pandas as pd
-p = pd.DataFrame(allTimes)
-p.to_csv("AllTimes_Fire.csv")
+def measureExecutionTime(runsNeeded,threadCount):
+    startTime = int(round(time.time() * 1000))    
+    runsDone = 0
+    runsStarted = 0
+    allResults = []
+    for i in range(0,threadCount):
+        workspace = nl4py.newNetLogoHeadlessWorkspace()
+        workspace.openModel('./Wolf Sheep Predation.nlogo')
+        simulate(workspace)
+        runsStarted = runsStarted + 1
+    while (runsDone < runsNeeded):
+        for workspace in nl4py.getAllHeadlessWorkspaces():
+            newResults = workspace.getScheduledReporterResults()
+            if len(newResults) > 0:
+                allResults.extend(newResults)
+                runsDone = runsDone + 1
+                if runsStarted < runsNeeded:
+                    simulate(workspace)
+                    runsStarted = runsStarted + 1
+    stopTime = int(round(time.time() * 1000))
+    return (stopTime - startTime)
 
-print("DONE____________________________________________________ALL DONE____________________________________________________")
-print(allTimes)
-print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
+nl4py.startServer("C:/Program Files/NetLogo 6.0.3")
+for j in range(0,10):
+	for modelRuns in [5000,10000,15000]:
+		for threadCount in [1,4,8,16]:
+			timeTaken = measureExecutionTime(modelRuns,threadCount)
+			print(timeTaken)
+			with open("Times_Comparison_Threads.csv", "a+") as myfile:
+				myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
+			nl4py.deleteAllHeadlessWorkspaces()
 nl4py.stopServer()
