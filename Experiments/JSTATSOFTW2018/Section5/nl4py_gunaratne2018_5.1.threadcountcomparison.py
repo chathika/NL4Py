@@ -4,6 +4,7 @@
 ### ABM parameters are initialized to random values.
 ### Each parallel workspaces vs model runs combination is repeated 10 times 
 ### to account for different execution times under different parameter settings.
+### To run: python nl4py_gunaratne2018_5.1.threadcountcomparison.py "path_to_netlogo"
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
 
@@ -62,7 +63,7 @@ def measureExecutionTime(runsNeeded,threadCount):
 with open("Times_Comparison_Threads.csv", "a+") as myfile:
     myfile.write('model,runs,threads,connector,time.ms\n')
 # Start up the NetLogoControllerServer
-nl4py.startServer("C:/Program Files/NetLogo 6.0.3")
+nl4py.startServer(sys.argv[1])
 # Repeat to account for ABM stochasticity and random parameters
 for j in range(0,10):
     # Repeat for total model runs
