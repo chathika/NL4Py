@@ -1,10 +1,15 @@
+### This file measures the execution time by PyNetLogo to run 200 runs of the
+### Fire.nlogo model for 100 ticks or until stop condition is met
+### To run provide the location of your NetLogo installation as a commandline argument
+### Example: >>>python nl4py_gunaratne2018_5.1.2.py "C:/Program Files/NetLogo 6.0.2"
 import time
 startTime = int(round(time.time() * 1000))
 import pyNetLogo
 workspaces = []
 modelRuns = 200
+import sys
 for i in range(0,modelRuns):
-	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = "C:/Program Files/NetLogo 6.0.3", netlogo_version = '6')
+	n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = sys.argv[1], netlogo_version = '6')
 	n.load_model(r"./Fire.nlogo")
 	n.command("set density random 99")
 	n.command("setup")
