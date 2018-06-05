@@ -1,23 +1,11 @@
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.fire.nl4py.py
+@echo on
+if "%~1"==""	(
+	ECHO Please enter the path to your NetLogo installation as an argument! 
+	cmd /k
 )
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.fire.pynetlogo.py
-)
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.ethnocentrism.nl4py.py
-)
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.ethnocentrism.pynetlogo.py
-)
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.wolfsheeppredation.nl4py.py
-)
-FOR /L %%A IN (1,1,10) DO (
-  python nl4py_gunaratne2018_5.wolfsheeppredation.nl4py.py
-)
+set netlogo_path="%~1"
 
-
-
-
+FOR /L %%A IN (1,1,2) DO (
+  python nl4py_gunaratne2018_5.wolfsheeppredation.pynetlogo.py %netlogo_path%
+)
 
