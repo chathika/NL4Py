@@ -1,5 +1,9 @@
-########Demonstration of NL4Py#################
-###############################################
+### This code compares execution time of NL4Py to run 1, 4, 8, and 16 parallel 
+### NetLogo headless workspaces of the Wolf Sheep Predation model for 5000,
+### 10000, and 15000 total model runs for 100 simulation ticks each. 
+### ABM parameters are initialized to random values.
+### Each parallel workspaces vs model runs combination is repeated 10 times 
+### to account for different execution times under different parameter settings.
 
 print("\n\n------------ This is a Demonstration of NL4PY --------------------\n")
 
