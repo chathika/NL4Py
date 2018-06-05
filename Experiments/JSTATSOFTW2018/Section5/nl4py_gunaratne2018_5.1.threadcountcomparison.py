@@ -46,14 +46,14 @@ def measureExecutionTime(runsNeeded,threadCount):
     return (stopTime - startTime)
 
 with open("Times_Comparison_Threads.csv", "a+") as myfile:
-	myfile.write('model,runs,threads,connector,time.ms\n')
+    myfile.write('model,runs,threads,connector,time.ms\n')
 nl4py.startServer("C:/Program Files/NetLogo 6.0.3")
 for j in range(0,10):
-	for modelRuns in [5000,10000,15000]:
-		for threadCount in [1,4,8,16]:
-			timeTaken = measureExecutionTime(modelRuns,threadCount)
-			print(timeTaken)
-			with open("Times_Comparison_Threads.csv", "a+") as myfile:
-				myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
-			nl4py.deleteAllHeadlessWorkspaces()
+    for modelRuns in [5000,10000,15000]:
+        for threadCount in [1,4,8,16]:
+            timeTaken = measureExecutionTime(modelRuns,threadCount)
+            print(timeTaken)
+            with open("Times_Comparison_Threads.csv", "a+") as myfile:
+                myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
+            nl4py.deleteAllHeadlessWorkspaces()
 nl4py.stopServer()

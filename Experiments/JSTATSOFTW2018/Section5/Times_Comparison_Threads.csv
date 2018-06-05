@@ -1,4 +1,4 @@
-
+model,runs,threads,connector,time.ms
 Wolf Sheep Predation,5000,1,NL4Py,772034
 Wolf Sheep Predation,5000,4,NL4Py,299110
 Wolf Sheep Predation,5000,8,NL4Py,246901

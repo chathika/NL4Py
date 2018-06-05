@@ -1,15 +1,3 @@
 model,runs,connector,time.ms
-Fire,200,PyNetLogo,54532
-Fire,200,PyNetLogo,46194
-Fire,200,NL4Py,32474
-Fire,200,NL4Py,30451
-Fire,200,PyNetLogo,42859
-Fire,200,PyNetLogo,45912
-Ethnocentrism,200,NL4Py,245520
-Ethnocentrism,200,NL4Py,208075
-Ethnocentrism,200,PyNetLogo,729958
-Ethnocentrism,200,PyNetLogo,683595
-Wolf Sheep Predation,200,NL4Py,37465
-Wolf Sheep Predation,200,NL4Py,33391
-Wolf Sheep Predation,200,PyNetLogo,62169
-Wolf Sheep Predation,200,PyNetLogo,66286
+Fire,200,NL4Py,32227
+Fire,200,NL4Py,29951
