@@ -14,6 +14,16 @@ NL4Py may work with previous versions of NetLogo but has not been officially tes
 Additionally, some of the experiments in the article require:
 * Anaconda (tested with version 1.6) and Jupyter notebook ( tested with version 5.0.0). Jupyter notebook is opened through the Anaconda navigator and can be used with either version of Python as described above.
 
+## Installing NL4Py
+
+The latest version of NL4Py can be installed with pip tools using:
+
+```
+>pip install nl4py
+```
+
+For the experiments in Section 5, please use pip to install PyNetLogo as well.
+
 ## Instructions
 
 Section 3 and Section 5 contain results from the code samples included here.
