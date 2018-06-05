@@ -89,7 +89,6 @@ class NetLogoHeadlessWorkspace:
         self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
-        time.sleep(1)
         result = self.__bridge.getScheduledReporterResults(self.__session)
         if self.__reporters_length == 0:
             return result
