@@ -38,7 +38,7 @@ This code is completely available with instructions in a Jupyter notebook under 
 
 #### Parameter Calibration
 
-This code is completely available with instructions in a Jupyter notebook under the path Section3/ParameterCalibration.ipynb
+This code is completely available with instructions in a Jupyter notebook under the path Section3/ParameterCalibrationWithDEAP.ipynb
 
 ### Section 5
 
