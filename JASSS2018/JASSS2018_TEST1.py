@@ -45,6 +45,8 @@ def measureExecutionTime(runsNeeded,threadCount):
     stopTime = int(round(time.time() * 1000))
     return (stopTime - startTime)
 
+with open("Times_Comparison_Threads.csv", "a+") as myfile:
+	myfile.write('model,runs,threads,connector,time.ms\n')
 nl4py.startServer("C:/Program Files/NetLogo 6.0.3")
 for j in range(0,10):
 	for modelRuns in [5000,10000,15000]:
