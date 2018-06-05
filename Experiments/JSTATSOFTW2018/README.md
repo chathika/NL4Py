@@ -34,11 +34,11 @@ In Section 3 we describe two applications of NL4Py important for statistical ana
 
 #### Sensitivity Analysis
 
-This code is completely available with instructions in a Jupyter notebook under the path Section3\SensitivityAnalysis.ipynb
+This code is completely available with instructions in a Jupyter notebook under the path Section3/SensitivityAnalysis.ipynb
 
 #### Parameter Calibration
 
-This code is completely available with instructions in a Jupyter notebook under the path Section3\ParameterCalibration.ipynb
+This code is completely available with instructions in a Jupyter notebook under the path Section3/ParameterCalibration.ipynb
 
 ### Section 5
 
@@ -57,7 +57,7 @@ In order to run the thread count comparisons explained in Section 5 of the artic
 In order to perform the NL4Py vs PyNetLogo simple reporter execution time comparisons on the Fire, Ethnocentrism, and Wolf Sheep Predation models, run the RunSimpleReporterExecutionTimeComparison.bat file and provide the absolute path to the directory of your NetLogo installation as a commandline argument as follows:
 
 ```
-> RunSimpleReporterExecutionTimeComparison.bat "C:\Program Files\NetLogo 6.0.2"
+>RunSimpleReporterExecutionTimeComparison.bat "C:\Program Files\NetLogo 6.0.2"
 ```
 
 This will run all the Python scrips begining with 'nl4py_gunaratne2018_5.2'
