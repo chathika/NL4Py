@@ -2,10 +2,11 @@ from setuptools  import setup
 
 setup(
     name='NL4Py',
-    version='0.3.2',
+    version='0.4.0',
     author='Chathika Gunaratne',
     author_email='chathikagunaratne@gmail.com',
     packages=['nl4py', 'nl4py.test'],
+    include_package_data=True,
     url='https://github.com/chathika/NL4Py',
     license='GPL',
     description='A NetLogo connector for Python.',

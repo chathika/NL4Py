@@ -10,3 +10,4 @@ v0.2.1, 21st April 2018 -- Minor fix for Python3, numpy related casting requirem
 v0.3.0, 4th May 2018 -- NetLogo Application GUI control now available with NL4Py!
 v0.3.1, 23rd May 2018 -- Bug fixes to Scheduled reporters, getParamRanges(), and running models with extensions. netlogo_home must be sent as an argument to nl4py.startServer().
 v0.3.2, 5th June 2018 -- Performance fix to getScheduledReporterResults().
+v0.4.0, 24th July 2018 -- NetLogoControllerServer now packaged with nl4py pypi package instead of downloaded on import.

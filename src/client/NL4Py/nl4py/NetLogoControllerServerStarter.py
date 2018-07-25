@@ -28,6 +28,11 @@ import psutil
 import math
 import platform
 import glob
+import pkg_resources
+from os import listdir
+from os.path import isfile, join
+
+SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
 ##############################################################################
 '''Responsible for starting and stopping the NetLogo Controller Server'''
 class NetLogoControllerServerStarter:
@@ -38,7 +43,6 @@ class NetLogoControllerServerStarter:
     
     def __init__(self):
         self.__gw = JavaGateway()
-        print('Shutting down old server instance...')
         self.shutdownServer()
         #atexit.register(self.shutdownServer)
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
@@ -86,7 +90,7 @@ class NetLogoControllerServerStarter:
             nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
         nl_path = os.path.join(os.path.abspath(nl_path),"*")         
         os.pathsep
-        server_path = "./nl4pyServer/*"
+        server_path = os.path.join(os.path.abspath(SERVER_PATH),"*")
         classpath = nl_path + os.pathsep + server_path 
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
