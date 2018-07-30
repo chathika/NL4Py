@@ -12,3 +12,4 @@ v0.3.1, 23rd May 2018 -- Bug fixes to Scheduled reporters, getParamRanges(), and
 v0.3.2, 5th June 2018 -- Performance fix to getScheduledReporterResults().
 v0.4.0, 24th July 2018 -- NetLogoControllerServer now packaged with nl4py pypi package instead of downloaded on import.
 v0.4.1, 30th July 2018 -- Fix to NetLogo App launch for v0.4.
+v0.4.2, 30th July 2018 -- Fix to NetLogo App launch for v0.4.
