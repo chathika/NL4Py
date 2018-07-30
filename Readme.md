@@ -8,7 +8,7 @@ NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
 * NL4Py works with NetLogo 6 or higher
-* NL4Py requires JDK 1.8 or higher
+* NL4Py requires JDK 1.8 
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
 ```
@@ -16,10 +16,6 @@ pip install py4j
 ``` 
 
 ### Installation
-Please set the environment variable on your system NETLOGO_APP to point to the 'app' directory in your NetLogo installation folder.
-
-For example, on Windows, this is typically at: 'C:\Program Files\NetLogo 6.0.2\app'
-
 You can install NL4Py using pip-tools: 
 ```
 pip install nl4py
@@ -31,24 +27,31 @@ To use nl4py in your python code use:
 ```python
 import nl4py 
 ```
+
+And start the NetLogoControllerServer with:
+
+```python
+nl4py.startServer(netlogo_home)
+```
+
+Where netlogo_home refers to the top level directory of your NetLogo installation.
+
 #### Examples
-
-[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs as a command line argument:
-
-```
-python Example1_NRunsOfFireSampleModel.py 200
-```
-
-[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run:
+[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs and the path to your netlogo installation as command line arguments:
 
 ```
-python Example2_ScheduledReporters.py
+python Example1_NRunsOfFireSampleModel.py 200 "C:\Program Files\NetLogo 6.0.2"
+```
+
+[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run pass in the path to your netlogo installation as a command line argument:
+
+```
+python Example2_ScheduledReporters.py "C:\Program Files\NetLogo 6.0.2"
 ```
 
 Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
 
 #### Functions
-
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
@@ -63,7 +66,7 @@ nl4py.NetLogoHeadlessWorkspace.closeModel()
 nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
-nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults()
+nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults() # non-blocking and returns nothing if the simulation is not finished
 nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
 nl4py.NetLogoHeadlessWorkspace.getParamNames()
 nl4py.NetLogoHeadlessWorkspace.getParamRanges()

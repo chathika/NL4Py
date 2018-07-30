@@ -12,18 +12,20 @@ import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
+import nl4py.server.NetLogoAppController;
+import nl4py.server.NetLogoController;
 import java.util.ArrayList;
 
 public class NetLogoControllerServer {
 	
-	ConcurrentHashMap<Integer,HeadlessWorkspaceController> controllerStore;
+	ConcurrentHashMap<Integer,NetLogoController> controllerStore;
 	
 	static GatewayServer gs;
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
 	public NetLogoControllerServer() {
-		controllerStore = new ConcurrentHashMap<Integer,HeadlessWorkspaceController>();
+		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
 		startTime = System.currentTimeMillis();
 		//System.out.println("Start");
 		//Start monitor thread
@@ -128,8 +130,7 @@ public class NetLogoControllerServer {
 	 * @param command: NetLogo command syntax.
 	 */
 	public void command(int session, String command) {
-		HeadlessWorkspaceController workSpaceController = getControllerFromStore(session);	
-		workSpaceController.command(command);
+		getControllerFromStore(session).command(command);
 	}
 	/**
 	 * Get the value of a variable in the NetLogo model.
@@ -156,9 +157,9 @@ public class NetLogoControllerServer {
 	 * @param session id to get
 	 * @return NetLogo HeadlessWorkspace
 	 */
-	private HeadlessWorkspaceController getControllerFromStore(int session){
+	private NetLogoController getControllerFromStore(int session){
 		//Get controller from store
-		HeadlessWorkspaceController controller = controllerStore.get(session);
+		NetLogoController controller = controllerStore.get(session);
 		//Check if null throw an exception
 		if (controller == null) {
 			throw new NullPointerException("No NetLogo HeadlessWorkspace exists for that session id");
@@ -187,9 +188,22 @@ public class NetLogoControllerServer {
 		
 		if(!serverOn) {
 			GatewayServer.turnLoggingOff();
-			System.out.println("Shutting down Server");
+			//System.out.println("Shutting down Server");
 			gs.shutdown(false);
 			System.exit(0);
 		}
 	}	
+
+	/**
+	 * Create a new workspace for this request
+	 * @return the session id of the model 
+	 */
+	public int newNetLogoApp(){
+		//Create new controller instance
+		NetLogoAppController controller = new NetLogoAppController();
+		//Add it to controllerStore
+		int session = controller.hashCode();
+		controllerStore.put(session, controller);
+		return session;
+	}
 }
