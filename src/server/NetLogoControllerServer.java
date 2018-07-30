@@ -12,6 +12,8 @@ import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
+import nl4py.server.NetLogoAppController;
+import nl4py.server.NetLogoController;
 import java.util.ArrayList;
 
 public class NetLogoControllerServer {
@@ -192,4 +194,17 @@ public class NetLogoControllerServer {
 			System.exit(0);
 		}
 	}	
+
+	/**
+	 * Create a new workspace for this request
+	 * @return the session id of the model 
+	 */
+	public int newNetLogoApp(){
+		//Create new controller instance
+		NetLogoAppController controller = new NetLogoAppController();
+		//Add it to controllerStore
+		int session = controller.hashCode();
+		controllerStore.put(session, controller);
+		return session;
+	}
 }
