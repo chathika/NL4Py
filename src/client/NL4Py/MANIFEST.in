@@ -1,2 +1,3 @@
 include *.txt
 recursive-include docs *.txt
+recursive-include nl4py/nl4pyServer *.jar
