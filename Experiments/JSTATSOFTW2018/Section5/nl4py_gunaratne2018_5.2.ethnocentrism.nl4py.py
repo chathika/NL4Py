@@ -36,7 +36,7 @@ while len(workspaces) > 0:
             workspaces.remove(workspace)
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime
-with open("Times_Comparison_SimpleReporters.csv", "a+") as myfile:
-        myfile.write('Ethnocentrism,' + str(modelRuns) + ',NL4Py,' + str(totalTime) + '\n')
 print(totalTime)
+with open("output/5.2_output.csv", "a") as myfile:
+        myfile.write('Ethnocentrism,' + str(modelRuns) + ',NL4Py,' + str(totalTime) + '\n')
 nl4py.stopServer()

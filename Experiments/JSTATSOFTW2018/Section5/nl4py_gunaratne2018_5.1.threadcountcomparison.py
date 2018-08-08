@@ -12,6 +12,7 @@ import nl4py
 import sys
 import time
 import math
+import os
 
 def simulate(workspace_):
     workspace_.command("stop")
@@ -36,7 +37,7 @@ def measureExecutionTime(runsNeeded,threadCount):
     # Create and reuse threadCount number of workspaces
     for i in range(0,threadCount):
         workspace = nl4py.newNetLogoHeadlessWorkspace()
-        workspace.openModel('./Wolf Sheep Predation.nlogo')
+        workspace.openModel('models/Wolf Sheep Predation.nlogo')
         simulate(workspace)
         runsStarted = runsStarted + 1
     # repeat until runsNeeded is satisfied
@@ -59,23 +60,23 @@ def measureExecutionTime(runsNeeded,threadCount):
                     runsStarted = runsStarted + 1
     stopTime = int(round(time.time() * 1000))
     return (stopTime - startTime)
-
-with open("Times_Comparison_Threads.csv", "a+") as myfile:
+outputFile = "output/5.1_output.csv"
+with open(outputFile, "a+") as myfile:
     myfile.write('model,runs,threads,connector,time.ms\n')
-# Start up the NetLogoControllerServer
-print(sys.argv[1])
-nl4py.startServer(str(sys.argv[1]))
-# Repeat to account for ABM stochasticity and random parameters
-for j in range(0,10):
-    # Repeat for total model runs
-    for modelRuns in [5000,10000,15000]:
-        # Repeat for different thread counts
-        for threadCount in [1,4,8,16]:
-            timeTaken = measureExecutionTime(modelRuns,threadCount)
-            print(timeTaken)
-            with open("Times_Comparison_Threads.csv", "a+") as myfile:
+    # Start up the NetLogoControllerServer
+    nl4py.startServer(str(sys.argv[1]))
+    # Repeat to account for ABM stochasticity and random parameters
+    for j in range(0,5):
+        # Repeat for total model runs
+        for modelRuns in [50,100,150]:
+            # Repeat for different thread counts
+            for threadCount in [1,4,8,16]:
+                timeTaken = measureExecutionTime(modelRuns,threadCount)
+                print(timeTaken)
                 myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
-            # make sure the server is clean before next evaluation.
-            nl4py.deleteAllHeadlessWorkspaces()
+                myfile.flush()
+                # make sure the server is clean before next evaluation.
+                nl4py.deleteAllHeadlessWorkspaces()
 # Release resources
+myfile.close()
 nl4py.stopServer()

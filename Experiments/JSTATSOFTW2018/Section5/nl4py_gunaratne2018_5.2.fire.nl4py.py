@@ -12,7 +12,7 @@ workspaces = []
 modelRuns = 200
 for i in range(0,modelRuns):
     n = nl4py.newNetLogoHeadlessWorkspace()
-    n.openModel("Models/Fire.nlogo")
+    n.openModel("models/Fire.nlogo")
     n.command("set density random 99")
     n.command("setup")
     n.command("repeat 100 [go]")
@@ -28,6 +28,6 @@ while len(workspaces) > 0:
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime
 print(totalTime)
-with open("Times_Comparison_SimpleReporters.csv", "a") as myfile:
+with open("output/5.2_output.csv", "a") as myfile:
     myfile.write('Fire,' + str(modelRuns) + ',NL4Py,' + str(totalTime) +  "\n")
 nl4py.stopServer()
