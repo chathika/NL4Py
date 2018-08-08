@@ -42,7 +42,7 @@ def runForParameters(experiment):
     #Create the optimal number of headlessworkspaces, open the model on them, and run the first set of simulations
     for i in range(0,parallel_workspace_count):
         workspace = nl4py.newNetLogoHeadlessWorkspace()
-        workspace.openModel('Wolf Sheep Predation.nlogo')
+        workspace.openModel('Models/Wolf Sheep Predation.nlogo')
         simulate(workspace,experiment[runsStarted])
         runsStarted = runsStarted + 1
     #Track the simulations for completion on the headlessworkspaces
@@ -83,7 +83,7 @@ def runForParameters(experiment):
 Next, we use NL4Py to read in the parameters from the NetLogo model's interface and populate the problem space, required by SALib for sensitivity analysis, with both the names and ranges, automatically.
 '''
 ws = nl4py.newNetLogoHeadlessWorkspace()
-ws.openModel("./Wolf Sheep Predation.nlogo")
+ws.openModel("Models/Wolf Sheep Predation.nlogo")
 #Read in the parameter info with NL4Py functions and generate a SALib problem
 problem = { 
   'num_vars': 8,

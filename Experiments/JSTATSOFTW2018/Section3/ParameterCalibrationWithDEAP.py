@@ -27,7 +27,7 @@ nl4py.startServer("C:/Program Files/NetLogo 6.0.2/")
 # Create a HeadlessWorkspace to read in the parameter names and ranges.
 n = nl4py.newNetLogoHeadlessWorkspace()
 # Open the model
-n.openModel("Wolf Sheep Predation.nlogo")
+n.openModel("Models/Wolf Sheep Predation.nlogo")
 # Get the parameter names and ranges.
 parameterNames = n.getParamNames()
 parameterRanges = n.getParamRanges()
@@ -141,7 +141,7 @@ print(hof)
 We can now run and visualize the results...
 '''
 app = nl4py.NetLogoApp()
-app.openModel("./Wolf Sheep Predation.nlogo")
+app.openModel("Models/Wolf Sheep Predation.nlogo")
 for name, value in zip(parameterNames, hof[0]):
     app.command('set {0} {1}'.format(name, value))
 app.command("setup")
