@@ -5,10 +5,16 @@ import papermill as pm
 import os
 import plot 
 from matplotlib.pyplot import show
+
 #If user provides NetLogo path as argument, override the config file
 if len(sys.argv) > 1:
     netlogo_path = sys.argv[1]
+else: 
+    print("Please provide the path to your NetLogo installation as a command line argument and try again.")
+    exit(1)
 os.environ["netlogo_path"] = netlogo_path
+
+print("All experiment outputs will be generated in the output folder.")
 outDir = "output"
 if not os.path.exists("output"):
     os.mkdir(outDir)
@@ -103,4 +109,7 @@ rc = ipp.Client()
 rc.shutdown(hub=True)
 
 plot.plot5_3()
+
 show()
+print("All Experiments Done. Please press Ctrl + c to exit")
+
