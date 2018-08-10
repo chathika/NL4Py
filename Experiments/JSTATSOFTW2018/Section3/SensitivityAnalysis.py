@@ -31,6 +31,7 @@ In this experiment, we target population equilibrium (May, 1974). To quantify eq
 '''
 import pandas as pd
 import numpy as np
+from matplotlib.pyplot import draw
 def runForParameters(experiment):
     runsDone = 0
     runsStarted = 0
@@ -103,7 +104,7 @@ First, we perform Sobol's sensitivity analysis using Saltelli's sampling sequenc
 '''
 from SALib.sample import saltelli
 from SALib.analyze import sobol
-param_values_sobol = saltelli.sample(problem, 1000)
+param_values_sobol = saltelli.sample(problem, 500)
 Y = np.array(runForParameters(param_values_sobol))
 
 import multiprocessing
@@ -115,8 +116,6 @@ Plot the first order Sobol sensitivity indices
 #Get the absolute values of the first order sobol sensitivity indices
 sobol_s1_abs = np.abs(Si_Sobol["S1"])
 from matplotlib import pyplot
-import matplotlib as mpl
-mpl.rcParams['font.size'] = 30.0
 #The residual of the first order sensitivity indicies represents the sensitivity caused by 
 # higher order interactions of the parameters
 S1_and_interactions_sobol = np.append(sobol_s1_abs,(1 - sobol_s1_abs.sum()))
@@ -124,6 +123,7 @@ labels = np.append(problem['names'],'Interactions')
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(S1_and_interactions_sobol, labels = labels, labeldistance=1.1, startangle=0, radius=0.5)
+draw()
 fig.savefig('output/SobolWSPS1.png')
 
 '''
@@ -132,6 +132,7 @@ Plot the Sobol Total sensitivities to higher order interactions of parameters
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(Si_Sobol["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5)
+draw()
 fig.savefig('output/SobolWSPST.png')
 
 '''
@@ -140,7 +141,7 @@ Next, run the Fourier Amplitude Sensitivity Test (FAST) sampling and sensitivity
 from SALib.analyze import fast
 from SALib.sample import fast_sampler
 nl4py.deleteAllHeadlessWorkspaces()
-param_values_fast = fast_sampler.sample(problem, 1000)
+param_values_fast = fast_sampler.sample(problem, 500)
 Y_FAST = np.array(runForParameters(param_values_fast))
 
 
@@ -151,10 +152,12 @@ S1_and_interactions_fast = np.append(np.array(Si_FAST["S1"]),(1 - np.array(Si_FA
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(S1_and_interactions_fast,labels = labels, labeldistance=1.1, startangle=0, radius=0.5)
+draw()
 fig.savefig('output/FASTWSPS1.png')
 
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(Si_FAST["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5)
 fig.savefig('output/FASTWSPST.png')
+draw()
 nl4py.stopServer()
