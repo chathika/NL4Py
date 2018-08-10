@@ -11,7 +11,7 @@ from deap import base
 from deap import creator
 from deap import tools
 from deap import algorithms
-
+import sys
 # In this experiment we intend to maximize fitness. Fitness is the measure of population stability, 
 #  an indicator of equilibrium in the Wolf Sheep Predation model.
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -23,11 +23,12 @@ toolbox = base.Toolbox()
 # Use nl4py to find the parameter names and ranges
 import nl4py
 # Start the NetLogoControllerServer.
-nl4py.startServer("C:/Program Files/NetLogo 6.0.2/")
+netlogo_path = sys.argv[1]
+nl4py.startServer(netlogo_path)
 # Create a HeadlessWorkspace to read in the parameter names and ranges.
 n = nl4py.newNetLogoHeadlessWorkspace()
 # Open the model
-n.openModel("Models/Wolf Sheep Predation.nlogo")
+n.openModel("models/Wolf Sheep Predation.nlogo")
 # Get the parameter names and ranges.
 parameterNames = n.getParamNames()
 parameterRanges = n.getParamRanges()
@@ -102,11 +103,11 @@ def simulate(workspace_,names,values):
 We setup Headless Workspaces for each EA individual. The HeadlessWorkspaces are reusable per population and are tracked as to when they are free to run another model evaluation
 '''
 nl4py.deleteAllHeadlessWorkspaces()
-POP = 2
+POP = 200
 freeWorkspaces = []
 for i in range(0,POP):
     n = nl4py.newNetLogoHeadlessWorkspace()
-    n.openModel('Wolf Sheep Predation.nlogo')
+    n.openModel('models/Wolf Sheep Predation.nlogo')
     freeWorkspaces.append(n)
 
 '''
@@ -131,7 +132,7 @@ stats = tools.Statistics(key = lambda ind: ind.fitness.values)
 stats.register("max",np.max)
 stats.register("mean",np.mean)
 hof = tools.HallOfFame(1) 
-final_pop, log= algorithms.eaSimple(toolbox.population(n=POP), toolbox, cxpb=0.8, mutpb=0.2, ngen=1,stats = stats,halloffame = hof)
+final_pop, log= algorithms.eaSimple(toolbox.population(n=POP), toolbox, cxpb=0.8, mutpb=0.2, ngen=100,stats = stats,halloffame = hof)
 
 print("The best individual over the complete calibration:")
 print(parameterNames)
@@ -141,7 +142,7 @@ print(hof)
 We can now run and visualize the results...
 '''
 app = nl4py.NetLogoApp()
-app.openModel("Models/Wolf Sheep Predation.nlogo")
+app.openModel("models/Wolf Sheep Predation.nlogo")
 for name, value in zip(parameterNames, hof[0]):
     app.command('set {0} {1}'.format(name, value))
 app.command("setup")
@@ -155,14 +156,15 @@ app.closeModel()
 convergence_progress = pd.DataFrame(log)[['max','mean']]
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-mpl.rcParams['font.size'] = 25.0
+from matplotlib.pyplot import plot, draw, show
 #plt.figure(figsize = [50,15])
 #ax = fig.add_subplot(111)
 plot = convergence_progress.plot(legend=True)
 #plot = ax.plot(convergence_progress,legend = True)
-plt.xlabel("Generation")
-plt.ylabel("Fitness")
+plt.xlabel("Generation", size = 14)
+plt.ylabel("Fitness", size = 14)
 fig = plot.get_figure()
-fig.set_size_inches(18.5,10.5)
+fig.set_size_inches(9,6)
 fig.savefig("CalibrationConvergenceProgress.png")
+draw()
 nl4py.stopServer()

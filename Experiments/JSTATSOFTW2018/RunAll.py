@@ -4,35 +4,20 @@ import subprocess
 import papermill as pm
 import os
 import plot 
+from matplotlib.pyplot import show
 #If user provides NetLogo path as argument, override the config file
 if len(sys.argv) > 1:
     netlogo_path = sys.argv[1]
-    with open("config.txt","a+") as configFile:
-        configFile.write("\r\nnetlogo_path_user=\"" + str(netlogo_path).replace("\\", "/").strip('\"').strip("\'") + "\"")
-else:
-    #Otherwise use the path in the config file
-    pass
-
 os.environ["netlogo_path"] = netlogo_path
-'''
-with open("config.txt","r") as configFile:
-    configFileContent = configFile.readlines()
-for line in configFileContent:
-    elements = line.split("=")
-    print(elements)
-    if str(elements[0]).lower().strip() == "netlogo_path":
-        netlogo_path = elements[1]
-print(netlogo_path)
-
-'''
 outDir = "output"
 if not os.path.exists("output"):
     os.mkdir(outDir)
 # Section3
-#os.system('python -W ignore Section3/ParameterCalibrationWithDEAP.py')
-#os.system('python -W ignore Section3/SensitivityAnalysis.py')
-#pm.execute_notebook('Section3/ParameterCalibrationWithDEAP.ipynb','out_5.3.ipynb', parameters = dict(netlogo_path= netlogo_path))
-#pm.execute_notebook('Section3/SensitivityAnalysis.ipynb','out_5.3.ipynb', parameters = dict(netlogo_path= netlogo_path))
+import Section3.ParameterCalibrationWithDEAP
+import Section3.SensitivityAnalysis
+#os.system('python -W ignore Section3/ParameterCalibrationWithDEAP.py "{0}"'.format(netlogo_path) )
+#os.system('python -W ignore Section3/SensitivityAnalysis.py "{0}"'.format(netlogo_path) )
+
 # Section5
 outputFile = "output/5.1_output.csv"
 if os.path.exists(outputFile):
@@ -62,8 +47,9 @@ for i in range(0,4):
 
 for i in range(0,4):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.pynetlogo.py "{0}"'.format(netlogo_path) )
+
 plot.plot5_2()
-'''
+
 # 5.3 NL4Py
 os.system("jupyter nbconvert --to html Section5/nl4py_gunaratne2018_5.3.nl4py_scheduledreporters.ipynb --ExecutePreprocessor.kernel_name=python  --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=-1")
 # 5.3 pyNetLogo
@@ -98,4 +84,6 @@ execute(['ipcluster', 'start', '-n', '8'])
 rc = ipp.Client()
 # shutdown everything, including the Hub
 rc.shutdown(hub=True)
-'''
+
+plot.plot5_3()
+show()

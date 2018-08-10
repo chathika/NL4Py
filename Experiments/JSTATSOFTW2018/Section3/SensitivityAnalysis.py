@@ -5,8 +5,10 @@ In this experiment, we perform sensitivity analysis using SALib on the Wolf Shee
 Start the NetLogoControllerServer
 '''
 import nl4py
+import sys
 #Start the NetLogoControllerServer
-nl4py.startServer("C:/Program Files/NetLogo 6.0.2")
+netlogo_path = sys.argv[1]
+nl4py.startServer(netlogo_path)
 '''
 Define what a simulation is. In this experiment, a simulation run is initialized with a parameter configuration, resets the model and runs it for 100 ticks. We perform the sensitivity analysis on the sheep, wolves, and grass version of the Wolf Sheep Predation model. We track the sheep and wolf populations over time as model output.
 '''
@@ -42,7 +44,7 @@ def runForParameters(experiment):
     #Create the optimal number of headlessworkspaces, open the model on them, and run the first set of simulations
     for i in range(0,parallel_workspace_count):
         workspace = nl4py.newNetLogoHeadlessWorkspace()
-        workspace.openModel('Models/Wolf Sheep Predation.nlogo')
+        workspace.openModel('models/Wolf Sheep Predation.nlogo')
         simulate(workspace,experiment[runsStarted])
         runsStarted = runsStarted + 1
     #Track the simulations for completion on the headlessworkspaces
@@ -83,7 +85,7 @@ def runForParameters(experiment):
 Next, we use NL4Py to read in the parameters from the NetLogo model's interface and populate the problem space, required by SALib for sensitivity analysis, with both the names and ranges, automatically.
 '''
 ws = nl4py.newNetLogoHeadlessWorkspace()
-ws.openModel("Models/Wolf Sheep Predation.nlogo")
+ws.openModel("models/Wolf Sheep Predation.nlogo")
 #Read in the parameter info with NL4Py functions and generate a SALib problem
 problem = { 
   'num_vars': 8,
@@ -105,7 +107,7 @@ param_values_sobol = saltelli.sample(problem, 1000)
 Y = np.array(runForParameters(param_values_sobol))
 
 import multiprocessing
-Si_Sobol = sobol.analyze(problem, Y, print_to_console=True, parallel=True, n_processors=multiprocessing.cpu_count())
+Si_Sobol = sobol.analyze(problem, Y, print_to_console=True)#, parallel=True, n_processors=multiprocessing.cpu_count())
 
 '''
 Plot the first order Sobol sensitivity indices
@@ -122,7 +124,7 @@ labels = np.append(problem['names'],'Interactions')
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(S1_and_interactions_sobol, labels = labels, labeldistance=1.1, startangle=0, radius=0.5)
-fig.savefig('SobolWSPS1.png')
+fig.savefig('output/SobolWSPS1.png')
 
 '''
 Plot the Sobol Total sensitivities to higher order interactions of parameters
@@ -130,7 +132,7 @@ Plot the Sobol Total sensitivities to higher order interactions of parameters
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(Si_Sobol["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5)
-fig.savefig('SobolWSPST.png')
+fig.savefig('output/SobolWSPST.png')
 
 '''
 Next, run the Fourier Amplitude Sensitivity Test (FAST) sampling and sensitivity analysis technique (Cukier et al., 1973), (Saltelli et al., 1999).
@@ -149,10 +151,10 @@ S1_and_interactions_fast = np.append(np.array(Si_FAST["S1"]),(1 - np.array(Si_FA
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(S1_and_interactions_fast,labels = labels, labeldistance=1.1, startangle=0, radius=0.5)
-fig.savefig('FASTWSPS1.png')
+fig.savefig('output/FASTWSPS1.png')
 
 fig = pyplot.figure(figsize=[15, 15])
 ax = fig.add_subplot(111)
 plot = ax.pie(Si_FAST["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5)
-fig.savefig('FASTWSPST.png')
+fig.savefig('output/FASTWSPST.png')
 nl4py.stopServer()
