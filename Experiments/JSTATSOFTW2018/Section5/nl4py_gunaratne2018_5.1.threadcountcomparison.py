@@ -61,14 +61,16 @@ def measureExecutionTime(runsNeeded,threadCount):
     stopTime = int(round(time.time() * 1000))
     return (stopTime - startTime)
 outputFile = "output/5.1_output.csv"
+if os.path.exists(outputFile):
+    os.remove(outputFile)
 with open(outputFile, "a+") as myfile:
     myfile.write('model,runs,threads,connector,time.ms\n')
     # Start up the NetLogoControllerServer
     nl4py.startServer(str(sys.argv[1]))
     # Repeat to account for ABM stochasticity and random parameters
-    for j in range(0,5):
+    for j in range(0,10):
         # Repeat for total model runs
-        for modelRuns in [50,100,150]:
+        for modelRuns in [5000,10000,15000]:
             # Repeat for different thread counts
             for threadCount in [1,4,8,16]:
                 timeTaken = measureExecutionTime(modelRuns,threadCount)

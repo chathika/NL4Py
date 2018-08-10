@@ -19,9 +19,6 @@ import Section3.SensitivityAnalysis
 #os.system('python -W ignore Section3/SensitivityAnalysis.py "{0}"'.format(netlogo_path) )
 
 # Section5
-outputFile = "output/5.1_output.csv"
-if os.path.exists(outputFile):
-    os.remove(outputFile)
 os.system('python -W ignore Section5/nl4py_gunaratne2018_5.1.threadcountcomparison.py "{0}"'.format(netlogo_path) )
 plot.plot5_1()
 
@@ -30,22 +27,22 @@ if os.path.exists(outputFile):
     os.remove(outputFile)
 with open(outputFile, "w+") as myfile:
     myfile.write('model,runs,connector,time.ms\n')
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.nl4py.py "{0}"'.format(netlogo_path) )
 
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.pynetlogo.py "{0}"'.format(netlogo_path) )
 
 for i in range(0,4):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.nl4py.py "{0}"'.format(netlogo_path) )
 
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.pynetlogo.py "{0}"'.format(netlogo_path) )
 
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.nl4py.py "{0}"'.format(netlogo_path) )
 
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.pynetlogo.py "{0}"'.format(netlogo_path) )
 
 plot.plot5_2()

@@ -104,7 +104,7 @@ First, we perform Sobol's sensitivity analysis using Saltelli's sampling sequenc
 '''
 from SALib.sample import saltelli
 from SALib.analyze import sobol
-param_values_sobol = saltelli.sample(problem, 500)
+param_values_sobol = saltelli.sample(problem, 1000)
 Y = np.array(runForParameters(param_values_sobol))
 
 import multiprocessing
@@ -141,7 +141,7 @@ Next, run the Fourier Amplitude Sensitivity Test (FAST) sampling and sensitivity
 from SALib.analyze import fast
 from SALib.sample import fast_sampler
 nl4py.deleteAllHeadlessWorkspaces()
-param_values_fast = fast_sampler.sample(problem, 500)
+param_values_fast = fast_sampler.sample(problem, 1000)
 Y_FAST = np.array(runForParameters(param_values_fast))
 
 
