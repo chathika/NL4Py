@@ -33,7 +33,7 @@ for i in range(0,10):
 for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.pynetlogo.py "{0}"'.format(netlogo_path) )
 
-for i in range(0,4):
+for i in range(0,10):
   os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.nl4py.py "{0}"'.format(netlogo_path) )
 
 for i in range(0,10):
