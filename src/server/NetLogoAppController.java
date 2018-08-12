@@ -302,7 +302,7 @@ public class NetLogoAppController extends NetLogoController {
 
 class NL4PySecutiryManager extends SecurityManager {
   @Override public void checkExit(int status) {
-    throw new SecurityException();
+    //throw new SecurityException();
   }
 
   @Override public void checkPermission(java.security.Permission perm) {
