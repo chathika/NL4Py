@@ -16,3 +16,4 @@ v0.4.2, 30th July 2018 -- Fix to NetLogo App launch for v0.4.
 v0.4.3, 30th July 2018 -- Fix to NetLogo App shutdown for v0.4 and fix to parameter range querying.
 v0.4.4, 11th August 2018 -- Bug fix: Fixed netlogoWorkspaceFactory initialization issues on server restart.
 v0.4.5, 11th August 2018 -- Fix to previous minor release.
+v0.5.0, 11th August 2018 -- Stable release
