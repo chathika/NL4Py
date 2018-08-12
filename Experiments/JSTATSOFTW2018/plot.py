@@ -3,6 +3,7 @@ import matplotlib.patches as mpatches
 import numpy as np
 import pandas as pd
 from pylab import plot, draw, savefig, xlim, figure, ylim, legend, boxplot, setp, axes
+import os
 
 # function for setting the colors of the box plots pairs
 # takes boxplot and color string and hatch pattern
@@ -71,7 +72,7 @@ def plot5_1():
     plt.ylabel("Execution Time in Seconds")
     fig.text(0.1, 0.157,"Threads", ha='center',size = 10)
     savefig('output/5.1.png')
-    draw()
+    os.system("output\\\\5.1.png")
 ############### 5.2 ################
 def plot5_2():
     times = readData("output/5.2_output.csv")
@@ -102,7 +103,7 @@ def plot5_2():
     fig.text(0.02, 0.5,"Execution Time in Seconds", va='center', rotation='vertical',size = 14)
     fig.set_size_inches(10, 6)
     savefig('output/5.2.png')
-    draw()
+    os.system("output\\\\5.2.png")
 ############### 5.3 ################
 def plot5_3():
     times = readData("output/5.3_output.csv")
@@ -135,5 +136,5 @@ def plot5_3():
     plt.xlabel("Model Runs")
     plt.ylabel("Execution Time in Seconds")
     savefig('output/5.3.png')
-    draw()
+    os.system("output\\\\5.3.png")
 

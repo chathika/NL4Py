@@ -63,20 +63,27 @@ def measureExecutionTime(runsNeeded,threadCount):
 outputFile = "output/5.1_output.csv"
 if os.path.exists(outputFile):
     os.remove(outputFile)
+currentRun = 1
 with open(outputFile, "a+") as myfile:
     myfile.write('model,runs,threads,connector,time.ms\n')
     # Start up the NetLogoControllerServer
     nl4py.startServer(str(sys.argv[1]))
     # Repeat to account for ABM stochasticity and random parameters
+    repeats = 10
+    runCounts = [5000,10000,15000]
+    threadCounts = [1,4,8,16]
+    totalRuns = repeats * len(runCounts) * len(threadCounts)
     for j in range(0,10):
         # Repeat for total model runs
-        for modelRuns in [5000,10000,15000]:
+        for modelRuns in runCounts:
             # Repeat for different thread counts
-            for threadCount in [1,4,8,16]:
+            for threadCount in threadCounts:
+                print("{0} out of {1}: Running {2} model runs on {3} threads".format(currentRun, totalRuns,modelRuns,threadCount))
                 timeTaken = measureExecutionTime(modelRuns,threadCount)
-                print(timeTaken)
+                print("Time taken = {0} milliseconds".format(timeTaken))
                 myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',' + str(threadCount) + ',NL4Py,' + str(timeTaken) + '\n')
                 myfile.flush()
+                currentRun = currentRun + 1
                 # make sure the server is clean before next evaluation.
                 nl4py.deleteAllHeadlessWorkspaces()
 # Release resources

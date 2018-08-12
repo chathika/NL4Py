@@ -6,12 +6,22 @@ In this experiment, we calibrate the model to find the best parameter configurat
 '''
 
 #!pip install --upgrade --no-cache-dir nl4py
-import random
-from deap import base
-from deap import creator
-from deap import tools
-from deap import algorithms
-import sys
+
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=ImportWarning)
+    import random
+    from deap import base
+    from deap import creator
+    from deap import tools
+    from deap import algorithms
+    import random
+    import sys
+    import time
+    import pandas as pd
+    import numpy as np
+    import os
 # In this experiment we intend to maximize fitness. Fitness is the measure of population stability, 
 #  an indicator of equilibrium in the Wolf Sheep Predation model.
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -63,9 +73,7 @@ Next, we define a simulation run. This involves:
 
 We define the metric as the stability of the population counts of the two species, without either going into extinction. for this we use first order derivatives per simulation time step and a heavy side function to score extinction as 0. High scores indicate more stable populations (closer to complete equilibrium). Please see the Sensitivity analysis Jupyter notebook for a mode detailed description of this calculation.
 '''
-import time
-import pandas as pd
-import numpy as np
+
 def simulate(workspace_,names,values):
     workspace_.command("stop")
     for name, value in zip(names, values):
@@ -127,7 +135,7 @@ We now define the statistics we are interested in tracking and run the EA with c
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 pool = ThreadPool(multiprocessing.cpu_count())
-#toolbox.register("map", pool.map)
+toolbox.register("map", pool.map)
 stats = tools.Statistics(key = lambda ind: ind.fitness.values)
 stats.register("max",np.max)
 stats.register("mean",np.mean)
@@ -147,10 +155,8 @@ for name, value in zip(parameterNames, hof[0]):
     app.command('set {0} {1}'.format(name, value))
 app.command("setup")
 app.command("repeat 1000 [go]")
-import time
 time.sleep(10)
-'''
-And plot the convergence progress by the EA
+'''And plot the convergence progress by the EA
 '''
 app.closeModel()
 convergence_progress = pd.DataFrame(log)[['max','mean']]
@@ -166,5 +172,5 @@ plt.ylabel("Fitness", size = 14)
 fig = plot.get_figure()
 fig.set_size_inches(9,6)
 fig.savefig("output/CalibrationConvergenceProgress.png")
-draw()
+os.system('output\\\\CalibrationConvergenceProgress.png')
 nl4py.stopServer()

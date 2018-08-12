@@ -5,7 +5,6 @@ import papermill as pm
 import os
 import plot 
 from matplotlib.pyplot import show
-
 #If user provides NetLogo path as argument, override the config file
 if len(sys.argv) > 1:
     netlogo_path = sys.argv[1]
@@ -18,51 +17,73 @@ print("All experiment outputs will be generated in the output folder.")
 outDir = "output"
 if not os.path.exists("output"):
     os.mkdir(outDir)
-print("Beginning Section 3 Experiments...")
-print("Running Parameter Calibration on the Wolf Sheep Predation NetLogo model with DEAP...")
+
 # Section3
-import Section3.ParameterCalibrationWithDEAP
-print("------------------------------------------------------------------------------------")
-print("Running Sensitivity Analysis on the Wolf Sheep Predation NetLogo model with SALib...")
-import Section3.SensitivityAnalysis
-#os.system('python -W ignore Section3/ParameterCalibrationWithDEAP.py "{0}"'.format(netlogo_path) )
-#os.system('python -W ignore Section3/SensitivityAnalysis.py "{0}"'.format(netlogo_path) )
+print("\n\nBeginning Section 3 Experiments...\n")
+print("\n5.1 Running Parameter Calibration on the Wolf Sheep Predation NetLogo model with DEAP...\n")
+os.system('python -W ignore Section3/ParameterCalibrationWithDEAP.py "{0}"'.format(netlogo_path) )
+
+
+print("\n\n------------------------------------------------------------------------------------\n")
+print("\n5.2 Running Sensitivity Analysis on the Wolf Sheep Predation NetLogo model with SALib...\n")
+os.system('python -W ignore Section3/SensitivityAnalysis.py "{0}"'.format(netlogo_path) )
+
 
 # Section5
+
 print("Beginning Section 5 Experiments...")
-print("5.1 Starting execution time evaluation for NL4Py under different thread counts...")
+print("\n\n5.1 Starting execution time evaluation for NL4Py under different thread counts...\n")
 print("Please wait. This may take a while to complete...")
 os.system('python -W ignore Section5/nl4py_gunaratne2018_5.1.threadcountcomparison.py "{0}"'.format(netlogo_path) )
 plot.plot5_1()
 
-print("5.2 Starting execution time comparisons between NL4Py and PyNetLogo...")
+print("\n\n5.2 Starting execution time comparisons between NL4Py and PyNetLogo...\n")
 outputFile = "output/5.2_output.csv"
 if os.path.exists(outputFile):
     os.remove(outputFile)
 with open(outputFile, "w+") as out:
     out.write('model,runs,connector,time.ms\n')
+
 print("Performing 10 repetitions of 200 model runs of the Fire NetLogo model with NL4Py")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.nl4py.py "{0}"'.format(netlogo_path) )
+totalRepeats = 10
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.nl4py.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 print("Performing 10 repetitions of 200 model runs of the Fire NetLogo model with PyNetLogo")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.pynetlogo.py "{0}"'.format(netlogo_path) )
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.fire.pynetlogo.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 print("Performing 10 repetitions of 200 model runs of the Ethnocentrism NetLogo model with NL4Py")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.nl4py.py "{0}"'.format(netlogo_path) )
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.nl4py.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 print("Performing 10 repetitions of 200 model runs of the Ethnocentrism NetLogo model with PyNetLogo")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.pynetlogo.py "{0}"'.format(netlogo_path) )
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.pynetlogo.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 print("Performing 10 repetitions of 200 model runs of the Wolf Sheep Predation NetLogo model with NL4Py")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.nl4py.py "{0}"'.format(netlogo_path) )
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.nl4py.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 print("Performing 10 repetitions of 200 model runs of the Wolf Sheep Predation NetLogo model with PyNetLogo")
-for i in range(0,10):
-  os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.pynetlogo.py "{0}"'.format(netlogo_path) )
+currentRepeat = 1
+for i in range(0,currentRepeat):
+    print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
+    os.system('python -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.pynetlogo.py "{0}"'.format(netlogo_path) )
+    currentRepeat = currentRepeat + 1
 
 plot.plot5_2()
-
-print("5.3 Starting execution time comparisons between NL4Py and PyNetLogo with IPCluster...")
+print("\n\n5.3 Starting execution time comparisons between NL4Py and PyNetLogo with IPCluster...\n")
 outputFile = 'output/5.3_output.csv'
 if(os.path.exists(outputFile)):
     os.remove(outputFile)
@@ -110,6 +131,5 @@ rc.shutdown(hub=True)
 
 plot.plot5_3()
 
-show()
 print("All Experiments Done. Please press Ctrl + c to exit")
 
