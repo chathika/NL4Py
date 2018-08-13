@@ -1,7 +1,6 @@
 import sys
 import re
 import subprocess
-import papermill as pm
 import os
 import plot 
 from matplotlib.pyplot import show
@@ -83,6 +82,7 @@ for i in range(0,currentRepeat):
     currentRepeat = currentRepeat + 1
 
 plot.plot5_2()
+
 print("\n\n5.3 Starting execution time comparisons between NL4Py and PyNetLogo with IPCluster...\n")
 outputFile = 'output/5.3_output.csv'
 if(os.path.exists(outputFile)):
@@ -93,7 +93,7 @@ with open (outputFile, "w+") as out:
 print("Starting 10 repititions of 5000, 10000, and 15000 Wolf Sheep Predation model runs with NL4Py...")
 print("Please wait. This may take a while...")
 # 5.3 NL4Py
-os.system("jupyter nbconvert --to html Section5/nl4py_gunaratne2018_5.3.nl4py_scheduledreporters.ipynb --ExecutePreprocessor.kernel_name=python  --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=-1")
+os.system("jupyter nbconvert --to html output/nl4py_gunaratne2018_5.3.nl4py_scheduledreporters.ipynb --ExecutePreprocessor.kernel_name=python  --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=-1")
 # 5.3 pyNetLogo
 print("Starting 10 repititions of 5000, 10000, and 15000 Wolf Sheep Predation model runs with PyNetLogo...")
 print("Please wait. This may take a while...")
@@ -108,13 +108,10 @@ def execute(command):
         print(line,)
         output += str(line)
         if "successfully" in str(line):
-            os.system("jupyter nbconvert --to html Section5/nl4py_gunaratne2018_5.3.pynetlogo_repeatreporter.ipynb  --ExecutePreprocessor.kernel_name=python --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=-1")
+            os.system("jupyter nbconvert --to html output/nl4py_gunaratne2018_5.3.pynetlogo_repeatreporter.ipynb  --ExecutePreprocessor.kernel_name=python --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=-1")
             print("done")
+            
             return 
-            #rc = ipp.Client()
-            # shutdown everything, including the Hub
-            #rc.shutdown(hub=True)
-
 
     process.wait()
     exitCode = process.returncode
@@ -125,11 +122,9 @@ def execute(command):
         raise Exception(command, exitCode, output)
 
 execute(['ipcluster', 'start', '-n', '8'])
-rc = ipp.Client()
-# shutdown everything, including the Hub
-rc.shutdown(hub=True)
+os.system("ipcluster stop")
 
 plot.plot5_3()
-
-print("All Experiments Done. Please press Ctrl + c to exit")
+os.system('output\\\\5.3.png')
+print("All Experiments Done.")
 
