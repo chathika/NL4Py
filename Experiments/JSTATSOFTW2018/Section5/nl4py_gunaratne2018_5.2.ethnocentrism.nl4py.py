@@ -32,7 +32,7 @@ while len(workspaces) > 0:
             r2 = workspace.report('count turtles with [shape = "circle 2"]')
             r3 = workspace.report('count turtles with [shape = "square"]')
             r4 = workspace.report('count turtles with [shape = "square 2"]')
-            print(str(modelRuns - len(workspaces))+" "+str(r1)+" "+str(r2)+" "+str(r3)+" "+str(r4)+" "+str(ticks))
+            #print(str(modelRuns - len(workspaces))+" "+str(r1)+" "+str(r2)+" "+str(r3)+" "+str(r4)+" "+str(ticks))
             workspaces.remove(workspace)
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime

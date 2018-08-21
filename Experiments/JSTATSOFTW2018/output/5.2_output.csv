@@ -1,0 +1,61 @@
+model,runs,connector,time.ms
+Fire,200,NL4Py,30228
+Fire,200,NL4Py,27750
+Fire,200,NL4Py,29042
+Fire,200,NL4Py,30493
+Fire,200,NL4Py,26631
+Fire,200,NL4Py,29205
+Fire,200,NL4Py,28528
+Fire,200,NL4Py,26666
+Fire,200,NL4Py,29297
+Fire,200,NL4Py,28155
+Fire,200,PyNetLogo,44142
+Fire,200,PyNetLogo,39052
+Fire,200,PyNetLogo,44409
+Fire,200,PyNetLogo,38937
+Fire,200,PyNetLogo,36813
+Fire,200,PyNetLogo,41741
+Fire,200,PyNetLogo,46312
+Fire,200,PyNetLogo,39844
+Fire,200,PyNetLogo,41740
+Fire,200,PyNetLogo,40543
+Ethnocentrism,200,NL4Py,197478
+Ethnocentrism,200,NL4Py,207643
+Ethnocentrism,200,NL4Py,199392
+Ethnocentrism,200,NL4Py,230057
+Ethnocentrism,200,NL4Py,193187
+Ethnocentrism,200,NL4Py,206213
+Ethnocentrism,200,NL4Py,240416
+Ethnocentrism,200,NL4Py,220772
+Ethnocentrism,200,NL4Py,214566
+Ethnocentrism,200,NL4Py,210043
+Ethnocentrism,200,PyNetLogo,744047
+Ethnocentrism,200,PyNetLogo,810169
+Ethnocentrism,200,PyNetLogo,683563
+Ethnocentrism,200,PyNetLogo,711051
+Ethnocentrism,200,PyNetLogo,648569
+Ethnocentrism,200,PyNetLogo,711757
+Ethnocentrism,200,PyNetLogo,705121
+Ethnocentrism,200,PyNetLogo,666443
+Ethnocentrism,200,PyNetLogo,676768
+Ethnocentrism,200,PyNetLogo,675285
+Wolf Sheep Predation,200,NL4Py,31353
+Wolf Sheep Predation,200,NL4Py,31734
+Wolf Sheep Predation,200,NL4Py,30853
+Wolf Sheep Predation,200,NL4Py,30973
+Wolf Sheep Predation,200,NL4Py,31740
+Wolf Sheep Predation,200,NL4Py,33647
+Wolf Sheep Predation,200,NL4Py,31661
+Wolf Sheep Predation,200,NL4Py,31581
+Wolf Sheep Predation,200,NL4Py,31948
+Wolf Sheep Predation,200,NL4Py,31728
+Wolf Sheep Predation,200,PyNetLogo,54626
+Wolf Sheep Predation,200,PyNetLogo,62127
+Wolf Sheep Predation,200,PyNetLogo,56867
+Wolf Sheep Predation,200,PyNetLogo,58459
+Wolf Sheep Predation,200,PyNetLogo,53526
+Wolf Sheep Predation,200,PyNetLogo,53998
+Wolf Sheep Predation,200,PyNetLogo,56204
+Wolf Sheep Predation,200,PyNetLogo,61586
+Wolf Sheep Predation,200,PyNetLogo,55059
+Wolf Sheep Predation,200,PyNetLogo,55439

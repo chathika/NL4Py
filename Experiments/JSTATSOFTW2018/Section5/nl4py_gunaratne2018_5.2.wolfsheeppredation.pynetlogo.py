@@ -33,7 +33,7 @@ while len(workspaces) > 0:
         if ticks == 100 or stop1 == "true" or stop2 == "true":
             r1 = workspace.report('count sheep')
             r2 = workspace.report('count wolves')
-            print(str(modelRuns - len(workspaces))+" "+str(r1)+" "+str(r2)+str(ticks))
+            #print(str(modelRuns - len(workspaces))+" "+str(r1)+" "+str(r2)+str(ticks))
             workspaces.remove(workspace)
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime

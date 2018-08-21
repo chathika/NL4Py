@@ -17,6 +17,7 @@ def setBoxColors(bp, color, hatch):
 
 def readData(filename):
     times = pd.read_csv(filename)
+    print(times)
     times['time.ms'] = times['time.ms'] / 1000
     return times
 ############### 5.1 ################
@@ -37,7 +38,6 @@ def plot5_1():
     ax = fig.add_subplot(111)
     ax2 = ax.twiny()    
     fig.subplots_adjust(bottom=0.2)
-    print (times)
     bp1thread = boxplot(times_1thread, positions = [1,7,13], widths = 0.6, patch_artist=True)#
     setBoxColors(bp1thread, "red", None)
     bp4threads = boxplot(times_4thread, positions = [2,8,14],  widths = 0.6, patch_artist=True)
@@ -81,7 +81,6 @@ def plot5_2():
     times_fire = []
     times_ethonocentrism = []
     times_wolfsheeppredation = []
-    print(times)
     for model in models:
         times_fire.append(times[(times['model'] == "Fire") & (times['connector'] == model)]['time.ms'].values)
         times_ethonocentrism.append(times[(times['model'] == "Ethnocentrism") & (times['connector'] == model)]['time.ms'].values)
@@ -111,11 +110,10 @@ def plot5_3():
     B = []
     A = []
     for r in runs: 
-        B.append(times[(times['connector'] == "nl4py") & (times['runs'] ==r)]['time.ms'].values)
         A.append(times[(times['connector'] == "pyNetLogo") & (times['runs'] ==r)]['time.ms'].values)
+        B.append(times[(times['connector'] == "nl4py") & (times['runs'] ==r)]['time.ms'].values)        
     fig = figure()
     ax = axes()
-    print(times)
 
     bpA = boxplot(A, positions = [1,5,9], widths = 0.6, patch_artist=True)
     setBoxColors(bpA, "lightblue", '\\\\\\\\')
@@ -127,7 +125,7 @@ def plot5_3():
 
     hB, = plot([1,1],'b-')
     hR, = plot([1,1],'r-')
-    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='pyNetLogo')
+    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo on IPCluster')
     circB= mpatches.Patch( facecolor="red",hatch='////',label='NL4Py')
 
     legend(handles = [circA,circB])

@@ -21,8 +21,11 @@ def simulate(workspace_,parameters):
         else:
             workspace_.command('set {0} {1}'.format(name, parameters[i]))
     workspace_.command('set model-version "sheep-wolves-grass"')
+    workspace_.command('set initial-number-sheep 100')
+    workspace_.command('set initial-number-wolves 100')
     workspace_.command('setup')
     workspace_.scheduleReportersAndRun(["ticks",'count sheep','count wolves'], 0,1,100,"go") 
+
 '''
 Since the number of runs required would most likely far exceed the number of cores available, we define a function that makes sure we only run a number parallel NetLogoHeadlessWorkspaces equal to the number of cores on the machine for optimal performance.
 
@@ -81,8 +84,8 @@ def runForParameters(experiment):
     for workspace in nl4py.getAllHeadlessWorkspaces():
         workspace.command("stop")
     nl4py.deleteAllHeadlessWorkspaces()
-    
     return aggregate_metrics
+
 '''
 Next, we use NL4Py to read in the parameters from the NetLogo model's interface and populate the problem space, required by SALib for sensitivity analysis, with both the names and ranges, automatically.
 '''
@@ -90,15 +93,20 @@ ws = nl4py.newNetLogoHeadlessWorkspace()
 ws.openModel("models/Wolf Sheep Predation.nlogo")
 #Read in the parameter info with NL4Py functions and generate a SALib problem
 problem = { 
-  'num_vars': 8,
+  'num_vars': 6,
   'names': ['random-seed'],
-  'bounds': [[1, 100000]]
+  'bounds': [[1, 100000]] 
 }
 problem['names'].extend(ws.getParamNames()[:-2])
 problem['bounds'].extend( [item[0::2] for item in ws.getParamRanges()[:-2]])
+#Remove the initial conditions from the problem space. These are set to fixed values in the simulate function
+del problem['bounds'][problem['names'].index("initial-number-wolves")]
+problem['names'].remove("initial-number-wolves")
+del problem['bounds'][problem['names'].index("initial-number-sheep")]
+problem['names'].remove("initial-number-sheep")
 print("Problem parameter space: ")
 print(problem)
-
+from matplotlib import pyplot
 '''
 The simulation experiment is now defined. We can now run sensitivity analysis using techniques of our choice. We choose to use SALib.
 
@@ -107,34 +115,58 @@ First, we perform Sobol's sensitivity analysis using Saltelli's sampling sequenc
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 print("\nPerforming Sobol sensitivity analysis with Saltelli sampling... \n")
-param_values_sobol = saltelli.sample(problem, 1000)
-Y = np.array(runForParameters(param_values_sobol))
-
 import multiprocessing
-Si_Sobol = sobol.analyze(problem, Y, print_to_console=True)#, parallel=True, n_processors=multiprocessing.cpu_count())
+firstOrderSobol = np.array([])
+totalSobol = np.array([])
+sampleSizes = range(500, 1501, 500 )
+for sampleSize in sampleSizes:
+    nl4py.deleteAllHeadlessWorkspaces()
+    param_values_sobol = saltelli.sample(problem, sampleSize)
+    Y = np.array(runForParameters(param_values_sobol))
+    print("\n")
+    Si_Sobol = sobol.analyze(problem, Y, print_to_console=True)#, parallel=True, n_processors=multiprocessing.cpu_count())
+    #Get the absolute values of the first order sobol sensitivity indices
+    sobol_s1_abs = np.abs(Si_Sobol["S1"])
+    #The residual of the first order sensitivity indicies represents the sensitivity caused by 
+    # higher order interactions of the parameters
+    S1_and_interactions_sobol = np.append(sobol_s1_abs,(1 - sobol_s1_abs.sum()))                                                
+    firstOrderSobol = np.append(firstOrderSobol, S1_and_interactions_sobol)
+    totalSobol = np.append(totalSobol, np.array(Si_Sobol["ST"]))
 
 '''
 Plot the first order Sobol sensitivity indices
 '''
-#Get the absolute values of the first order sobol sensitivity indices
-sobol_s1_abs = np.abs(Si_Sobol["S1"])
-from matplotlib import pyplot
-#The residual of the first order sensitivity indicies represents the sensitivity caused by 
-# higher order interactions of the parameters
-S1_and_interactions_sobol = np.append(sobol_s1_abs,(1 - sobol_s1_abs.sum()))
 labels = np.append(problem['names'],'Interactions')
-fig = pyplot.figure(figsize=[15, 15])
+fig = pyplot.figure(figsize=[8, 6])
 ax = fig.add_subplot(111)
-plot = ax.pie(S1_and_interactions_sobol, labels = labels, labeldistance=1.1, startangle=0, radius=0.5, textprops={'fontsize': 20})
+yS1 = firstOrderSobol.reshape(int(firstOrderSobol.shape[0]/len(sampleSizes)),len(sampleSizes), order='F')
+ax.stackplot(sampleSizes, yS1, labels = labels)
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15),  ncol=3, fancybox=True, shadow=True, fontsize = 11)
+pyplot.xticks(fontsize=18)
+pyplot.xlabel("Number of Samples", fontsize = 18)
+pyplot.yticks(fontsize=18)
+pyplot.ylabel("S1", fontsize = 18)
+pyplot.xticks(sampleSizes)
 draw()
 fig.savefig('output/SobolWSPS1.png')
 os.system('output\\\\SobolWSPS1.png')
+
 '''
 Plot the Sobol Total sensitivities to higher order interactions of parameters
 '''
-fig = pyplot.figure(figsize=[15, 15])
+yST = totalSobol.reshape(int(totalSobol.shape[0]/len(sampleSizes)),len(sampleSizes), order='F')
+for col in range(0,yST.shape[1]):
+    yST[:,col] = yST[:,col]/yST[:,col].sum()
+
+fig = pyplot.figure(figsize=[8, 6])
 ax = fig.add_subplot(111)
-plot = ax.pie(Si_Sobol["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5, textprops={'fontsize': 20} )
+ax.stackplot(sampleSizes, yST, labels = labels)
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15),  ncol=3, fancybox=True, shadow=True, fontsize = 11)
+pyplot.xticks(fontsize=18)
+pyplot.xlabel("Number of Samples", fontsize = 18)
+pyplot.yticks(fontsize=18)
+pyplot.ylabel("Relative ST", fontsize = 18)
+pyplot.xticks(sampleSizes)
 draw()
 fig.savefig('output/SobolWSPST.png')
 os.system('output\\\\SobolWSPST.png')
@@ -142,31 +174,60 @@ os.system('output\\\\SobolWSPST.png')
 
 '''
 Next, run the Fourier Amplitude Sensitivity Test (FAST) sampling and sensitivity analysis technique (Cukier et al., 1973), (Saltelli et al., 1999).
-'''
+''''''
 print("\nPerforming Fourier Amplitude Sensitivity Test..\n")
 from SALib.analyze import fast
 from SALib.sample import fast_sampler
-nl4py.deleteAllHeadlessWorkspaces()
-param_values_fast = fast_sampler.sample(problem, 1000)
-Y_FAST = np.array(runForParameters(param_values_fast))
 
+firstOrderFast = np.array([])
+totalFast = np.array([])
 
-Si_FAST = fast.analyze(problem, Y_FAST, print_to_console=True)
+for sampleSize in sampleSizes:
+    nl4py.deleteAllHeadlessWorkspaces()
+    param_values_fast = fast_sampler.sample(problem, sampleSize)
+    Y_FAST = np.array(runForParameters(param_values_fast))  
+    print("\n")
+    Si_FAST = fast.analyze(problem, Y_FAST, print_to_console=True)
+    S1_and_interactions_fast = np.append(np.array(Si_FAST["S1"]),(1 - np.array(Si_FAST["S1"]).sum()))
+    firstOrderFast = np.append(firstOrderFast, S1_and_interactions_fast)
+    totalFast = np.append(totalFast, np.array(Si_FAST["ST"]))
 
-S1_and_interactions_fast = np.append(np.array(Si_FAST["S1"]),(1 - np.array(Si_FAST["S1"]).sum()))
-
-fig = pyplot.figure(figsize=[15, 15])
+''''''
+Plot the first order FAST sensitivity indices
+''''''
+labels = np.append(problem['names'],'Interactions')
+fig = pyplot.figure(figsize=[8, 6])
 ax = fig.add_subplot(111)
-plot = ax.pie(S1_and_interactions_fast,labels = labels, labeldistance=1.1, startangle=0, radius=0.5, textprops={'fontsize': 20})
+yFS1 = firstOrderFast.reshape(int(firstOrderFast.shape[0]/len(sampleSizes)),len(sampleSizes), order='F')
+ax.stackplot(sampleSizes, yFS1, labels = labels)
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15),  ncol=3, fancybox=True, shadow=True, fontsize = 11)
+pyplot.xticks(fontsize=18)
+pyplot.xlabel("Number of Samples", fontsize = 18)
+pyplot.yticks(fontsize=18)
+pyplot.ylabel("S1", fontsize = 18)
+pyplot.xticks(sampleSizes)
 draw()
 fig.savefig('output/FASTWSPS1.png')
 os.system('output\\\\FASTWSPS1.png')
 
+''''''
+Plot the FAST Total sensitivities to higher order interactions of parameters
+''''''
+yFST = totalFast.reshape(int(totalFast.shape[0]/len(sampleSizes)),len(sampleSizes), order='F')
+for col in range(0,yFST.shape[1]):
+    yFST[:,col] = yFST[:,col]/yFST[:,col].sum()
 
-fig = pyplot.figure(figsize=[15, 15])
+fig = pyplot.figure(figsize=[8, 6])
 ax = fig.add_subplot(111)
-plot = ax.pie(Si_FAST["ST"], labels = labels[0:8], labeldistance=1.1, startangle=0, radius=0.5, textprops={'fontsize': 20})
+ax.stackplot(sampleSizes, yFST, labels = labels)
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15),  ncol=3, fancybox=True, shadow=True, fontsize = 11)
+pyplot.xticks(fontsize=18)
+pyplot.xlabel("Number of Samples", fontsize = 18)
+pyplot.yticks(fontsize=18)
+pyplot.ylabel("Relative ST", fontsize = 18)
+pyplot.xticks(sampleSizes)
+draw()
 fig.savefig('output/FASTWSPST.png')
 os.system('output\\\\FASTWSPST.png')
-draw()
+'''
 nl4py.stopServer()
