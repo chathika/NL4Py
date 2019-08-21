@@ -9,7 +9,7 @@ NetLogo with GUI is now supported with NL4Py v0.5.0! [Here's a demo video](https
 NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
-* NL4Py works with NetLogo 6.1 or higher
+* NL4Py works with NetLogo 6.0 and 6.1
 * NL4Py requires JDK 1.8 
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
