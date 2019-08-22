@@ -71,8 +71,8 @@ def plot5_1():
     plt.xlabel("Model Runs")
     plt.ylabel("Execution Time in Seconds")
     fig.text(0.1, 0.157,"Threads", ha='center',size = 10)
-    savefig('output/5.1.png')
-    os.system("output\\\\5.1.png")
+    savefig('output/5.1.eps')
+    os.system("output\\\\5.1.eps")
 ############### 5.2 ################
 def plot5_2():
     times = readData("output/5.2_output.csv")
@@ -101,8 +101,8 @@ def plot5_2():
     fig.text(0.5, 0.02,"Connector", ha='center',size = 14)
     fig.text(0.02, 0.5,"Execution Time in Seconds", va='center', rotation='vertical',size = 14)
     fig.set_size_inches(10, 6)
-    savefig('output/5.2.png')
-    os.system("output\\\\5.2.png")
+    savefig('output/5.2.eps')
+    os.system("output\\\\5.2.eps")
 ############### 5.3 ################
 def plot5_3():
     times = readData("output/5.3_output.csv")
@@ -133,6 +133,6 @@ def plot5_3():
     hR.set_visible(False)
     plt.xlabel("Model Runs")
     plt.ylabel("Execution Time in Seconds")
-    savefig('output/5.3.png')
-    os.system("output\\\\5.3.png")
+    savefig('output/5.3.eps')
+    os.system("output\\\\5.3.eps")
 
