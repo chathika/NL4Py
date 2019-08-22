@@ -13,5 +13,9 @@ nl4py/NetLogoGUI.py
 nl4py/NetLogoHeadlessWorkspace.py
 nl4py/NetLogoWorkspaceFactory.py
 nl4py/__init__.py
+nl4py/nl4pyServer/NetLogo6.0/NetLogoControllerServer.jar
+nl4py/nl4pyServer/NetLogo6.0/py4j0.10.6.jar
+nl4py/nl4pyServer/NetLogo6.1/NetLogoControllerServer.jar
+nl4py/nl4pyServer/NetLogo6.1/py4j0.10.6.jar
 nl4py/test/__init__.py
 nl4py/test/test_nl4py.py

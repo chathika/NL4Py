@@ -18,3 +18,4 @@ v0.4.4, 11th August 2018 -- Bug fix: Fixed netlogoWorkspaceFactory initializatio
 v0.4.5, 11th August 2018 -- Fix to previous minor release.
 v0.5.0, 11th August 2018 -- Stable release
 v0.5.1, 21st August 2019 -- Added NetLogo 6.1 compatability
+v0.5.2, 21st August 2019 -- Fix to NetLogo 6.1 compatability
