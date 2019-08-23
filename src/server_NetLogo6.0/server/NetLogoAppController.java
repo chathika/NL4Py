@@ -239,7 +239,7 @@ public class NetLogoAppController extends NetLogoController {
 		return report;
 	}
 	
-	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand, boolean isBlocking){
 		
 		try{
 			commandQueue.put("~ScheduledReporters~");

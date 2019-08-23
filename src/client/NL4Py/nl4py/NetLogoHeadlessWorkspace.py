@@ -86,7 +86,7 @@ class NetLogoHeadlessWorkspace:
         reporterArray = self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
         for idx, reporter in enumerate(reporters):
             reporterArray[idx] = reporter
-        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand,False)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
         result = self.__bridge.getScheduledReporterResults(self.__session)
@@ -156,3 +156,5 @@ class NetLogoHeadlessWorkspace:
     def deleteWorkspace(self):
         self.__bridge.removeControllerFromStore(self.__session)
         #self.__gateway.close()
+    def getSession(self):
+        return self.__session

@@ -19,18 +19,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 
 #import NL4PyControllerServerException
-from py4j.java_gateway import JavaGateway
+from py4j.java_gateway import JavaGateway,GatewayParameters
+from py4j.java_collections import SetConverter, MapConverter, ListConverter
+import copy 
 
 class NetLogoWorkspaceFactory:
     __all_workspaces = []
+    __session_workspaces_dict = {}
     __java_gateway = None
     def __init__ (self):
-        self.__java_gateway = JavaGateway()
+        self.__java_gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True))
         return
     '''Create a new Headless Workspace and get a pointer to it'''
     def newNetLogoHeadlessWorkspace(self):
         n = NetLogoHeadlessWorkspace(self.__java_gateway)
         self.__all_workspaces.append(n)
+        self.__session_workspaces_dict[n.getSession()] = n
         return n
 
     '''Get a list of all existing Headless Workspaces on the server'''
@@ -44,5 +48,20 @@ class NetLogoWorkspaceFactory:
     def deleteHeadlessWorkspace(self,headlessWorkspace):
         headlessWorkspace.deleteWorkspace()
         self.__all_workspaces.remove(headlessWorkspace)
+
+    def runReportersOnWorkspaces(self, workspaces, reporters, startAtTick, intervalTicks, stopAtTick, goCommand):
+        sessions = [workspace.getSession() for workspace in workspaces]
+        results_allws_allticks = self.__java_gateway.entry_point.runReportersOnWorkspaces(sessions,reporters, startAtTick,intervalTicks,stopAtTick,goCommand)
+        results_dictionary = {}
+        for session in results_allws_allticks.keys():
+            ws = self.__session_workspaces_dict[session]
+            results_dictionary[ws] = []
+            for result_ws_tick in results_allws_allticks[session]:
+                try:
+                    results_dictionary[ws].append(copy.deepcopy(eval(result_ws_tick)))
+                except:
+                    results_dictionary[ws].append(result_ws_tick)
+                    pass
+        return results_dictionary
 
 ##############################################################################

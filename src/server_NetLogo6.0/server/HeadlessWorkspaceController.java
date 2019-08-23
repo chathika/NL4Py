@@ -1,8 +1,6 @@
 //Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
-
 import py4j.GatewayServer;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +13,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Phaser;
 
 public class HeadlessWorkspaceController extends NetLogoController {
 	
@@ -24,10 +23,13 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	boolean controllerNeeded = false;
 	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	volatile String mon = new String("wait");
-	volatile boolean scheduleDone = true;
-	public HeadlessWorkspaceController() {
+	volatile boolean scheduleDone = true;	
+	private Phaser ph;
+
+	public HeadlessWorkspaceController(Phaser ph) {
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
+		this.ph = ph;
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
 			/**
@@ -35,7 +37,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			* If yes, interrupt and free resources.
 			* If no, return the intended command String
 			* Blocks on the commandQueue
-			*/
+			*/			
 			private String safelyGetNextCommand() throws InterruptedException{
 				String nextCommand = commandQueue.take();
 				if(nextCommand.equalsIgnoreCase("~stop~")) {
@@ -70,7 +72,13 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							nextCommand = safelyGetNextCommand();
 							int stopAtTick = Integer.parseInt(safelyGetNextCommand());
 							nextCommand = safelyGetNextCommand();
-							String goCommand = safelyGetNextCommand();
+							boolean isBlocking = Boolean.parseBoolean(safelyGetNextCommand());
+							nextCommand = safelyGetNextCommand();
+							String goCommand = safelyGetNextCommand();							
+							//If the schedule and run was blocking then tell the main thread to wait on me by registering the phaser
+							if (isBlocking) {
+								ph.register();
+							}							
 							//Now execute the schedule
 							//Has start time passed?
 							int ticksOnModel = ((Double)ws.report("ticks")).intValue();
@@ -85,8 +93,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 									commandString = commandString + "(" +reporter + ") ";
 								}
 								commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
-								ws.command(commandString);
-								
+								ws.command(commandString);								
 								scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
 								synchronized(scheduledReporterResults){	
 									while(resultsIterator.hasNext()) {
@@ -99,7 +106,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								}
 								ws.command("ask patch 0 0 [set plabel 0]");
 							}
-							scheduleDone = true;				
+							scheduleDone = true;
+							if (isBlocking) {
+								ph.arriveAndDeregister();
+							}
 						} else {
 							//System.out.println("sending next command");
 							ws.command(nextCommand);
@@ -215,7 +225,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		return report;
 	}
 	
-	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand, boolean isBlocking){
 		try{
 			commandQueue.put("~ScheduledReporters~");
 			for (String reporter : reporters) {
@@ -227,8 +237,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			commandQueue.put(Integer.toString(intervalTicks));
 			commandQueue.put("~StopAt~");
 			commandQueue.put(Integer.toString(stopAtTick));
+			commandQueue.put("~isBlocking~");
+			commandQueue.put(Boolean.toString(isBlocking));
 			commandQueue.put("~RunReporters~");
-			commandQueue.put(goCommand);
+			commandQueue.put(goCommand);			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -43,7 +43,7 @@ def stopServer():
 #print("Starting up server...")
 #NLCSStarter.startServer()
 #print("Server started!")
-
+"""
 
 '''Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it'''
 def newNetLogoHeadlessWorkspace():
@@ -69,7 +69,7 @@ def NetLogoApp():
         serverStarter.shutdownServer()
         #print("Server stopped.")
     except:
-        pass
+        pass"""
 #print("Starting up server...")
 #NLCSStarter.startServer()
 #print("Server started!")
@@ -87,6 +87,8 @@ def deleteAllHeadlessWorkspaces():
 '''deletes the headlessworkspace given as an argument'''
 def deleteHeadlessWorkspace(headlessWorkspace):
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+def runReportersOnWorkspaces(workspaces,reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
+    return netlogoWorkspaceFactory.runReportersOnWorkspaces(workspaces, reporters, startAtTick, intervalTicks, stopAtTick, goCommand)
 '''Opens the NetLogo Application'''
 nApp = -1
 def NetLogoApp():

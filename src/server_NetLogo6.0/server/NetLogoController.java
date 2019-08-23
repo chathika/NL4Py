@@ -55,7 +55,7 @@ public abstract class NetLogoController {
 	 */
 	public abstract Object report(String command);
 	
-	public abstract void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand);
+	public abstract void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand, boolean isBlocking);
 	public abstract ArrayList<String> getScheduledReporterResults ();
 	
 	public abstract SearchSpace getParamList(String path);

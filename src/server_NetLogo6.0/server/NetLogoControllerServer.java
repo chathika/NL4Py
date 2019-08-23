@@ -2,7 +2,6 @@
 //Customized for nl4py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
 import py4j.GatewayServer;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,22 +9,25 @@ import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
 import nl4py.server.NetLogoAppController;
 import nl4py.server.NetLogoController;
 import java.util.ArrayList;
+import java.util.concurrent.Phaser;
 
 public class NetLogoControllerServer {
 	
 	ConcurrentHashMap<Integer,NetLogoController> controllerStore;
-	
+	Phaser ph;
 	static GatewayServer gs;
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
+		ph = new Phaser(1);
 		startTime = System.currentTimeMillis();
 		//System.out.println("Start");
 		//Start monitor thread
@@ -82,7 +84,7 @@ public class NetLogoControllerServer {
 	 */
 	public int newHeadlessWorkspaceController(){
 		//Create new controller instance
-		HeadlessWorkspaceController controller = new HeadlessWorkspaceController();
+		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(this.ph);
 		//Add it to controllerStore
 		int session = controller.hashCode();
 		controllerStore.put(session, controller);
@@ -140,14 +142,55 @@ public class NetLogoControllerServer {
 	public Object report(int session, String command) {
 		return getControllerFromStore(session).report(command);
 	}
-	public void scheduleReportersAndRun(int session, String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
+	/** Schedules reporters and runs the provided workspaces. This is a nonblocking method and does not wait for the end of the workspace execution.
+	 * Results of the reporters can be retrieved through HeadlessWorkspaceColtroller.getScheduledReporterResults(int session).
+	 * @param session: session id of HeadlessWorkspaceController to schedule and execute
+	 * @param reporters: String array of netlogo reporters to be scheduled
+	 * @param startAtTick: Simulation tick to start reporters at
+	 * @param intervalTicks: Simulation tick duration between reporter execution (default is to measure at every simulation tick)
+	 * @param stopAtTick: Simulation tick to stop reporters at
+	 * @param goCommand: String with NetLogo command to execut model
+	 */
+	public void scheduleReportersAndRun(int session, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand, false);
 	}
 	
 	public ArrayList<String> getScheduledReporterResults (int session){
 		return getControllerFromStore(session).getScheduledReporterResults();
 	}
-	
+	/**
+	 * Schedules reporters on the NetLogo Headless Workspaces controlled by the HeadlessWorkspaceControllers of the provided session ids,
+	 * runs the provided workspaces with the goCommand,
+	 * and waits for the simulation results of all executing workspaces and returns an array of the results. This is a blocking method.
+	 * @param sessions: array of session ids of HeadlessWorkspaceControllers to run
+	 * @param reporters: String array of netlogo reporters to be scheduled
+	 * @param startAtTick: Simulation tick to start reporters at
+	 * @param intervalTicks: Simulation tick duration between reporter execution (default is to measure at every simulation tick)
+	 * @param stopAtTick: Simulation tick to stop reporters at
+	 * @param goCommand: String with NetLogo command to execut model
+	 * @return: Returns results of all executing workspaces.
+	 */
+	public HashMap<Integer,ArrayList<String>> runReportersOnWorkspaces (ArrayList<Integer> sessions, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		HashMap<Integer, ArrayList<String>> workspacesResults = new HashMap<Integer, ArrayList<String>>();
+		for (int session: sessions) {
+			getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand, true);
+		}
+		System.out.println(ph.getRegisteredParties());
+		System.out.println(ph.getArrivedParties());
+		System.out.println(ph.getPhase());
+		System.out.println(ph.getRegisteredParties());
+		System.out.println(ph.getArrivedParties());
+		ph.arriveAndAwaitAdvance();
+		System.out.println(ph.getRegisteredParties());
+		System.out.println(ph.getArrivedParties());
+		System.out.println(ph.getPhase());
+		System.out.println(ph.getRegisteredParties());
+		System.out.println(ph.getArrivedParties());
+		for (int session: sessions) {
+			workspacesResults.put(session,getControllerFromStore(session).getScheduledReporterResults());
+		}
+		return workspacesResults;
+	}
 	public SearchSpace getParamList(int session, String path) {
 		return getControllerFromStore(session).getParamList(path);
 	}
