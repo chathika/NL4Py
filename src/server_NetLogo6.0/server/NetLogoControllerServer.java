@@ -15,19 +15,20 @@ import nl4py.server.HeadlessWorkspaceController;
 import nl4py.server.NetLogoAppController;
 import nl4py.server.NetLogoController;
 import java.util.ArrayList;
-import java.util.concurrent.Phaser;
+import nl4py.server.HeadlessWorkspaceControllerPool;
 
 public class NetLogoControllerServer {
 	
 	ConcurrentHashMap<Integer,NetLogoController> controllerStore;
-	Phaser ph;
 	static GatewayServer gs;
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
+	Object notifier;
+	
 	public NetLogoControllerServer() {
 		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
-		ph = new Phaser(1);
+		notifier = new Object();
 		startTime = System.currentTimeMillis();
 		//System.out.println("Start");
 		//Start monitor thread
@@ -84,9 +85,9 @@ public class NetLogoControllerServer {
 	 */
 	public int newHeadlessWorkspaceController(){
 		//Create new controller instance
-		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(this.ph);
+		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(this.notifier);
 		//Add it to controllerStore
-		int session = controller.hashCode();
+		int session = controller.getSession();
 		controllerStore.put(session, controller);
 		return session;
 	}
@@ -152,44 +153,13 @@ public class NetLogoControllerServer {
 	 * @param goCommand: String with NetLogo command to execut model
 	 */
 	public void scheduleReportersAndRun(int session, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand, false);
+		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
 	}
-	
-	public ArrayList<String> getScheduledReporterResults (int session){
+	public ArrayList<ArrayList<String>> getScheduledReporterResults (int session){
 		return getControllerFromStore(session).getScheduledReporterResults();
 	}
-	/**
-	 * Schedules reporters on the NetLogo Headless Workspaces controlled by the HeadlessWorkspaceControllers of the provided session ids,
-	 * runs the provided workspaces with the goCommand,
-	 * and waits for the simulation results of all executing workspaces and returns an array of the results. This is a blocking method.
-	 * @param sessions: array of session ids of HeadlessWorkspaceControllers to run
-	 * @param reporters: String array of netlogo reporters to be scheduled
-	 * @param startAtTick: Simulation tick to start reporters at
-	 * @param intervalTicks: Simulation tick duration between reporter execution (default is to measure at every simulation tick)
-	 * @param stopAtTick: Simulation tick to stop reporters at
-	 * @param goCommand: String with NetLogo command to execut model
-	 * @return: Returns results of all executing workspaces.
-	 */
-	public HashMap<Integer,ArrayList<String>> runReportersOnWorkspaces (ArrayList<Integer> sessions, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		HashMap<Integer, ArrayList<String>> workspacesResults = new HashMap<Integer, ArrayList<String>>();
-		for (int session: sessions) {
-			getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand, true);
-		}
-		System.out.println(ph.getRegisteredParties());
-		System.out.println(ph.getArrivedParties());
-		System.out.println(ph.getPhase());
-		System.out.println(ph.getRegisteredParties());
-		System.out.println(ph.getArrivedParties());
-		ph.arriveAndAwaitAdvance();
-		System.out.println(ph.getRegisteredParties());
-		System.out.println(ph.getArrivedParties());
-		System.out.println(ph.getPhase());
-		System.out.println(ph.getRegisteredParties());
-		System.out.println(ph.getArrivedParties());
-		for (int session: sessions) {
-			workspacesResults.put(session,getControllerFromStore(session).getScheduledReporterResults());
-		}
-		return workspacesResults;
+	public HeadlessWorkspaceControllerPool createWorkspacePool(String modelName, Integer runsRequired, Integer countWorkers) {
+		return new HeadlessWorkspaceControllerPool(modelName, runsRequired, countWorkers);
 	}
 	public SearchSpace getParamList(int session, String path) {
 		return getControllerFromStore(session).getParamList(path);

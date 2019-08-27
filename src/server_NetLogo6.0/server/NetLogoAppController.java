@@ -21,7 +21,7 @@ public class NetLogoAppController extends NetLogoController {
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
-	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
+	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
 	
 	public NetLogoAppController() {
 		
@@ -95,9 +95,9 @@ public class NetLogoAppController extends NetLogoController {
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									}
-									for(String resultI : reporterResults) {
-										scheduledReporterResults.put(resultI);
-									}
+									//for(String resultI : reporterResults) {
+									scheduledReporterResults.put(reporterResults);
+									//}
 								}
 							}
 						} else {
@@ -239,7 +239,7 @@ public class NetLogoAppController extends NetLogoController {
 		return report;
 	}
 	
-	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand, boolean isBlocking){
+	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		
 		try{
 			commandQueue.put("~ScheduledReporters~");
@@ -258,8 +258,8 @@ public class NetLogoAppController extends NetLogoController {
 			e.printStackTrace();
 		}
 	}
-	public ArrayList<String> getScheduledReporterResults () {
-		ArrayList<String> results  = new ArrayList<String>();
+	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
+		ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
 		try {
 			scheduledReporterResults.drainTo(results);
 		} catch (Exception e) {

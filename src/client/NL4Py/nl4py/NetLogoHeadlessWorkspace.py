@@ -92,8 +92,8 @@ class NetLogoHeadlessWorkspace:
         result = self.__bridge.getScheduledReporterResults(self.__session)
         if self.__reporters_length == 0:
             return result
-        ticks_returned = len(result) / self.__reporters_length        
-        result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
+        #ticks_returned = len(result) / self.__reporters_length        
+        #result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
         return result
     '''Sends a signal to the server to tell the respective controller to get the'''
     '''parameter specs of its HeadlessWorkspace object'''

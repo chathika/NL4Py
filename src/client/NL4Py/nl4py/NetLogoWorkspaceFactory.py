@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 #!pip install py4j
 #import NetLogo_Controller_Server_Starter
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
-
+import multiprocessing
 #import NL4PyControllerServerException
 from py4j.java_gateway import JavaGateway,GatewayParameters
 from py4j.java_collections import SetConverter, MapConverter, ListConverter
@@ -63,5 +63,32 @@ class NetLogoWorkspaceFactory:
                     results_dictionary[ws].append(result_ws_tick)
                     pass
         return results_dictionary
+
+    def runExperiment(self, model_name, callback, names, data=None, num_procs=-1):
+        results_dict = {}
+        pool = self.__java_gateway.entry_point.createWorkspacePool(model_name, len(names),num_procs)
+        for idx in range(len(names)):
+            # Try to schedule and execute workers as available
+            ws = pool.getFreeWorkspace() #blocking method. Server will wait if there is no free workspace at the moment
+            ws.setRunName(str(names[idx]))
+            config = data
+            try:
+                config = data[idx]
+            except:
+                pass
+            #results_dict[str(names[idx])] = {"config":config}
+            if data == None:
+                data = names
+            try:
+                callback(ws,data[idx])
+            except Exception as e:
+                callback(ws,names[idx])
+                print("NL4Py WARNING: data must be a list or iterable of equal length to names!")
+            ws.notifyWhenDone()
+        #Wait for pool to finish execution of all configurations and get results
+        all_results = pool.awaitResults()
+        #for result_name in all_results.keys():
+        #    results_dict[result_name]["results"] = all_results[result_name]
+        return all_results
 
 ##############################################################################
