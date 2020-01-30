@@ -50,8 +50,6 @@ results = workspace.getScheduledReporterResults()
 
 print('\t...and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
 
-resultframe = pandas.DataFrame(results)
-resultframe.columns = ['ticks','stop1','stop2','sheep','wolves']
 print(resultframe)
 print(workspace.report("ticks"))
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
