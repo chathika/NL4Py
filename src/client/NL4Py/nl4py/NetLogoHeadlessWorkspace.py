@@ -86,7 +86,7 @@ class NetLogoHeadlessWorkspace:
         reporterArray = self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
         for idx, reporter in enumerate(reporters):
             reporterArray[idx] = reporter
-        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand,False)
+        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
         result = self.__bridge.getScheduledReporterResults(self.__session)
