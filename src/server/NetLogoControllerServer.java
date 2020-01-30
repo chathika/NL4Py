@@ -21,12 +21,14 @@ public class NetLogoControllerServer {
 	
 	ConcurrentHashMap<Integer,NetLogoController> controllerStore;
 	static GatewayServer gs;
+	String netlogoVersion;
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
 	Object notifier;
 	
 	public NetLogoControllerServer() {
+		this.netlogoVersion = System.getenv("NL4Py_NetLogo_Ver")	
 		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
 		notifier = new Object();
 		startTime = System.currentTimeMillis();

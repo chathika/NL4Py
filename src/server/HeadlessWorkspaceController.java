@@ -1,8 +1,6 @@
 //Customized for NL4Py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
-
 import py4j.GatewayServer;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,15 +17,22 @@ import java.util.List;
 public class HeadlessWorkspaceController extends NetLogoController {
 	
 	HeadlessWorkspace ws;
+	private netlogoVersion;
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
+	private Object commandThreadLock = new Object();
 	boolean controllerNeeded = false;
-	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
-	volatile String mon = new String("wait");
-	volatile boolean scheduleDone = true;
-	public HeadlessWorkspaceController() {
+	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
+	volatile boolean scheduleDone = true;	
+	private Object notifier;
+	private final Integer session = this.hashCode();
+	private String runName = "Unnamed";
+
+	public HeadlessWorkspaceController(String netlogoVersion, Object notifier) {
+		this.netlogoVersion = netlogoVersion;
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
+		this.notifier = notifier;
 		commandQueue = new ArrayBlockingQueue<String>(100);
 		commandThread = new Thread(new Runnable() {
 			/**
@@ -35,7 +40,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			* If yes, interrupt and free resources.
 			* If no, return the intended command String
 			* Blocks on the commandQueue
-			*/
+			*/			
 			private String safelyGetNextCommand() throws InterruptedException{
 				String nextCommand = commandQueue.take();
 				if(nextCommand.equalsIgnoreCase("~stop~")) {
@@ -47,66 +52,76 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			}
 			@Override
 			public void run() {
-				//System.out.println("command thread started");
 				controllerNeeded = true;
 				while (controllerNeeded || !Thread.currentThread().interrupted()) {
 					//get next command out of queue
 					try{
-						//System.out.println("taking next command");
 						String nextCommand = safelyGetNextCommand();
-						if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
-							scheduleDone = false;
-							//Read in the schedule
-							ArrayList<String> reporters = new ArrayList<String>();
-							nextCommand = safelyGetNextCommand();
-							while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
-								reporters.add(nextCommand);
+						if (nextCommand.equalsIgnoreCase("~Notify~")) {
+							// If the controlling thread was waiting on the command thread, notify the command thread.
+							synchronized(notifier) {
+								((ArrayList<Integer>)notifier).add(getSession());
+								notifier.notifyAll();
+							}
+						} else {
+							if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
+								scheduleDone = false;
+								//Read in the schedule
+								ArrayList<String> reporters = new ArrayList<String>();
 								nextCommand = safelyGetNextCommand();
-								if (nextCommand == null ) {nextCommand = "";}
-							} 
-							int startAtTick = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							int intervalTicks = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							int stopAtTick = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							String goCommand = safelyGetNextCommand();
-							//Now execute the schedule
-							//Has start time passed?
-							int ticksOnModel = ((Double)ws.report("ticks")).intValue();
-							if(ticksOnModel <= startAtTick ){
-								boolean modelStopped = false;
-								if(ticksOnModel < startAtTick) {
-									//catch up if necessary
-									ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [go]");
-								}
-								String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
-								for(String reporter : reporters) {
-									commandString = commandString + "(" +reporter + ") ";
-								}
-								commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
-								ws.command(commandString);
-								
-								scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
-								synchronized(scheduledReporterResults){	
-									while(resultsIterator.hasNext()) {
-										org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
-										scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
-										while(resultsThisTickIterator.hasNext()){
-											scheduledReporterResults.put(resultsThisTickIterator.next().toString());
+								while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
+									reporters.add(nextCommand);
+									nextCommand = safelyGetNextCommand();
+									if (nextCommand == null ) {nextCommand = "";}
+								} 
+								int startAtTick = Integer.parseInt(safelyGetNextCommand());
+								nextCommand = safelyGetNextCommand();
+								int intervalTicks = Integer.parseInt(safelyGetNextCommand());
+								nextCommand = safelyGetNextCommand();
+								int stopAtTick = Integer.parseInt(safelyGetNextCommand());
+								nextCommand = safelyGetNextCommand();
+								String goCommand = safelyGetNextCommand();
+								//Now execute the schedule
+								//Has start time passed?
+								int ticksOnModel = ((Double)ws.report("ticks")).intValue();
+								if(ticksOnModel <= startAtTick ){
+									boolean modelStopped = false;
+									if(ticksOnModel < startAtTick) {
+										//catch up if necessary
+										ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [go]");
+									}
+									String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
+									for(String reporter : reporters) {
+										commandString = commandString + "(" +reporter + ") ";
+									}
+									commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
+									ws.command(commandString);								
+									scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
+									synchronized(scheduledReporterResults){										
+										while(resultsIterator.hasNext()) {
+											ArrayList<String> resultsThisTickArray = new ArrayList<String>();
+											org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
+											scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
+											while(resultsThisTickIterator.hasNext()){
+												resultsThisTickArray.add(resultsThisTickIterator.next().toString());
+											}
+											scheduledReporterResults.put(resultsThisTickArray);										
 										}										
 									}
+									ws.command("ask patch 0 0 [set plabel 0]");
 								}
-								ws.command("ask patch 0 0 [set plabel 0]");
+								scheduleDone = true;
+							} else {
+								ws.command(nextCommand);
 							}
-							scheduleDone = true;				
-						} else {
-							//System.out.println("sending next command");
-							ws.command(nextCommand);
-							//System.out.println("command done");
-						}	
+						}
+						// If there are no other commands left, the command thread can wait for now.
+						if (commandQueue.size() == 0 ) {
+							synchronized(commandThreadLock) {
+								commandThreadLock.wait();
+							}
+						}
 					} catch (InterruptedException e){
-						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
 						controllerNeeded = false;
 						Thread.currentThread().interrupt();
 						break;
@@ -127,10 +142,12 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 * @param path: Path to the .nlogo file to load.
 	 */
 	public void openModel(String path) {
-		
-		//System.out.println("opening" + path);
 		try {
-			ws.open(path,false);
+			if (this.netlogoVersion.equalsIgnoreCase("6.1")){
+				ws.open(path,false);
+			} else if (this.netlogoVersion.equalsIgnoreCase("6.1")) {
+				ws.open(path);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -145,6 +162,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public void closeModel(){
 		try {
 			ws.halt();
+			ws.init();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,6 +203,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public void command(String command) {
 		try {
 			this.scheduleCommand(command);
+			signalWaitingCommandThread();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -206,6 +225,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		try {
 			//Thread.sleep(1);
 			report = ws.report(command);
+			signalWaitingCommandThread();
 		} catch (Exception e) {
 			// in case a run crashes due to a NetLogo side exception, return 0
 			report = "NetLogo Exception";//new Double(0.0);
@@ -215,7 +235,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		return report;
 	}
 	
-	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		try{
 			commandQueue.put("~ScheduledReporters~");
 			for (String reporter : reporters) {
@@ -228,19 +248,31 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			commandQueue.put("~StopAt~");
 			commandQueue.put(Integer.toString(stopAtTick));
 			commandQueue.put("~RunReporters~");
-			commandQueue.put(goCommand);
+			commandQueue.put(goCommand);	
+			signalWaitingCommandThread();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	public ArrayList<String> getScheduledReporterResults () {
-		ArrayList<String> results  = new ArrayList<String>();		
+	/**
+	 * Adds a message to the commandQueue telling the commandThread to notify the controlling Thread (server or pool) when processing is over
+	 */
+	public void notifyWhenDone () {
+		try {
+			commandQueue.put("~Notify~");
+			signalWaitingCommandThread();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
+		ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();		
 		try {	
 			if(scheduleDone) {
 				synchronized(scheduledReporterResults){
 					scheduledReporterResults.drainTo(results);
 				}
-			} 
+			} 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -255,7 +287,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		
 		ss = new SearchSpace(java.util.Arrays.asList(constraintsText.split("\n")));
 		for(ParameterSpec paramSpec : ss.getParamSpecs()) {
-			//System.out.println(paramSpec.getClass());
 		}
 		} catch (NetLogoLinkException e)
 		{
@@ -286,5 +317,32 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		}
 		ws = null;
 		System.gc();
+	}
+
+	private void signalWaitingCommandThread() {
+		if (this.commandThread.getState() == Thread.State.WAITING) {
+			synchronized(this.commandThreadLock) {
+				this.commandThreadLock.notifyAll();
+			}
+		}
+	}
+
+	public Boolean isFree() {
+		Boolean free = false;
+			synchronized(this.commandQueue) {
+		if (this.commandQueue.size() == 0) {
+			free = true;
+		}
+		}
+		return free;
+	}
+	public Integer getSession() {
+		return this.session;
+	}
+	public String getRunName() {
+		return this.runName;
+	}
+	public void setRunName(String runName){
+		this.runName = runName;
 	}
 }
