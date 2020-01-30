@@ -13,11 +13,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
+import nl4py.server.NetLogoVersionCompatibilityResolver;
 
 public class HeadlessWorkspaceController extends NetLogoController {
 	
+	//System.getenv("NL4Py_NetLogo_Ver").equalsIgnoreCase("6.1") ? true : false ; 
 	HeadlessWorkspace ws;
-	private netlogoVersion;
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	private Object commandThreadLock = new Object();
@@ -28,8 +29,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	private final Integer session = this.hashCode();
 	private String runName = "Unnamed";
 
-	public HeadlessWorkspaceController(String netlogoVersion, Object notifier) {
-		this.netlogoVersion = netlogoVersion;
+	public HeadlessWorkspaceController(Object notifier) {
 		//Create new workspace instance
 		ws = HeadlessWorkspace.newInstance();
 		this.notifier = notifier;
@@ -143,11 +143,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	 */
 	public void openModel(String path) {
 		try {
-			if (this.netlogoVersion.equalsIgnoreCase("6.1")){
-				ws.open(path,false);
-			} else if (this.netlogoVersion.equalsIgnoreCase("6.1")) {
-				ws.open(path);
-			}
+			NetLogoVersionCompatibilityResolver.open(ws,path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

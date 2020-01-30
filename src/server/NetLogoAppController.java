@@ -16,6 +16,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import nl4py.server.NetLogoVersionCompatibilityResolver;
+
 public class NetLogoAppController extends NetLogoController {
 
 	private ArrayBlockingQueue<String> commandQueue;
@@ -142,7 +144,7 @@ public class NetLogoAppController extends NetLogoController {
 					try {
 						App.app().getLinkParent().setVisible(true);
 						App.app().getLinkParent().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						App.app().open(path);					
+						NetLogoVersionCompatibilityResolver.open(App.app(),path);
 					}
 					catch(java.io.IOException ex) {
 						System.out.println("You can only open one model at a time in GUI mode");
