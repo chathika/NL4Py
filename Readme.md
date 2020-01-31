@@ -69,6 +69,7 @@ nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
 nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults() # non-blocking and returns nothing if the simulation is not finished
+nl4py.NetLogoHeadlessWorkspace.awaitScheduledReporterResults() # blocking and returns only after the simulation has finished
 nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
 nl4py.NetLogoHeadlessWorkspace.getParamNames()
 nl4py.NetLogoHeadlessWorkspace.getParamRanges()
