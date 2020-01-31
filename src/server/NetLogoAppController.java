@@ -260,6 +260,9 @@ public class NetLogoAppController extends NetLogoController {
 			e.printStackTrace();
 		}
 	}
+	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
+		throw new UnsupportedOperationException("Method unimplemented!");
+	}
 	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
 		ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
 		try {
@@ -310,4 +313,5 @@ class NL4PySecutiryManager extends SecurityManager {
   @Override public void checkPermission(java.security.Permission perm) {
       // Allow other activities by default
   }
+  
 }

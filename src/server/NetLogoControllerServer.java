@@ -9,6 +9,7 @@ import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Phaser;
 import java.util.HashMap;
 import org.nlogo.headless.HeadlessWorkspace; 
 import nl4py.server.HeadlessWorkspaceController;
@@ -25,11 +26,11 @@ public class NetLogoControllerServer {
 	long startTime;
 	static boolean serverOn = false;
 	Thread statusThread;
-	Object notifier;
+	Phaser notifier;
 	
 	public NetLogoControllerServer() {		
 		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
-		notifier = new Object();
+		notifier = new Phaser();
 		startTime = System.currentTimeMillis();
 		//System.out.println("Start");
 		//Start monitor thread
@@ -156,11 +157,11 @@ public class NetLogoControllerServer {
 	public void scheduleReportersAndRun(int session, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
 	}
+	public ArrayList<ArrayList<String>> awaitScheduledReporterResults(int session) {
+		return getControllerFromStore(session).awaitScheduledReporterResults();
+	}
 	public ArrayList<ArrayList<String>> getScheduledReporterResults (int session){
 		return getControllerFromStore(session).getScheduledReporterResults();
-	}
-	public HeadlessWorkspaceControllerPool createWorkspacePool(String modelName, Integer runsRequired, Integer countWorkers) {
-		return new HeadlessWorkspaceControllerPool(modelName, runsRequired, countWorkers);
 	}
 	public SearchSpace getParamList(int session, String path) {
 		return getControllerFromStore(session).getParamList(path);
@@ -179,6 +180,9 @@ public class NetLogoControllerServer {
 			throw new NullPointerException("No NetLogo HeadlessWorkspace exists for that session id");
 		}
 		return controller;
+	}
+	public HeadlessWorkspaceController getHeadlessWorkspaceController(int session){
+		return (HeadlessWorkspaceController)getControllerFromStore(session);
 	}
 	/** 
 	 * Internal method to remove the controller from the store
@@ -219,5 +223,9 @@ public class NetLogoControllerServer {
 		int session = controller.hashCode();
 		controllerStore.put(session, controller);
 		return session;
+	}
+
+	public HeadlessWorkspaceControllerPool initPool(String modelName, Integer processors, ArrayList<ArrayList<ArrayList<String>>> namesToInitStrings, ArrayList<String> reporters, int startTick, int tickInterval, int stopTick, String goCommand){
+		return new HeadlessWorkspaceControllerPool(modelName,processors,namesToInitStrings,reporters,startTick,tickInterval,stopTick,goCommand);
 	}
 }
