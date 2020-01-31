@@ -85,8 +85,10 @@ class NetLogoControllerServerStarter:
             minor = float("0." + ver_info[1])
             major_minor = major + minor
             if major_minor < 6.1:
+                os.environ['NL4Py_NetLogo_Ver'] = "6.1"
                 self.SERVER_PATH = os.path.join(self.SERVER_PATH,"NetLogo6.0")
             else: 
+                os.environ['NL4Py_NetLogo_Ver'] = "6.0"
                 self.SERVER_PATH = os.path.join(self.SERVER_PATH,"NetLogo6.1")
         #else:
             #print("NetLogo found")
@@ -104,7 +106,7 @@ class NetLogoControllerServerStarter:
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
         subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
-        
+                
     '''Starts JavaGateway server'''
     def startServer(self, netlogo_home):
         #Fire up the NetLogo Controller server through python
