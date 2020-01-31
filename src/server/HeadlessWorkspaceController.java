@@ -27,6 +27,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
 	volatile boolean scheduleDone = true;	
 	private Phaser notifier;
+	private int phaseTarget = 0;
 	private final Integer session = this.hashCode();
 	
 	//Pool Related
@@ -57,7 +58,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			return nextCommand;
 		}		
 		public CommandThread (){//register phaser for pool 
-			notifier.register();
+			//notifier.register();
 		}
 		@Override
 		public void run() {
@@ -96,7 +97,8 @@ public class HeadlessWorkspaceController extends NetLogoController {
 					if(nextCommand.equalsIgnoreCase("~ScheduledReporters~") ){
 						//register a non-pool schedule
 						if (poolTasks == null ){
-							//notifier.register();
+							phaseTarget += 1;
+							notifier.register();
 						}
 						scheduleDone = false;
 						//Read in the schedule
@@ -146,7 +148,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						scheduleDone = true;
 						if (poolTasks == null){	
 							//deregister non schedule pool	
-							notifier.arrive();
+							notifier.arriveAndDeregister();
 						} else {
 							// add results to pool results
 							ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
@@ -312,9 +314,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
 		ArrayList<ArrayList<String>> results  = null;
 		// Change the notifier to point to the one provided by the client
-		notifier.register();
-		notifier.arriveAndAwaitAdvance();
+		notifier.awaitAdvance(this.phaseTarget);
 		results = getScheduledReporterResults();
+		System.out.println(notifier.getPhase());
 		return results;
 	}
 	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
