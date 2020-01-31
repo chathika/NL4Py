@@ -97,7 +97,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						//register a non-pool schedule
 						if (poolTasks == null ){
 							//notifier.register();
-							System.out.println(notifier.getRegisteredParties());
 						}
 						scheduleDone = false;
 						//Read in the schedule
@@ -130,7 +129,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							}
 							commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
 							ws.command(commandString);						
-							System.out.println(commandString);
 							scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
 							while(resultsIterator.hasNext()) {
 								ArrayList<String> resultsThisTickArray = new ArrayList<String>();
@@ -145,16 +143,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							//scheduledReporterResults.put(resultsArray);
 							ws.command("ask patch 0 0 [set plabel 0]");
 						}
-						System.out.println("Schedule done");
-						
 						scheduleDone = true;
 						if (poolTasks == null){	
 							//deregister non schedule pool	
-							System.out.println(notifier.getArrivedParties());
-							System.out.println(notifier.getRegisteredParties());
 							notifier.arrive();
-							System.out.println(notifier.getArrivedParties());
-							System.out.println(notifier.getRegisteredParties());
 						} else {
 							// add results to pool results
 							ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
@@ -165,7 +157,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						if (nextCommand.equalsIgnoreCase("~PoolAttached~")){
 							//poolWorkerResults = new HashMap<String, ArrayList<ArrayList<String>>>();
 						} else {
-							System.out.println(nextCommand);
 							ws.command(nextCommand);
 						}
 					}
