@@ -70,7 +70,7 @@ class NetLogoHeadlessWorkspace:
     '''Sends a signal to the server to tell the respective controller to export the view'''
     ''' of its HeadlessWorkspace object'''
     def exportView(self, filename):
-        self.exportView(self.__session, filename)
+        self.__bridge.exportView(self.__session, filename)
     '''Sends a signal to the server to tell the respective controller to send a'''
     '''NetLogo command to its HeadlessWorkspace object'''
     def command(self, command):
