@@ -42,7 +42,7 @@ class NetLogoControllerServerStarter:
     
     
     def __init__(self):
-        self.__gw = JavaGateway(auto_convert=True)
+        self.__gw = JavaGateway()
         self.shutdownServer()
         #atexit.register(self.shutdownServer)
     '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''

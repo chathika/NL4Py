@@ -8,7 +8,7 @@ print("\n\n------------ This is a Demonstration of NL4PY --------------------\n"
 
 import nl4py 
 import sys
-import pandas
+import pandas as pd
 import time
 print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 
@@ -41,16 +41,16 @@ print("\t The reporters are: reporters = ['ticks','not any? turtles','not any? w
 
 reporters = ['ticks','not any? turtles','not any? wolves and count sheep > max-sheep','count sheep','count wolves']
 workspace.scheduleReportersAndRun(reporters,0,1,100,"go")
-
+#time.sleep(10)
 print("\n2.5) Periodically check the number of ticks passed or if stop conditions are met and... ")
-print('\n2.6) Get back all the results from the scheduling process: result = workspace.getScheduledReporterResults():')
-print("\tresults = n.getScheduledReporterResults()")
+print('\n2.6) Get back all the results from the scheduling process: result = workspace.awaitScheduledReporterResults():')
+print("\tresults = n.awaitScheduledReporterResults()")
 
-results = workspace.getScheduledReporterResults()	
+results = workspace.awaitScheduledReporterResults()	
 
 print('\t...and put these results into a pandas dataframe: import pandas as pd \n pd.DataFrame(result)')
 
-print(resultframe)
+print(pd.DataFrame(results, columns = reporters))
 print(workspace.report("ticks"))
 print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
 nl4py.stopServer()
