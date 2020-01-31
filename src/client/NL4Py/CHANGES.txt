@@ -21,3 +21,4 @@ v0.5.1, 21st August 2019 -- Added NetLogo 6.1 compatability
 v0.5.2, 21st August 2019 -- Fix to NetLogo 6.1 compatability
 v0.5.3, 30th January 2020 -- Re-enabled exportView()
 v0.5.4, 30th January 2020 -- Fix to setup wheel
+v0.5.5, 30th January 2020 -- Added awaitScheduledReporterResults() blocking method for scheduled reporters and core developments for upcoming experiment functionality.
