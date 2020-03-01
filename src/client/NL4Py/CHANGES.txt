@@ -26,3 +26,4 @@ v0.5.6, 30th January 2020 -- Fixes to debugging
 v0.5.7, 30th January 2020 -- Integration testing fix
 v0.5.8, 30th January 2020 -- awaitScheduledReporterResults fix
 v0.5.9, 31st January 2020 -- Fixes to debugging
+v0.5.10, 17th February 2020 -- awaitScheduledReporterResults fix: fixed bug that occurs on multiple calls to function
