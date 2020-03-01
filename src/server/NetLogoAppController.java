@@ -16,12 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import nl4py.server.NetLogoVersionCompatibilityResolver;
+
 public class NetLogoAppController extends NetLogoController {
 
 	private ArrayBlockingQueue<String> commandQueue;
 	private Thread commandThread;
 	boolean controllerNeeded = false;
-	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
+	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
 	
 	public NetLogoAppController() {
 		
@@ -95,9 +97,9 @@ public class NetLogoAppController extends NetLogoController {
 										//This can throw a netlogo exception if the model is done running due to custom stop condition
 										continue;
 									}
-									for(String resultI : reporterResults) {
-										scheduledReporterResults.put(resultI);
-									}
+									//for(String resultI : reporterResults) {
+									scheduledReporterResults.put(reporterResults);
+									//}
 								}
 							}
 						} else {
@@ -142,7 +144,7 @@ public class NetLogoAppController extends NetLogoController {
 					try {
 						App.app().getLinkParent().setVisible(true);
 						App.app().getLinkParent().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						App.app().open(path);					
+						NetLogoVersionCompatibilityResolver.open(App.app(),path);
 					}
 					catch(java.io.IOException ex) {
 						System.out.println("You can only open one model at a time in GUI mode");
@@ -239,7 +241,7 @@ public class NetLogoAppController extends NetLogoController {
 		return report;
 	}
 	
-	public void scheduleReportersAndRun (String reporters[], int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		
 		try{
 			commandQueue.put("~ScheduledReporters~");
@@ -258,8 +260,11 @@ public class NetLogoAppController extends NetLogoController {
 			e.printStackTrace();
 		}
 	}
-	public ArrayList<String> getScheduledReporterResults () {
-		ArrayList<String> results  = new ArrayList<String>();
+	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
+		throw new UnsupportedOperationException("Method unimplemented!");
+	}
+	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
+		ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
 		try {
 			scheduledReporterResults.drainTo(results);
 		} catch (Exception e) {
@@ -302,10 +307,11 @@ public class NetLogoAppController extends NetLogoController {
 
 class NL4PySecutiryManager extends SecurityManager {
   @Override public void checkExit(int status) {
-    throw new SecurityException();
+    //throw new SecurityException();
   }
 
   @Override public void checkPermission(java.security.Permission perm) {
       // Allow other activities by default
   }
+  
 }

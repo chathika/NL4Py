@@ -2,12 +2,14 @@
 
 A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call architecture, allowing Python client code to control NetLogo workspaces on a NetLogoWorkspaceController server. NL4Py supports controlling multiple workspaces through a single Python client. 
 
-NetLogo with GUI is now supported with NL4Py v0.3.0! [Here's a demo video](https://www.youtube.com/watch?v=TXLqbYNYyVg)
+Read the NL4Py article is on arXiv: https://arxiv.org/pdf/1808.03292.pdf
+
+NetLogo with GUI is now supported with NL4Py v0.5.0! [Here's a demo video](https://www.youtube.com/watch?v=TXLqbYNYyVg)
 
 NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
-* NL4Py works with NetLogo 6 or higher
+* NL4Py works with NetLogo 6.0 and 6.1
 * NL4Py requires JDK 1.8 
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 	You can install py4j with: 
@@ -67,6 +69,7 @@ nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
 nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults() # non-blocking and returns nothing if the simulation is not finished
+nl4py.NetLogoHeadlessWorkspace.awaitScheduledReporterResults() # blocking and returns only after the simulation has finished
 nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
 nl4py.NetLogoHeadlessWorkspace.getParamNames()
 nl4py.NetLogoHeadlessWorkspace.getParamRanges()

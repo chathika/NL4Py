@@ -24,17 +24,52 @@ import six.moves.urllib.request as urlrq
 import shutil
 import os
 serverStarter = NetLogoControllerServerStarter()
+netlogoWorkspaceFactory = None
 def startServer(netlogo_home):
     try:
         serverStarter.startServer(netlogo_home)
     except:
         print("Server failed to start!")
+    global netlogoWorkspaceFactory 
+    netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
 def stopServer():
     try:
         serverStarter.shutdownServer()
         #print("Server stopped.")
     except:
         pass
+    global netlogoWorkspaceFactory 
+    netlogoWorkspaceFactory = None
+#print("Starting up server...")
+#NLCSStarter.startServer()
+#print("Server started!")
+"""
+
+'''Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it'''
+def newNetLogoHeadlessWorkspace():
+    return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
+'''Returns a list of all live HeadlessWorkspaces'''
+def getAllHeadlessWorkspaces():
+    return netlogoWorkspaceFactory.getAllExistingWorkspaces()
+'''Deletes all existing HeadlessWorkspaces'''
+def deleteAllHeadlessWorkspaces():
+    netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
+'''deletes the headlessworkspace given as an argument'''
+def deleteHeadlessWorkspace(headlessWorkspace):
+    netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+'''Opens the NetLogo Application'''
+nApp = -1
+def NetLogoApp():
+    global nApp
+    if nApp == -1:
+        nApp = NetLogoGUI(JavaGateway())
+    return nApp
+
+    try:
+        serverStarter.shutdownServer()
+        #print("Server stopped.")
+    except:
+        pass"""
 #print("Starting up server...")
 #NLCSStarter.startServer()
 #print("Server started!")
@@ -52,6 +87,8 @@ def deleteAllHeadlessWorkspaces():
 '''deletes the headlessworkspace given as an argument'''
 def deleteHeadlessWorkspace(headlessWorkspace):
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+def runExperiment(model_name, callback, names, data=None, num_procs=-1):
+    return netlogoWorkspaceFactory.runExperiment(model_name, callback, names, data=None, num_procs=-1)
 '''Opens the NetLogo Application'''
 nApp = -1
 def NetLogoApp():

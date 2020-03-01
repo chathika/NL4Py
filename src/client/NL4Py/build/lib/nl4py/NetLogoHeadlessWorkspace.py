@@ -27,7 +27,7 @@ import os
 import atexit
 import sys
 import time
-
+import numpy as np
 '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
 class NetLogoHeadlessWorkspace:
     __bridge = None
@@ -70,7 +70,7 @@ class NetLogoHeadlessWorkspace:
     '''Sends a signal to the server to tell the respective controller to export the view'''
     ''' of its HeadlessWorkspace object'''
     def exportView(self, filename):
-        self.exportView(self.__session, filename)
+        self.__bridge.exportView(self.__session, filename)
     '''Sends a signal to the server to tell the respective controller to send a'''
     '''NetLogo command to its HeadlessWorkspace object'''
     def command(self, command):
@@ -83,18 +83,25 @@ class NetLogoHeadlessWorkspace:
     '''Schedules a set of reporters at a start tick for an interval until a stop tick'''
     def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
         self.__reporters_length = len(reporters)
-        reporterArray = self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
+        reporterArray = []#self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
         for idx, reporter in enumerate(reporters):
-            reporterArray[idx] = reporter
-        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+            reporterArray.append(str(reporter))
+            #reporterArray[idx] = reporter
+        self.__bridge.scheduleReportersAndRun(self.__session, reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+    def awaitScheduledReporterResults(self):
+        return self.__bridge.awaitScheduledReporterResults(self.__session)
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
-        time.sleep(1)
         result = self.__bridge.getScheduledReporterResults(self.__session)
-        ticks_returned = len(result) / self.__reporters_length
-        import numpy as np
-        result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
+        if self.__reporters_length == 0:
+            return result
+        #ticks_returned = len(result) / self.__reporters_length        
+        #result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
         return result
+    def pause(self):
+        self.__bridge.pause(self.__session)
+    def unpause(self):
+        self.__bridge.unpause(self.__session)
     '''Sends a signal to the server to tell the respective controller to get the'''
     '''parameter specs of its HeadlessWorkspace object'''
     def getParamSpace(self):
@@ -103,8 +110,7 @@ class NetLogoHeadlessWorkspace:
     '''Sets the parameters randomly through the JavaGateway using'''
     '''Random parameter initialization code from BehaviorSearch'''
     def setParamsRandom(self):
-        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
-        
+        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()        
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
             if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
@@ -142,7 +148,7 @@ class NetLogoHeadlessWorkspace:
                 val_min = paramSpec.getValueFromChoice(0,count)
                 val_max = paramSpec.getValueFromChoice(count - 1,count)
                 step = (val_max - val_min)/(count - 1)
-                paramRange = [val_max,step,val_max]
+                paramRange = [val_min,step,val_max]
             if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
                 count = paramSpec.choiceCount()
                 paramRange = []
@@ -157,3 +163,5 @@ class NetLogoHeadlessWorkspace:
     def deleteWorkspace(self):
         self.__bridge.removeControllerFromStore(self.__session)
         #self.__gateway.close()
+    def getSession(self):
+        return self.__session

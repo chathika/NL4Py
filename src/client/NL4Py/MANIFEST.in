@@ -1,3 +1,4 @@
 include *.txt
 recursive-include docs *.txt
-recursive-include nl4py/nl4pyServer *.jar
+recursive-include nl4py/nl4pyServer/NetLogo6.0/ *.jar
+recursive-include nl4py/nl4pyServer/NetLogo6.1/ *.jar

@@ -32,11 +32,11 @@ import pkg_resources
 from os import listdir
 from os.path import isfile, join
 
-SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
+
 ##############################################################################
 '''Responsible for starting and stopping the NetLogo Controller Server'''
 class NetLogoControllerServerStarter:
-    
+    SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
     __gw = None# New gateway connection 
     ##server is in netlogo app folder
     
@@ -79,6 +79,17 @@ class NetLogoControllerServerStarter:
         if len(glob.glob(os.path.join(nl_path,"netlogo*.jar"))) == 0:
             print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
             return
+        else:
+            ver_info = os.path.split(glob.glob(os.path.join(nl_path,"netlogo*.jar"))[0])[-1].split(".")
+            major = float(ver_info[0].split("-")[-1])
+            minor = float("0." + ver_info[1])
+            major_minor = major + minor
+            if major_minor < 6.1:
+                os.environ['NL4Py_NetLogo_Ver'] = "6.1"
+                self.SERVER_PATH = os.path.join(self.SERVER_PATH,"NetLogo6.0")
+            else: 
+                os.environ['NL4Py_NetLogo_Ver'] = "6.0"
+                self.SERVER_PATH = os.path.join(self.SERVER_PATH,"NetLogo6.1")
         #else:
             #print("NetLogo found")
         nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"docs")
@@ -88,15 +99,14 @@ class NetLogoControllerServerStarter:
             nl_docs = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../docs")
             nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"../extensions")
             nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
-        nl_path = os.path.join(os.path.abspath(nl_path),"*")         
-        os.pathsep
-        server_path = os.path.join(os.path.abspath(SERVER_PATH),"*")
+        nl_path = os.path.join(os.path.abspath(nl_path),"*")
+        server_path = os.path.join(os.path.abspath(self.SERVER_PATH),"*")
         classpath = nl_path + os.pathsep + server_path 
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
         subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
-        
+                
     '''Starts JavaGateway server'''
     def startServer(self, netlogo_home):
         #Fire up the NetLogo Controller server through python
