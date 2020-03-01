@@ -58,7 +58,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 			return nextCommand;
 		}		
 		public CommandThread (){//register phaser for pool 
-			//notifier.register();
+			notifier.register();
 		}
 		@Override
 		public void run() {
@@ -95,11 +95,6 @@ public class HeadlessWorkspaceController extends NetLogoController {
 					//get next command out of queue											
 					String nextCommand = safelyGetNextCommand();
 					if(nextCommand.equalsIgnoreCase("~ScheduledReporters~") ){
-						//register a non-pool schedule
-						if (poolTasks == null ){
-							phaseTarget += 1;
-							notifier.register();
-						}
 						scheduleDone = false;
 						//Read in the schedule
 						ArrayList<String> reporters = new ArrayList<String>();
@@ -147,8 +142,8 @@ public class HeadlessWorkspaceController extends NetLogoController {
 						}
 						scheduleDone = true;
 						if (poolTasks == null){	
-							//deregister non schedule pool	
-							notifier.arriveAndDeregister();
+							//arrive non schedule pool	
+							notifier.arrive();
 						} else {
 							// add results to pool results
 							ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
@@ -314,9 +309,8 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
 		ArrayList<ArrayList<String>> results  = null;
 		// Change the notifier to point to the one provided by the client
-		notifier.awaitAdvance(this.phaseTarget);
+		notifier.arriveAndAwaitAdvance();
 		results = getScheduledReporterResults();
-		System.out.println(notifier.getPhase());
 		return results;
 	}
 	public ArrayList<ArrayList<String>> getScheduledReporterResults () {

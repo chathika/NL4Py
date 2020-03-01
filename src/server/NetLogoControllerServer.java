@@ -87,7 +87,7 @@ public class NetLogoControllerServer {
 	 */
 	public int newHeadlessWorkspaceController(){
 		//Create new controller instance
-		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(new Phaser());
+		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(new Phaser(1));
 		//Add it to controllerStore
 		int session = controller.getSession();
 		controllerStore.put(session, controller);

@@ -10,6 +10,7 @@ import org.nlogo.api.ValueConstraint;
 import org.nlogo.api.LogoException;
 import org.nlogo.core.CompilerException;
 import org.nlogo.headless.HeadlessWorkspace;
+import nl4py.server.NetLogoVersionCompatibilityResolver;
 
 public strictfp class Utils {
 	public static final long MIN_EXACT_NETLOGO_INT = -9007199254740992L;
@@ -51,7 +52,7 @@ public strictfp class Utils {
 		HeadlessWorkspace workspace = Utils.createWorkspace();
 
 		try {
-		  workspace.open(modelFileName);
+			NetLogoVersionCompatibilityResolver.open(workspace,modelFileName);			  
 		} catch (IOException e) {
 			throw new NetLogoLinkException("I/O Error trying to open model file '" + modelFileName + "'\n " + e.toString(), e);
 		} catch (CompilerException e) {
