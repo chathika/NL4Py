@@ -22,6 +22,8 @@ import multiprocessing
 from py4j.java_gateway import JavaGateway,GatewayParameters
 from py4j.java_collections import SetConverter, MapConverter, ListConverter
 import copy 
+import numpy as np
+import pandas as pd
 
 class NetLogoWorkspaceFactory:
     __all_workspaces = []
@@ -63,32 +65,53 @@ class NetLogoWorkspaceFactory:
                     results_dictionary[ws].append(result_ws_tick)
                     pass
         return results_dictionary
-
-    def runExperiment(self, model_name, callback, names, data=None, num_procs=-1):
+    
+    def runExperiment(self, model_name, callback, data, reporters, start_at_tick, interval, stop_at_tick,go_command,num_procs):
+        num_procs = multiprocessing.cpu_count() if num_procs <= 0 else num_procs
+        # assemble the init strings
+        # Make sure that data is either iterable or None
+        try:
+            iterator = iter(data)
+        except TypeException:
+            if data is not None:
+                print("data is not iterable")
+            else:
+                #If data is neither iterable nor None, then data will just be the names (1 indexed order)
+                data = list(range(len(data)))
+        except:
+            print("Unkown exception")
+            pass
+        with multiprocessing.Pool(num_procs) as pool:
+            #Make init strings
+            init_strings_arrays = pool.map(callback, data)
+            #Validate init strings, user may have provided an array of strings, if so convert to a single string
+            init_strings = pool.map(validate_init_strings, init_strings_arrays)
+        names = [str(i) for i in range(len(data))]
+        names_to_init_strings = [list(a) for a in zip(names, init_strings)]
+        names_to_init_strings_chunks = np.array_split(names_to_init_strings,num_procs)
+        ## namesToInitStringsChunks [[[1,"nl commands"],[2,"nl commands"],...],[[[num_procs+1,"nl commands"],[num_procs+2,"nl commands"],...]],[[]],...[[]]] -> dim[num_procs, n/num_procs ,2]
+        pool = self.__java_gateway.entry_point.initPool(model_name, num_procs, names_to_init_strings_chunks, reporters, start_at_tick, interval, stop_at_tick, go_command)
+        all_results = pool.run()
         results_dict = {}
-        pool = self.__java_gateway.entry_point.createWorkspacePool(model_name, len(names),num_procs)
-        for idx in range(len(names)):
-            # Try to schedule and execute workers as available
-            ws = pool.getFreeWorkspace() #blocking method. Server will wait if there is no free workspace at the moment
-            ws.setRunName(str(names[idx]))
-            config = data
-            try:
-                config = data[idx]
-            except:
-                pass
-            #results_dict[str(names[idx])] = {"config":config}
-            if data == None:
-                data = names
-            try:
-                callback(ws,data[idx])
-            except Exception as e:
-                callback(ws,names[idx])
-                print("NL4Py WARNING: data must be a list or iterable of equal length to names!")
-            ws.notifyWhenDone()
-        #Wait for pool to finish execution of all configurations and get results
-        all_results = pool.awaitResults()
-        #for result_name in all_results.keys():
-        #    results_dict[result_name]["results"] = all_results[result_name]
+        for result_name in sorted(list(map(int,all_results.keys()))):
+            results_dict[result_name] = []
+            results_dict[result_name].append(init_strings_arrays[result_name])
+            results_dict[result_name].append(all_results[str(result_name)])
+        all_results = pd.DataFrame.from_dict(results_dict,orient="index",columns=["Setup", "Results"])
         return all_results
+
+def validate_init_strings(init_strings):
+    is_iterable = True
+    try:
+        iterator = iter(init_strings)
+    except TypeException:
+        print("callback must return a string or an iterable!")
+        return
+    except:
+        print("Unkown exception")
+        pass
+    if type(init_strings) != str:
+        init_strings = " ".join(init_strings)
+    return init_strings
 
 ##############################################################################
