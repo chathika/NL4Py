@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from pylab import plot, draw, savefig, xlim, figure, ylim, legend, boxplot, setp, axes
 import os
+import seaborn as sns
 
 # function for setting the colors of the box plots pairs
 # takes boxplot and color string and hatch pattern
@@ -17,8 +18,9 @@ def setBoxColors(bp, color, hatch):
 
 def readData(filename):
     times = pd.read_csv(filename)
+    times['time.s'] = times['time.ms'] / 1000
+    times.loc[:,"connector"] = times.connector.apply(lambda x: "NL4Py" if x == "nl4py" else "pyNetLogo")
     print(times)
-    times['time.ms'] = times['time.ms'] / 1000
     return times
 ############### 5.1 ################
 def plot5_1():
@@ -104,35 +106,40 @@ def plot5_2():
     savefig('output/5.2.eps')
     os.system("output\\\\5.2.eps")
 ############### 5.3 ################
-def plot5_3():
+def plot5_3_1():
     times = readData("output/5.3_output.csv")
-    runs = pd.unique(times['runs'])
-    B = []
-    A = []
-    for r in runs: 
-        A.append(times[(times['connector'] == "pyNetLogo") & (times['runs'] ==r)]['time.ms'].values)
-        B.append(times[(times['connector'] == "nl4py") & (times['runs'] ==r)]['time.ms'].values)        
-    fig = figure()
-    ax = axes()
-
-    bpA = boxplot(A, positions = [1,5,9], widths = 0.6, patch_artist=True)
-    setBoxColors(bpA, "lightblue", '\\\\\\\\')
-    bpB = boxplot(B,positions = [2,6,10],  widths = 0.6, patch_artist=True)
-    setBoxColors(bpB, "red",'////')
-
-    xlim(0,11)
-    ax.set_xticklabels(pd.unique(times['runs']))
-
-    hB, = plot([1,1],'b-')
+    sns.stripplot(x = "runs", y = "time.s", hue = "connector", palette = ["lightblue", "red"], data = times)
+    #sns.despine(offset=10, trim =True)
+    
+    """hB, = plot([1,1],'b-')
     hR, = plot([1,1],'r-')
-    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo on IPCluster')
+    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo')
     circB= mpatches.Patch( facecolor="red",hatch='////',label='NL4Py')
 
     legend(handles = [circA,circB])
     hB.set_visible(False)
-    hR.set_visible(False)
+    hR.set_visible(False)"""
     plt.xlabel("Model Runs")
     plt.ylabel("Execution Time in Seconds")
-    savefig('output/5.3.eps')
-    os.system("output\\\\5.3.eps")
+    savefig('output/5.3.1.eps')
+    plt.clf()
+    os.system("./output/5.3.1.eps")
 
+def plot5_3_2():
+    memory = readData("output/5.3_output.csv")
+    sns.stripplot(x = "runs", y = "max.memory.used.kb", hue = "connector", palette = ["lightblue", "red"], data = memory)
+    #sns.despine(offset=10, trim =True)
+    
+    """hB, = plot([1,1],'b-')
+    hR, = plot([1,1],'r-')
+    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo')
+    circB= mpatches.Patch( facecolor="red",hatch='////',label='NL4Py')
+
+    legend(handles = [circA,circB])
+    hB.set_visible(False)
+    hR.set_visible(False)"""
+    plt.xlabel("Model Runs")
+    plt.ylabel("Max Memory Used in kB")
+    savefig('output/5.3.2.eps')
+    plt.clf()
+    os.system("output\\\\5.3.2.eps")
