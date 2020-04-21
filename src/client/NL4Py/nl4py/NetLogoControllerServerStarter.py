@@ -76,11 +76,11 @@ class NetLogoControllerServerStarter:
                 nl_path = os.path.join(netlogo_home,"Java")
             else:
                 nl_path = os.path.join(netlogo_home,"app")
-        if len(glob.glob(os.path.join(nl_path,"netlogo*.jar"))) == 0:
+        if len(glob.glob(os.path.join(nl_path,"netlogo-[0-9]*.jar"))) == 0:
             print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
             return
         else:
-            ver_info = os.path.split(glob.glob(os.path.join(nl_path,"netlogo*.jar"))[0])[-1].split(".")
+            ver_info = os.path.split(glob.glob(os.path.join(nl_path,"netlogo-[0-9]*.jar"))[0])[-1].split(".")
             major = float(ver_info[0].split("-")[-1])
             minor = float("0." + ver_info[1])
             major_minor = major + minor
@@ -105,7 +105,8 @@ class NetLogoControllerServerStarter:
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        subprocess.call(["java",xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
+        levelspace = "-Dorg.nlogo.preferHeadless=true"
+        subprocess.call(["java",levelspace,xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
                 
     '''Starts JavaGateway server'''
     def startServer(self, netlogo_home):
