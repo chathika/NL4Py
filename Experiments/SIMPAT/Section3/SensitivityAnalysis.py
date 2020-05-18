@@ -148,8 +148,8 @@ pyplot.yticks(fontsize=18)
 pyplot.ylabel("S1", fontsize = 18)
 pyplot.xticks(sampleSizes)
 draw()
-fig.savefig('output/SobolWSPS1.png')
-os.system('output\\\\SobolWSPS1.png')
+fig.savefig('output/SobolWSPS1.eps')
+os.system('output\\\\SobolWSPS1.eps')
 
 '''
 Plot the Sobol Total sensitivities to higher order interactions of parameters
@@ -168,8 +168,8 @@ pyplot.yticks(fontsize=18)
 pyplot.ylabel("Relative ST", fontsize = 18)
 pyplot.xticks(sampleSizes)
 draw()
-fig.savefig('output/SobolWSPST.png')
-os.system('output\\\\SobolWSPST.png')
+fig.savefig('output/SobolWSPST.eps')
+os.system('output\\\\SobolWSPST.eps')
 
 
 '''
@@ -207,8 +207,8 @@ pyplot.yticks(fontsize=18)
 pyplot.ylabel("S1", fontsize = 18)
 pyplot.xticks(sampleSizes)
 draw()
-fig.savefig('output/FASTWSPS1.png')
-os.system('output\\\\FASTWSPS1.png')
+fig.savefig('output/FASTWSPS1.eps')
+os.system('output\\\\FASTWSPS1.eps')
 
 ''''''
 Plot the FAST Total sensitivities to higher order interactions of parameters
@@ -227,7 +227,7 @@ pyplot.yticks(fontsize=18)
 pyplot.ylabel("Relative ST", fontsize = 18)
 pyplot.xticks(sampleSizes)
 draw()
-fig.savefig('output/FASTWSPST.png')
-os.system('output\\\\FASTWSPST.png')
+fig.savefig('output/FASTWSPST.eps')
+os.system('output\\\\FASTWSPST.eps')
 '''
 nl4py.stopServer()
