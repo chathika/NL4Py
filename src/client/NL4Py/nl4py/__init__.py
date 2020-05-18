@@ -87,8 +87,8 @@ def deleteAllHeadlessWorkspaces():
 '''deletes the headlessworkspace given as an argument'''
 def deleteHeadlessWorkspace(headlessWorkspace):
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
-def runExperiment(model_name, callback, names, data=None, num_procs=-1):
-    return netlogoWorkspaceFactory.runExperiment(model_name, callback, names, data=None, num_procs=-1)
+def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
+    return netlogoWorkspaceFactory.runExperiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
 '''Opens the NetLogo Application'''
 nApp = -1
 def NetLogoApp():

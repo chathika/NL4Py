@@ -1,0 +1,15 @@
+netlogo_path = "C:/Program Files/NetLogo 6.0.2"
+
+netlogo_path_user=C:\
+netlogo_path_user="C:\"
+netlogo_path_user="C:\"
+netlogo_path_user="C:"
+netlogo_path_user="C:""
+netlogo_path_user="C:"
+netlogo_path_user="C:\"
+netlogo_path_user="C:"
+netlogo_path_user="C:"
+netlogo_path_user="C:"
+netlogo_path_user="C:"
+netlogo_path_user="C:/"
+netlogo_path_user="C:/Program Files"
