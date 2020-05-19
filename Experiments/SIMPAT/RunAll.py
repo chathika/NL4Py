@@ -101,8 +101,8 @@ if (experiment == 0 or experiment == 4):
     plot.plot5_2()
 
 if (experiment == 0 or experiment == 5):
-    plot.plot5_3_1()
-    plot.plot5_3_2()
+    #plot.plot5_3_1()
+    #plot.plot5_3_2()
     def getMemoryUsedForConnector(connector,runsNeeded,ticksNeeded,rep):
         with open("output/memory/{0}_runs{1}_ticks{2}_rep{3}.txt".format(connector,str(runsNeeded),str(ticksNeeded),str(rep)),"r") as f:
             lines = f.readlines()
@@ -119,24 +119,20 @@ if (experiment == 0 or experiment == 5):
         df["ticks"]=ticksNeeded
         return df
 
-    """print("\n\n5.3 Starting execution time comparisons between NL4Py runExperiment and PyNetLogo with multiprocessing...\n")
-    outputFile = 'output/5.3_output.csv'
+    print("\n\n5.3 Starting execution time comparisons between NL4Py runExperiment and PyNetLogo with multiprocessing...\n")
+    outputFile = os.path.join('output','5.3_output.csv')
     if(os.path.exists(outputFile)):
         os.remove(outputFile)
     with open (outputFile, "w+") as out:
         out.write("connector,function,runs,ticks,time.ms,max.memory.used.kb\n")
         out.flush()
         out.close()
-    #ensure jupyter has the python kernel being used:
-    ###os.system("{0} -m ipykernel install --name {0} --user".format(python_command))
     # 5.3 NL4Py
     print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
     print("Please wait. This may take a while...")
-    totalRepeats = 5
-    runsNeededList = [500,1000,1500]
-    ticksNeededList = [100]#,200,300]
-    import os
-    outputFile = 'output/5.3_output.csv' 
+    totalRepeats = 10
+    runsNeededList = list(range(100,600,100))
+    ticksNeededList = list(range(1000,11000,1000))
     all_memory_data_kilobytes = pd.DataFrame(columns=["connector","rep","runs","ticks","total","used","free"])
     with open (outputFile, "a+") as time_out:
             for rep in range(totalRepeats):
@@ -172,7 +168,7 @@ if (experiment == 0 or experiment == 5):
     
     plot.plot5_3_1()
     plot.plot5_3_2()
-    os.system('output\\\\5.3.png')""" 
+    show()
     """if (experiment == 0 or experiment == 6):
         # 5.3 pyNetLogo
         print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks with pyNetLogo...")

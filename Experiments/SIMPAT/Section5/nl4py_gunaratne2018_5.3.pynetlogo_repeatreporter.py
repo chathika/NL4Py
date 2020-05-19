@@ -1,3 +1,8 @@
+
+'''
+code follows that on https://pynetlogo.readthedocs.io/en/latest/_docs/SALib_multiprocessing.html#Running-the-experiments-in-parallel-using-a-Process-Pool
+as accessed on 18th May. 2020
+'''
 import os
 import sys, traceback
 from multiprocessing import Pool
