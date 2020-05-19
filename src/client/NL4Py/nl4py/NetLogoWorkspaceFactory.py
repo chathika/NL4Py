@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 #import NetLogo_Controller_Server_Starter
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 import multiprocessing
+from multiprocessing.pool import ThreadPool
 #import NL4PyControllerServerException
 from py4j.java_gateway import JavaGateway,GatewayParameters
 from py4j.java_collections import SetConverter, MapConverter, ListConverter
@@ -81,11 +82,12 @@ class NetLogoWorkspaceFactory:
         except:
             print("Unkown exception")
             pass
-        with multiprocessing.Pool(num_procs) as pool:
+        with ThreadPool(num_procs) as pool:
             #Make init strings
             init_strings_arrays = pool.map(callback, data)
             #Validate init strings, user may have provided an array of strings, if so convert to a single string
             init_strings = pool.map(validate_init_strings, init_strings_arrays)
+        
         names = [str(i) for i in range(len(data))]
         names_to_init_strings = [list(a) for a in zip(names, init_strings)]
         names_to_init_strings_chunks = np.array_split(names_to_init_strings,num_procs)
