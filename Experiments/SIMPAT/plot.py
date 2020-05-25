@@ -122,8 +122,8 @@ def plot5_3_1():
     plt.xlabel("Model Runs")
     plt.ylabel("Execution Time in Seconds")
     savefig('output/5.3.1.eps')
-    plt.clf()
-    os.system("./output/5.3.1.eps")
+    plt.show()
+    #os.system("./output/5.3.1.eps")
 
 def plot5_3_2():
     memory = readData("output/5.3_output.csv")
@@ -141,5 +141,5 @@ def plot5_3_2():
     plt.xlabel("Model Runs")
     plt.ylabel("Max Memory Used in kB")
     savefig('output/5.3.2.eps')
-    plt.clf()
-    os.system("output\\\\5.3.2.eps")
+    plt.show()
+    #os.system("output\\\\5.3.2.eps")

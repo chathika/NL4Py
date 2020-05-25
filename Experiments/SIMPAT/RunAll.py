@@ -127,8 +127,8 @@ if __name__=="__main__":
         print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
         print("Please wait. This may take a while...")
         totalRepeats = 10
-        runsNeededList = list(range(10,600,100))
-        ticksNeededList = list(range(100,11000,1000))
+        runsNeededList = list(range(100,1100,100))
+        ticksNeededList = list(range(100,1100,100))
         all_memory_data_kilobytes = pd.DataFrame(columns=["connector","rep","runs","ticks","total","used","free"])    
         with open (outputFile, "a+") as time_out:
                 for rep in range(totalRepeats):
@@ -137,7 +137,7 @@ if __name__=="__main__":
                             #nl4py
                             mem_proc = Process(target=LogMem.log_mem, args = ("nl4py",runsNeeded,ticksNeeded,rep,))
                             mem_proc.start()
-                            experiment_path = os.path.join("Section5","5.3.nl4py.py")
+                            experiment_path = os.path.join("Section5","nl4py_gunaratne2019_5.3.nl4py_scheduledreporters.py")
                             startTime = int(round(time.time() * 1000))
                             os.system("{0} \"{1}\" \"{2}\" {3} {4}".format("python",experiment_path,netlogo_path,runsNeeded,ticksNeeded))
                             stopTime = int(round(time.time() * 1000))
@@ -146,13 +146,13 @@ if __name__=="__main__":
                             executionTime = stopTime - startTime
                             df = getMemoryUsedForConnector("nl4py",runsNeeded,ticksNeeded,rep)
                             all_memory_data_kilobytes=all_memory_data_kilobytes.append(df,sort=False)
-                            time_out.write("nl4py,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()) + "\n")
+                            time_out.write("nl4py,scheduledReporters," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
                             time_out.flush()
-                            print("nl4py,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()))                        
+                            print("nl4py,scheduledReporters," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))                        
                             #pynetlogo
                             mem_proc = Process(target=LogMem.log_mem, args = ("pynetlogo",runsNeeded,ticksNeeded,rep,))
                             mem_proc.start()   
-                            experiment_path = os.path.join("Section5","5.3.nl4py.py")
+                            experiment_path = os.path.join("Section5","nl4py_gunaratne2018_5.3.pynetlogo_repeatreporter.py")
                             startTime = int(round(time.time() * 1000))
                             os.system("{0} \"{1}\" \"{2}\" {3} {4}".format("python",experiment_path,netlogo_path,runsNeeded,ticksNeeded))
                             stopTime = int(round(time.time() * 1000))
@@ -161,9 +161,9 @@ if __name__=="__main__":
                             executionTime = stopTime - startTime
                             df = getMemoryUsedForConnector("pynetlogo",runsNeeded,ticksNeeded,rep)
                             all_memory_data_kilobytes=all_memory_data_kilobytes.append(df,sort=False)
-                            time_out.write("pynetlogo,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()) + "\n")
+                            time_out.write("pynetlogo,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
                             time_out.flush()
-                            print("pynetlogo,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()))  
+                            print("pynetlogo,runExperiment," + str(runsNeeded) + "," + str(ticksNeeded) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))  
         print(all_memory_data_kilobytes)
         
         plot.plot5_3_1()
