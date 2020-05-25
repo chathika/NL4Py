@@ -14,7 +14,7 @@ import nl4py.server.HeadlessWorkspaceController;
 public class HeadlessWorkspaceControllerPool {
     private HashSet<HeadlessWorkspaceController> allWorkers;
     
-    private ConcurrentHashMap<String, ArrayList<ArrayList<String>>> resultsMap;
+    private ConcurrentHashMap<String, byte[][][]> resultsMap;
     private Phaser notifier;
 
     private Integer countProcessors;
@@ -32,7 +32,7 @@ public class HeadlessWorkspaceControllerPool {
     public HeadlessWorkspaceControllerPool(String modelName, Integer processors, ArrayList<ArrayList<ArrayList<String>>> namesToInitStringsChunks, ArrayList<String> reporters, int startTick, int tickInterval, int stopTick, String goCommand){
         this.modelName = modelName;
         allWorkers = new HashSet<HeadlessWorkspaceController>();
-        resultsMap = new ConcurrentHashMap<String, ArrayList<ArrayList<String>>>(); //run name -> results
+        resultsMap = new ConcurrentHashMap<String, byte[][][]>(); //run name -> results
         notifier = new Phaser(1);
         runNameInitStringPairs = new ArrayList<ArrayList<ArrayList<String>>>(namesToInitStringsChunks);
         this.reporters = reporters;
@@ -48,7 +48,7 @@ public class HeadlessWorkspaceControllerPool {
             this.countProcessors = namesToInitStringsChunks.size();
         }
     }
-    public HashMap<String, ArrayList<ArrayList<String>>> run() {
+    public HashMap<String, byte[][][]> run() {
         int countWorkspacesStarted = 0;
 
         while(countWorkspacesStarted != countProcessors){
@@ -67,6 +67,6 @@ public class HeadlessWorkspaceControllerPool {
         }
         notifier.arriveAndAwaitAdvance();
         allWorkers.clear();
-        return new HashMap<String, ArrayList<ArrayList<String>>>(resultsMap);
+        return new HashMap<String, byte[][][]>(resultsMap);
     }
 }

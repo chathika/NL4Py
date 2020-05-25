@@ -24,7 +24,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	private CommandThread commandThread;
 	private Object commandThreadLock = new Object();
 	boolean controllerNeeded = false;
-	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
+	LinkedBlockingQueue<byte[][]> scheduledReporterResults = new LinkedBlockingQueue<byte[][]>();
 	volatile boolean scheduleDone = true;	
 	private Phaser notifier;
 	private int phaseTarget = 0;
@@ -37,11 +37,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 	private Integer tickInterval;
 	private Integer stopTick;
 	private String goCommand;   
-	private ConcurrentHashMap<String, ArrayList<ArrayList<String>>> poolResultsMap;
+	private ConcurrentHashMap<String, byte[][][]> poolResultsMap;
 	///////
 
-	class CommandThread extends Thread {	
-		//private HashMap<String, ArrayList<ArrayList<String>>> poolWorkerResults;
+	class CommandThread extends Thread {
 		/**
 		* Checks if the queue has been poisoned with the thread stop condition
 		* If yes, interrupt and free resources.
@@ -84,8 +83,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							commandQueue.put("~RunReporters~");
 							commandQueue.put(goCommand);
 						} else {
-							// pool work has finished 
-							//poolResultsMap.putAll(poolWorkerResults);
+							// pool work has finished
 							notifier.arriveAndDeregister();
 							poolTasks = null;
 							ws.dispose();
@@ -134,10 +132,13 @@ public class HeadlessWorkspaceController extends NetLogoController {
 								while(resultsThisTickIterator.hasNext()){
 									resultsThisTickArray.add(resultsThisTickIterator.next().toString());
 								}
-								scheduledReporterResults.put(resultsThisTickArray);										
+								//convert to byte[][]
+								byte[][] resultsThisTickArrayBytes = new byte[resultsThisTickArray.size()][];
+								for (int i=0; i < resultsThisTickArray.size(); i++) {
+									resultsThisTickArrayBytes[i] = resultsThisTickArray.get(i).getBytes();
+								}
+								scheduledReporterResults.put(resultsThisTickArrayBytes);
 							}
-							//ArrayList resultsArray = new ArrayList(((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toJava());
-							//scheduledReporterResults.put(resultsArray);
 							ws.command("ask patch 0 0 [set plabel 0]");
 						}
 						scheduleDone = true;
@@ -146,9 +147,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 							notifier.arrive();
 						} else {
 							// add results to pool results
-							ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
+							ArrayList<byte[][]> results  = new ArrayList<byte[][]>();
 							scheduledReporterResults.drainTo(results);
-							poolResultsMap.put(runName,results);
+							poolResultsMap.put(runName,results.toArray(new byte[scheduledReporterResults.size()][][]));
 						}
 					} else {
 						if (nextCommand.equalsIgnoreCase("~PoolAttached~")){
@@ -308,11 +309,10 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		byte[][][] results  = null;
 		// Change the notifier to point to the one provided by the client
 		notifier.arriveAndAwaitAdvance();
-		results = getScheduledReporterResults();
-		return results;
+		return getScheduledReporterResults();
 	}
 	public byte[][][] getScheduledReporterResults () {
-		ArrayList<ArrayList<String>> buffer  = new ArrayList<ArrayList<String>>();		
+		ArrayList<byte[][]> buffer  = new ArrayList<byte[][]>();		
 		try {	
 			if(scheduleDone) {
 				synchronized(scheduledReporterResults){
@@ -322,18 +322,9 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		byte[][][] results = new byte[buffer.size()][][];
-		for (int i=0; i<buffer.size();i++){
-			ArrayList<String> resultsThisTickString = buffer.get(i);
-			byte[][] resultsThisTickBytes = new byte[resultsThisTickString.size()][];
-			for (int j=0; j<resultsThisTickString.size();j++){
-				resultsThisTickBytes[j] = resultsThisTickString.get(j).getBytes();
-			}
-			results[i] = resultsThisTickBytes;
-		}
-		return results;
+		return buffer.toArray(new byte[buffer.size()][][]);
 	}	
-	protected void attachPoolTasks(ArrayList<ArrayList<String>> poolTasks,ArrayList<String> reporters, Integer startTick,Integer tickInterval, Integer stopTick, String goCommand, ConcurrentHashMap<String, ArrayList<ArrayList<String>>> poolResultsMap) {
+	protected void attachPoolTasks(ArrayList<ArrayList<String>> poolTasks,ArrayList<String> reporters, Integer startTick,Integer tickInterval, Integer stopTick, String goCommand, ConcurrentHashMap<String, byte[][][]> poolResultsMap) {
 		this.reporters = reporters;
 		this.poolTasks = poolTasks;
 		this.startTick = startTick;
