@@ -6,6 +6,9 @@ import py4j.GatewayServer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
@@ -223,22 +226,21 @@ public class NetLogoAppController extends NetLogoController {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Get the value of a variable in the NetLogo model.
-	 * @param command: The value to report.
+	 * @param reporter: The value to report.
 	 * @return Java Object containing return info
-	 */
-	public Object report(String command) {
-		Object report = new Double(0.0);
+	 */	
+	public Object report(String reporter) {
+		Object result = null;
 		try {
-			Thread.sleep(1);
-			report = App.app().report(command);
+			result = ws.report(reporter);
 		} catch (Exception e) {
-			// in case a run crashes due to a NetLogo side exception, return 0
-			report = new Double(0.0);
-			//e.printStackTrace();
-		} 
-		return report;
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		return result;
 	}
 	
 	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
@@ -260,15 +262,26 @@ public class NetLogoAppController extends NetLogoController {
 			e.printStackTrace();
 		}
 	}
-	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
+	public byte[][][] awaitScheduledReporterResults() {
 		throw new UnsupportedOperationException("Method unimplemented!");
 	}
-	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
-		ArrayList<ArrayList<String>> results  = new ArrayList<ArrayList<String>>();
+	public byte[][][] getScheduledReporterResults () {
+		ArrayList<ArrayList<String>> buffer  = new ArrayList<ArrayList<String>>();		
 		try {
-			scheduledReporterResults.drainTo(results);
+			synchronized(scheduledReporterResults){
+				scheduledReporterResults.drainTo(buffer);
+			}		
 		} catch (Exception e) {
 			e.printStackTrace();
+		}		
+		byte[][][] results = new byte[buffer.size()][][];
+		for (int i=0; i<buffer.size();i++){
+			ArrayList<String> resultsThisTickString = buffer.get(i);
+			byte[][] resultsThisTickBytes = new byte[resultsThisTickString.size()][];
+			for (int j=0; j<resultsThisTickString.size();j++){
+				resultsThisTickBytes[j] = resultsThisTickString.get(j).getBytes();
+			}
+			results[i] = resultsThisTickBytes;
 		}
 		return results;
 	}	

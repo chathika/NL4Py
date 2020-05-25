@@ -157,10 +157,10 @@ public class NetLogoControllerServer {
 	public void scheduleReportersAndRun(int session, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
 	}
-	public ArrayList<ArrayList<String>> awaitScheduledReporterResults(int session) {
+	public byte[][][] awaitScheduledReporterResults(int session) {
 		return getControllerFromStore(session).awaitScheduledReporterResults();
 	}
-	public ArrayList<ArrayList<String>> getScheduledReporterResults (int session){
+	public byte[][][] getScheduledReporterResults (int session){
 		return getControllerFromStore(session).getScheduledReporterResults();
 	}
 	public SearchSpace getParamList(int session, String path) {

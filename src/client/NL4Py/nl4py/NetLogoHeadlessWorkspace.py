@@ -77,8 +77,8 @@ class NetLogoHeadlessWorkspace:
         self.__bridge.command(self.__session, command)
     '''Sends a signal to the server to tell the respective controller to execute a'''
     '''reporter on its HeadlessWorkspace object'''
-    def report(self, command):
-        result = self.__bridge.report(self.__session, command)
+    def report(self, reporter):
+        result = self.__bridge.report(self.__session, reporter)
         return result
     '''Schedules a set of reporters at a start tick for an interval until a stop tick'''
     def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
@@ -89,15 +89,26 @@ class NetLogoHeadlessWorkspace:
             #reporterArray[idx] = reporter
         self.__bridge.scheduleReportersAndRun(self.__session, reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
     def awaitScheduledReporterResults(self):
-        return self.__bridge.awaitScheduledReporterResults(self.__session)
+        bytes_result =  self.__bridge.awaitScheduledReporterResults(self.__session)
+        decoded_results = []
+        for bytes_results_in_tick in bytes_result:
+            decoded_results_in_tick = []
+            for bytes_result_in_tick in bytes_results_in_tick:
+                decoded_results_in_tick.append(NetLogoHeadlessWorkspace.decodeServerResult(bytes_result_in_tick))
+            decoded_results.append(decoded_results_in_tick)
+        return decoded_results
     '''Gets back results from scheduled reporters as a Java Array'''
     def getScheduledReporterResults (self):
-        result = self.__bridge.getScheduledReporterResults(self.__session)
+        bytes_result = self.__bridge.getScheduledReporterResults(self.__session)
         if self.__reporters_length == 0:
-            return result
-        #ticks_returned = len(result) / self.__reporters_length        
-        #result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
-        return result
+            return bytes_result
+        decoded_results = []
+        for bytes_results_in_tick in bytes_result:
+            decoded_results_in_tick = []
+            for bytes_result_in_tick in bytes_results_in_tick:
+                decoded_results_in_tick.append(NetLogoHeadlessWorkspace.decodeServerResult(bytes_result_in_tick))
+            decoded_results.append(decoded_results_in_tick)
+        return decoded_results
     def pause(self):
         self.__bridge.pause(self.__session)
     def unpause(self):
@@ -165,3 +176,10 @@ class NetLogoHeadlessWorkspace:
         #self.__gateway.close()
     def getSession(self):
         return self.__session
+    def decodeServerResult(result_bytes):
+        result = result_bytes.decode()
+        try:
+            result = float(result)
+        except ValueError:
+            pass
+        return result
