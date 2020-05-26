@@ -15,7 +15,7 @@ ticksNeeded = int(sys.argv[3])
 
 def initializer(modelfile):
     global netlogo
-    netlogo = pyNetLogo.NetLogoLink(gui=False, netlogo_home = netlogo_path, netlogo_version = '6.0')
+    netlogo = pyNetLogo.NetLogoLink(gui=False, netlogo_home = netlogo_path, netlogo_version = '6.1')
     netlogo.load_model(modelfile)
 
 def run_simulation(runId):
