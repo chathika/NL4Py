@@ -14,24 +14,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
+import shutil
+import os
+
+from py4j.java_gateway import JavaGateway
+
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 from .NetLogoControllerServerStarter import NetLogoControllerServerStarter
 from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 from .NetLogoGUI import NetLogoGUI
-from py4j.java_gateway import JavaGateway
-import six.moves.urllib.request as urlrq
-#import urllib
-import shutil
-import os
+
 serverStarter = NetLogoControllerServerStarter()
-netlogoWorkspaceFactory = None
+netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
+
 def startServer(netlogo_home):
     try:
         serverStarter.startServer(netlogo_home)
     except:
         print("Server failed to start!")
-    global netlogoWorkspaceFactory 
-    netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
+    
 def stopServer():
     try:
         serverStarter.shutdownServer()
@@ -39,56 +40,39 @@ def stopServer():
     except:
         pass
     global netlogoWorkspaceFactory 
-    netlogoWorkspaceFactory = None
-#print("Starting up server...")
-#NLCSStarter.startServer()
-#print("Server started!")
-"""
+    del netlogoWorkspaceFactory
+    
 
-'''Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it'''
 def newNetLogoHeadlessWorkspace():
+    '''
+    Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it
+    '''
     return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
-'''Returns a list of all live HeadlessWorkspaces'''
-def getAllHeadlessWorkspaces():
-    return netlogoWorkspaceFactory.getAllExistingWorkspaces()
-'''Deletes all existing HeadlessWorkspaces'''
-def deleteAllHeadlessWorkspaces():
-    netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
-'''deletes the headlessworkspace given as an argument'''
-def deleteHeadlessWorkspace(headlessWorkspace):
-    netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
-'''Opens the NetLogo Application'''
-nApp = -1
-def NetLogoApp():
-    global nApp
-    if nApp == -1:
-        nApp = NetLogoGUI(JavaGateway())
-    return nApp
 
-    try:
-        serverStarter.shutdownServer()
-        #print("Server stopped.")
-    except:
-        pass"""
-#print("Starting up server...")
-#NLCSStarter.startServer()
-#print("Server started!")
-
-netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
-'''Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it'''
-def newNetLogoHeadlessWorkspace():
-    return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
-'''Returns a list of all live HeadlessWorkspaces'''
 def getAllHeadlessWorkspaces():
+    '''
+    Returns a list of all live HeadlessWorkspaces
+    '''
     return netlogoWorkspaceFactory.getAllExistingWorkspaces()
-'''Deletes all existing HeadlessWorkspaces'''
+
 def deleteAllHeadlessWorkspaces():
+    '''
+    Deletes all existing HeadlessWorkspaces
+    '''
     netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
-'''deletes the headlessworkspace given as an argument'''
+
 def deleteHeadlessWorkspace(headlessWorkspace):
+    '''
+    Deletes the headlessworkspace given as an argument
+    '''
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+
 def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
+    '''
+    Creates and returns a NetLogo experiment
+    '''
     return netlogoWorkspaceFactory.runExperiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
+
 '''Opens the NetLogo Application'''
 nApp = -1
 def NetLogoApp():

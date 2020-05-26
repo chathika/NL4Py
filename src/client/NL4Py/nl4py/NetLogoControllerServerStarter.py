@@ -14,14 +14,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-from py4j.java_gateway import JavaGateway
-from py4j.protocol import Py4JNetworkError
-from py4j.protocol import Py4JError
 import subprocess
 import threading
 import os
-import atexit
-import sys
 import logging
 import time
 import psutil
@@ -29,24 +24,24 @@ import math
 import platform
 import glob
 import pkg_resources
-from os import listdir
-from os.path import isfile, join
 
+from py4j.java_gateway import JavaGateway
 
-##############################################################################
-'''Responsible for starting and stopping the NetLogo Controller Server'''
 class NetLogoControllerServerStarter:
-    SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
-    __gw = None# New gateway connection 
-    ##server is in netlogo app folder
-    
-    
+    '''
+    Responsible for starting and stopping the NetLogo Controller Server
+    '''
+
     def __init__(self):
+        self.SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
         self.__gw = JavaGateway()
-        self.shutdownServer()
+        #self.shutdownServer()
         #atexit.register(self.shutdownServer)
-    '''Internal method to start JavaGateway server. Will be called by starServer on seperate thread'''
+    
     def __runServer(self,netlogo_home): 
+        '''
+        Internal method to start JavaGateway server. Will be called by starServer on seperate thread
+        '''
         __server_name = "nl4py.server.NetLogoControllerServer"
         nl_path = ""
         if netlogo_home == None:

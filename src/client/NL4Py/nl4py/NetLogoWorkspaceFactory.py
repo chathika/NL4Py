@@ -34,7 +34,7 @@ class NetLogoWorkspaceFactory:
         return
     '''Create a new Headless Workspace and get a pointer to it'''
     def newNetLogoHeadlessWorkspace(self):
-        n = NetLogoHeadlessWorkspace(self.__java_gateway)
+        n = NetLogoHeadlessWorkspace()
         self.__all_workspaces.append(n)
         self.__session_workspaces_dict[n.getSession()] = n
         return n

@@ -14,81 +14,92 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-from py4j.java_gateway import JavaGateway
+import os
+
 from py4j.protocol import Py4JNetworkError
-from py4j.protocol import Py4JJavaError
+from py4j.java_gateway import JavaGateway, GatewayParameters, is_instance_of
 
 from .NL4PyControllerServerException import NL4PyControllerServerException
-import py4j.java_gateway as jg
-import py4j.java_collections as jcol
-import subprocess
-import threading
-import os
-import atexit
-import sys
-import time
-import numpy as np
-'''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
+
 class NetLogoHeadlessWorkspace:
-    __bridge = None
-    __gateway = None 
-    __session = None
-    __path = None
-    __reporters_length = 0
-    '''and creates a headless workspace controller on the server'''
-    '''Returns a session id for this controller to be used for further use of this ABM'''
-    def __init__(self, java_gateway):
-        self.__gateway = java_gateway# New gateway connection
+    '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
+    
+    def __init__(self):
+        '''
+        Returns a session id for this controller to be used for further use of this ABM
+        and creates a headless workspace controller on the server
+        '''
+        self.__gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True))
         self.__bridge = self.__gateway.entry_point
         self.__session = self.__bridge.newHeadlessWorkspaceController()
+    
     #######################################################
-    ###Below are public functions of the NL4Py interface###
+    ###Below are public API functions of the NL4Py interface###
     #######################################################
     
-    '''Opens a NetLogo model'''
+    
     def openModel(self, path):
+        '''
+        Opens a NetLogo model
+        '''
         try:
             self.__path = path
             self.__bridge.openModel(self.__session,self.__path)
         except Py4JNetworkError as e:
-            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running nl4py.stopServer() and trying again.")#, None, sys.exc_info()[2])
-        #except Py4JJavaError as e:
-        #    raise NL4PyControllerServerException("Looks like the server couldn't find NetLogo. Perhaps you didn't set the NETLOGO_APP environment variable? Try setting it on your system and restarting Python.")#, None, sys.exc_info()[2])
-        #Also, just in case, check if this model actually exists and responds
-        #try: 
-        #    self.getParamRanges()
-        #except AttributeError as e:
-        #    raise NL4PyControllerServerException("There doesn't seem to be a NetLogo model under that name! Please recheck the .nlogo model path.")
-    '''Sends a signal to the server to tell the respective controller to close its'''
-    '''HeadlessWorkspace object'''
+            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running nl4py.stopServer() and trying again.")
+        
+    
     def closeModel(self):
+        '''
+        Sends a signal to the server to tell the respective controller to close its
+        HeadlessWorkspace object
+        '''
         self.__bridge.closeModel(self.__session)
-    '''Sends a signal to the server to tell the respective controller to create a'''
-    '''new instance of its HeadlessWorkspace object'''
+    
     def refresh(self):
+        '''
+        Sends a signal to the server to tell the respective controller to create a
+        new instance of its HeadlessWorkspace object
+        '''
         self.__bridge.refresh(self.__session)
-    '''Sends a signal to the server to tell the respective controller to export the view'''
-    ''' of its HeadlessWorkspace object'''
+    
     def exportView(self, filename):
+        '''
+        Sends a signal to the server to tell the respective controller to export the view
+        of its HeadlessWorkspace object
+        '''
         self.__bridge.exportView(self.__session, filename)
-    '''Sends a signal to the server to tell the respective controller to send a'''
-    '''NetLogo command to its HeadlessWorkspace object'''
+    
     def command(self, command):
+        '''
+        Sends a signal to the server to tell the respective controller to send a
+        NetLogo command to its HeadlessWorkspace object
+        '''
         self.__bridge.command(self.__session, command)
-    '''Sends a signal to the server to tell the respective controller to execute a'''
-    '''reporter on its HeadlessWorkspace object'''
+    
     def report(self, reporter):
+        '''
+        Sends a signal to the server to tell the respective controller to execute a
+        reporter on its HeadlessWorkspace object
+        '''
         result = self.__bridge.report(self.__session, reporter)
         return result
-    '''Schedules a set of reporters at a start tick for an interval until a stop tick'''
+    
     def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
+        '''
+        Schedules a set of reporters at a start tick for an interval until a stop tick
+        '''
         self.__reporters_length = len(reporters)
         reporterArray = []#self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
         for idx, reporter in enumerate(reporters):
             reporterArray.append(str(reporter))
             #reporterArray[idx] = reporter
         self.__bridge.scheduleReportersAndRun(self.__session, reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+    
     def awaitScheduledReporterResults(self):
+        '''
+        Waits for completion of scheduled reporters and returns result as Python list.
+        '''
         bytes_result =  self.__bridge.awaitScheduledReporterResults(self.__session)
         decoded_results = []
         for bytes_results_in_tick in bytes_result:
@@ -97,8 +108,12 @@ class NetLogoHeadlessWorkspace:
                 decoded_results_in_tick.append(NetLogoHeadlessWorkspace.decodeServerResult(bytes_result_in_tick))
             decoded_results.append(decoded_results_in_tick)
         return decoded_results
-    '''Gets back results from scheduled reporters as a Java Array'''
+    
     def getScheduledReporterResults (self):
+        '''
+        Gets back results from scheduled reporters as a Python list
+        returns None if simulation has not finished yet.
+        '''
         bytes_result = self.__bridge.getScheduledReporterResults(self.__session)
         if self.__reporters_length == 0:
             return bytes_result
@@ -113,69 +128,82 @@ class NetLogoHeadlessWorkspace:
         self.__bridge.pause(self.__session)
     def unpause(self):
         self.__bridge.unpause(self.__session)
-    '''Sends a signal to the server to tell the respective controller to get the'''
-    '''parameter specs of its HeadlessWorkspace object'''
+    
     def getParamSpace(self):
+        '''
+        Sends a signal to the server to tell the respective controller to get the
+        parameter specs of its HeadlessWorkspace object
+        '''
         return self.__bridge.getParamList(self.__session,self.__path)
-    #An extra helpful method:
-    '''Sets the parameters randomly through the JavaGateway using'''
-    '''Random parameter initialization code from BehaviorSearch'''
+    
     def setParamsRandom(self):
+        '''
+        Sets the parameters randomly through the JavaGateway using
+        Random parameter initialization code from BehaviorSearch
+        '''
         paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()        
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
                 if type(paramValue) != bool:#isinstance(data[i][k], bool)
                     paramValue = '"{}"'.format(paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
                 paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
             print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             self.__bridge.command(self.__session, "set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
             
-    '''Returns the names of the parameters in the model'''
+
     def getParamNames(self):
+        '''
+        Returns the names of the parameters in the model
+        '''
         paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
-        
         parameterNames = []
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
             parameterNames.append(paramSpec.getParameterName())
         return parameterNames
     
-    '''Returns the parameter ranges'''
     def getParamRanges(self):
+        '''
+        Returns the parameter ranges
+        '''
         paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
         paramRanges = []
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
             paramRange = []
-            if (jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec") | jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec")) :
+            if (is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec") | is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec")) :
                 count = paramSpec.choiceCount()
                 val_min = paramSpec.getValueFromChoice(0,count)
                 val_max = paramSpec.getValueFromChoice(count - 1,count)
                 step = (val_max - val_min)/(count - 1)
                 paramRange = [val_min,step,val_max]
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
                 count = paramSpec.choiceCount()
                 paramRange = []
                 for choice in range(0,count):
                     paramRange.append(paramSpec.getValueFromChoice(choice,count))
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
+            if is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
                 paramRange = [paramSpec.getValueFromChoice(0,1)]
             paramRanges.append(paramRange)
         return paramRanges
     
-    '''Kills the Workspace and its controller on the server'''
+    
     def deleteWorkspace(self):
+        '''
+        Kills the Workspace and its controller on the server
+        '''
         self.__bridge.removeControllerFromStore(self.__session)
-        #self.__gateway.close()
+
     def getSession(self):
         return self.__session
+
     def decodeServerResult(result_bytes):
         result = result_bytes.decode()
         try:
