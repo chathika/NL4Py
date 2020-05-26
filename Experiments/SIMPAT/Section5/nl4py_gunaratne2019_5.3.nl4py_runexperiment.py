@@ -7,7 +7,6 @@ import nl4py
 netlogo_path = os.path.join(str(sys.argv[1]))
 runsNeeded = int(sys.argv[2])
 ticksNeeded = int(sys.argv[3])
-# Replace argument to startServer(...) with the location of your NetLogo installation 
 nl4py.startServer(netlogo_path)
 
 
