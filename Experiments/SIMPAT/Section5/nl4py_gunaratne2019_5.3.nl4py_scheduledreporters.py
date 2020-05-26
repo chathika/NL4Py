@@ -2,13 +2,11 @@ import os
 import sys
 import multiprocessing
 import nl4py
-from py4j.java_gateway import *
 
 netlogo_path = os.path.join(str(sys.argv[1]))
 runsNeeded = int(sys.argv[2])
 ticksNeeded = int(sys.argv[3])
 
-#netlogo = None
 def init(modelfile):   
     global netlogo
     netlogo = nl4py.newNetLogoHeadlessWorkspace()
@@ -36,9 +34,8 @@ if __name__ == '__main__':
     nl4py.startServer(netlogo_path) 
     modelfile = os.path.abspath('./Models/Ethnocentrism.nlogo')
     names = list(range(runsNeeded))
-    pool =  multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(modelfile,))# as pool:
-    pool.map(run_simulation, names)
-    results = []
-    for result in pool.map(run_simulation, names):
-        results.append(result)
+    with multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(modelfile,)) as pool:
+        results = []
+        for result in pool.map(run_simulation, names):
+            results.append(result)
     nl4py.stopServer()

@@ -4,8 +4,7 @@ code follows that on https://pynetlogo.readthedocs.io/en/latest/_docs/SALib_mult
 as accessed on 18th May. 2020
 '''
 import os
-import sys, traceback
-from multiprocessing import Pool
+import sys
 import multiprocessing
 import pyNetLogo
 
@@ -37,7 +36,7 @@ def run_simulation(runId):
 if __name__ == '__main__':
     modelfile = os.path.abspath('./Models/Ethnocentrism.nlogo')
     names = list(range(runsNeeded))
-    with Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(modelfile,)) as pool:
+    with multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(modelfile,)) as pool:
         results = []
         for result in pool.map(run_simulation, names):
             results.append(result)
