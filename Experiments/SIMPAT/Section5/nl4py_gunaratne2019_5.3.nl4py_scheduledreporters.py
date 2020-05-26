@@ -2,19 +2,20 @@ import os
 import sys
 import multiprocessing
 import nl4py
+from py4j.java_gateway import *
 
 netlogo_path = os.path.join(str(sys.argv[1]))
 runsNeeded = int(sys.argv[2])
 ticksNeeded = int(sys.argv[3])
-# Replace argument to startServer(...) with the location of your NetLogo installation 
 
-def initializer(modelfile):
+#netlogo = None
+def init(modelfile):   
     global netlogo
     netlogo = nl4py.newNetLogoHeadlessWorkspace()
     netlogo.openModel(modelfile)
-
-def run_simulation(runId):
     
+def run_simulation(runId):
+    global netlogo
     # Same netlogo commands as used for the NL4Py evaluation
     netlogo.command("random-seed " + str(runId))
     netlogo.command("set mutation-rate 0.005")
@@ -29,14 +30,15 @@ def run_simulation(runId):
     measures = ['ticks','count turtles']
     netlogo.scheduleReportersAndRun(measures, stopAtTick=ticksNeeded)
     results = netlogo.awaitScheduledReporterResults()
-    return results   
+    return results
 
-if __name__ == '__main__':
-    nl4py.startServer(netlogo_path)
+if __name__ == '__main__':     
+    nl4py.startServer(netlogo_path) 
     modelfile = os.path.abspath('./Models/Ethnocentrism.nlogo')
     names = list(range(runsNeeded))
-    with multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(modelfile,)) as pool:
-        results = []
-        for result in pool.map(run_simulation, names):
-            results.append(result)
+    pool =  multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(modelfile,))# as pool:
+    pool.map(run_simulation, names)
+    results = []
+    for result in pool.map(run_simulation, names):
+        results.append(result)
     nl4py.stopServer()
