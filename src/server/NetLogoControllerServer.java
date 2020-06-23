@@ -1,55 +1,20 @@
 
 //Customized for nl4py by Chathika Gunaratne <chathikagunaratne@gmail.com>
 package nl4py.server;
-import py4j.GatewayServer;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import bsearch.nlogolink.NetLogoLinkException;
-import javax.imageio.ImageIO;
-import bsearch.space.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Phaser;
-import java.util.HashMap;
-import org.nlogo.headless.HeadlessWorkspace; 
-import nl4py.server.HeadlessWorkspaceController;
-import nl4py.server.NetLogoAppController;
-import nl4py.server.NetLogoController;
-import java.util.ArrayList;
-import nl4py.server.HeadlessWorkspaceControllerPool;
 
+import py4j.GatewayServer;
+import java.util.HashMap;
+import nl4py.server.HeadlessWorkspaceController;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+import java.net.ServerSocket;
+import java.io.IOException;  
 
 public class NetLogoControllerServer {
 	
-	ConcurrentHashMap<Integer,NetLogoController> controllerStore;
 	static GatewayServer gs;
-	long startTime;
-	static boolean serverOn = false;
-	Thread statusThread;
-	Phaser notifier;
 	
-	public NetLogoControllerServer() {		
-		controllerStore = new ConcurrentHashMap<Integer,NetLogoController>();
-		notifier = new Phaser();
-		startTime = System.currentTimeMillis();
-		//System.out.println("Start");
-		//Start monitor thread
-		statusThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(!Thread.interrupted()){
-					try{
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						//e.printStackTrace();
-						Thread.currentThread().interrupt();
-					}
-					//System.out.println("Status checking...");
-					statusCheck();
-				}
-			}
-		});		
-		statusThread.start();
+	public NetLogoControllerServer() {	
 	}
 	/**
 	 * Launch the Gateway Server.
@@ -57,175 +22,119 @@ public class NetLogoControllerServer {
 	public static void main(String[] args) {
 		try {
 			NetLogoControllerServer ncs = new NetLogoControllerServer();
-			gs = new GatewayServer(ncs);
-			serverOn = true;
+			int port = Integer.parseInt(args[0]);
+			gs = new GatewayServer(ncs, port);
 			gs.start();
-			//diagnose
-			//String model_path = System.getenv("NETLOGO_APP") + "/models/Sample Models/Earth Science/Fire.nlogo";
-			//int s = ncs.newHeadlessWorkspaceController();
-			//ncs.openModel(s,model_path);
-			//ncs.closeModel(s);
-			//ncs.removeControllerFromStore(s);
 		} catch (Exception e){
-			System.out.println("NETLOGO_APP not set right!");
 			e.printStackTrace();
-			System.exit(1);
 		}
-		//System.out.println("Server running");
 	}
 	/** 
 	* Shutdown GatewayServer
 	**/
 	public void shutdownServer(){
 		gs.shutdown(true);
-		serverOn = false;
-		statusThread.interrupt();
 	}
 	/**
-	 * Create a new workspace for this request
-	 * @return the session id of the model 
+	 * Create a new gate way to handle comm for this workspace
+	 * @return Py4J gateway server object
 	 */
-	public int newHeadlessWorkspaceController(){
-		//Create new controller instance
-		HeadlessWorkspaceController controller = new HeadlessWorkspaceController(new Phaser(1));
-		//Add it to controllerStore
-		int session = controller.getSession();
-		controllerStore.put(session, controller);
-		return session;
-	}
-	//Below functions take the session id and call the 
-	//requested method on the corresponding controller
-	/**
-	 * Load a NetLogo model file into the headless workspace
-	 * Return a unique session id for this request
-	 * @param path: Path to the .nlogo file to load.
-	 * 
-	 */
-	public void openModel(int session, String path) {
-		controllerStore.get(session).openModel(path);
-	}
-	
-	/**
-	 * Remove the controller and initiate close sequence
-	 * @param unique id for this model
-	 */
-	public void closeModel(int session){
-		getControllerFromStore(session).closeModel();
-	}
-	
-	/**
-	 * Create a new headless instance. 
-	 * Use this after closeModel() to instantiate a
-	 * new instance of Netlogo. Great for multiple runs!
-	 */
-	public void refresh(int session){
-		getControllerFromStore(session).refresh();
-	}
-	
-	/**
-	 * Export a view (the visualization area) to the Java file's working directory.
-	 * @param filename: Name used to save the file. Include .png (ex: file.png)
-	 */
-	public void exportView(int session, String filename){
-		getControllerFromStore(session).exportView(filename);
-	}
-	
-	/**
-	 * Send a command to the open NetLogo model.
-	 * @param command: NetLogo command syntax.
-	 */
-	public void command(int session, String command) {
-		getControllerFromStore(session).command(command);
-	}
-	/**
-	 * Get the value of a variable in the NetLogo model.
-	 * @param command: The value to report.
-	 * @return Java Object containing return info
-	 */
-	public Object report(int session, String command) {
-		return getControllerFromStore(session).report(command);
-	}
-	/** Schedules reporters and runs the provided workspaces. This is a nonblocking method and does not wait for the end of the workspace execution.
-	 * Results of the reporters can be retrieved through HeadlessWorkspaceColtroller.getScheduledReporterResults(int session).
-	 * @param session: session id of HeadlessWorkspaceController to schedule and execute
-	 * @param reporters: String array of netlogo reporters to be scheduled
-	 * @param startAtTick: Simulation tick to start reporters at
-	 * @param intervalTicks: Simulation tick duration between reporter execution (default is to measure at every simulation tick)
-	 * @param stopAtTick: Simulation tick to stop reporters at
-	 * @param goCommand: String with NetLogo command to execut model
-	 */
-	public void scheduleReportersAndRun(int session, ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		getControllerFromStore(session).scheduleReportersAndRun(reporters, startAtTick, intervalTicks, stopAtTick, goCommand);
-	}
-	public byte[][][] awaitScheduledReporterResults(int session) {
-		return getControllerFromStore(session).awaitScheduledReporterResults();
-	}
-	public byte[][][] getScheduledReporterResults (int session){
-		return getControllerFromStore(session).getScheduledReporterResults();
-	}
-	public SearchSpace getParamList(int session, String path) {
-		return getControllerFromStore(session).getParamList(path);
-	}
-	/////////////////////////////////////////////////////////////////////
-	/**
-	 * Internal method to retrieve workspace from store using session id
-	 * @param session id to get
-	 * @return NetLogo HeadlessWorkspace
-	 */
-	private NetLogoController getControllerFromStore(int session){
-		//Get controller from store
-		NetLogoController controller = controllerStore.get(session);
-		//Check if null throw an exception
-		if (controller == null) {
-			throw new NullPointerException("No NetLogo HeadlessWorkspace exists for that session id");
+	public GatewayServer newGateway(){
+		while (true) {
+			int port = ThreadLocalRandom.current().nextInt(1025, 8081);
+			try {
+				GatewayServer gs = new GatewayServer(null, port);
+				gs.start();
+				return gs;
+			} catch (Exception e) {
+				continue;
+			}
 		}
-		return controller;
-	}
-	public HeadlessWorkspaceController getHeadlessWorkspaceController(int session){
-		return (HeadlessWorkspaceController)getControllerFromStore(session);
-	}
-	/** 
-	 * Internal method to remove the controller from the store
-	 * @param session id to get
-	 */
-	public void removeControllerFromStore(int session){
-		controllerStore.get(session).closeModel();
-		controllerStore.get(session).disposeWorkspace();
-		controllerStore.remove(session);
-		System.gc();
 	}
 	
-	/**
-	 * This is run by a monitor thread that regularly reports the status
-	 * of the controllerStore
-	 */
-	private void statusCheck(){
-		
-		//System.out.println("This server has been up for " + ( System.currentTimeMillis() - startTime ) + " milliseconds. " ); 
-		//System.out.println("There are currently " + controllerStore.size() + " NetLogo workspaces on this server");
-		
-		if(!serverOn) {
-			GatewayServer.turnLoggingOff();
-			//System.out.println("Shutting down Server");
-			gs.shutdown(false);
-			System.exit(0);
+	public HashMap<String, ArrayList<ArrayList<String>>> runPoolOfTasks(String modelName, ArrayList<ArrayList<String>> namesToInitStrings,
+						ArrayList<byte[]> reporters, int startTick, int tickInterval, int stopTick, String goCommand,
+						int numProcs) {
+		if (numProcs > namesToInitStrings.size()) {
+			numProcs = namesToInitStrings.size();
 		}
-	}	
-
-	/**
-	 * Create a new workspace for this request
-	 * @return the session id of the model 
-	 */
-	public int newNetLogoApp(){
-		//Create new controller instance
-		NetLogoAppController controller = new NetLogoAppController();
-		//Add it to controllerStore
-		int session = controller.hashCode();
-		controllerStore.put(session, controller);
-		return session;
+		HeadlessWorkspaceCallable[] workspaceTasks = new HeadlessWorkspaceCallable[numProcs]; 
+		Thread[] threads = new Thread[numProcs];
+		int numTasksPerProcMin = namesToInitStrings.size() / numProcs;
+		int numProcsWithExtraTask = namesToInitStrings.size() % numProcs;
+		int taskID = 0;
+		for (int i = 0; i < numProcs; i++) 
+		{ 
+			int numTasks = (int)numTasksPerProcMin;
+			if (numProcsWithExtraTask > 0 ){
+				numTasks = numTasks+1;
+				numProcsWithExtraTask--;
+			}
+			ArrayList<ArrayList<String>> tasks = new ArrayList<ArrayList<String>>(namesToInitStrings.subList(taskID,taskID + numTasks));
+			taskID += numTasks;
+			
+			HeadlessWorkspaceCallable runnable = new HeadlessWorkspaceCallable(modelName, tasks, reporters, 
+							startTick, tickInterval, stopTick, goCommand); 
+			workspaceTasks[i] = runnable; 
+			Thread t = new Thread(workspaceTasks[i]); 
+			threads[i]=t;
+			t.start(); 
+		} 
+		for (int i = 0; i < numProcs; i++) 
+		{ 
+			try{
+				threads[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		HashMap<String, ArrayList<ArrayList<String>>>  allResults = new HashMap<String, ArrayList<ArrayList<String>>>();
+		for (int i = 0; i < numProcs; i++) 
+		{
+			try{
+				allResults.putAll((HashMap<String, ArrayList<ArrayList<String>>> )workspaceTasks[i].getResult());
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		return allResults;
 	}
+}
 
-	public HeadlessWorkspaceControllerPool initPool(String modelName, Integer processors, ArrayList<ArrayList<ArrayList<String>>> namesToInitStrings, ArrayList<String> reporters, int startTick, int tickInterval, int stopTick, String goCommand){
-		return new HeadlessWorkspaceControllerPool(modelName,processors,namesToInitStrings,reporters,startTick,tickInterval,stopTick,goCommand);
+
+class HeadlessWorkspaceCallable implements Runnable 
+{ 
+	private String modelName;
+    private ArrayList<ArrayList<String>> runNameInitStringPairs;    
+    private ArrayList<byte[]> reporters;
+    private Integer startTick;
+    private Integer tickInterval;
+    private Integer stopTick;
+    private String goCommand;
+	private HashMap<String, ArrayList<ArrayList<String>>> results;
+
+	public HeadlessWorkspaceCallable(String modelName, ArrayList<ArrayList<String>> namesToInitStrings,
+						ArrayList<byte[]> reporters, int startTick, int tickInterval, int stopTick, String goCommand) {
+		this.modelName = modelName;
+		this.runNameInitStringPairs = namesToInitStrings;
+		this.reporters = reporters;
+		this.startTick = startTick;
+		this.tickInterval = tickInterval;
+		this.stopTick = stopTick;
+		this.goCommand = goCommand;
+		this.results = new HashMap<String, ArrayList<ArrayList<String>>>();
+	}
+	public void run() {		
+		GatewayServer gs = new GatewayServer();
+		HeadlessWorkspaceController ws = new HeadlessWorkspaceController(gs);
+		ws.openModel(modelName);
+		for (int i = 0; i<runNameInitStringPairs.size(); i++) {
+			ws.command(runNameInitStringPairs.get(i).get(1));
+			ArrayList<ArrayList<String>> result = ws.scheduleReportersAndRun(reporters, startTick, tickInterval, stopTick, goCommand);
+			results.put(runNameInitStringPairs.get(i).get(1), result);
+		}
+	} 
+	public HashMap<String, ArrayList<ArrayList<String>>> getResult(){
+		return this.results;
 	}
 }

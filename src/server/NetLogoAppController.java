@@ -243,7 +243,7 @@ public class NetLogoAppController extends NetLogoController {
 		return result;
 	}
 	
-	public void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+	public ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
 		
 		try{
 			commandQueue.put("~ScheduledReporters~");
@@ -261,29 +261,21 @@ public class NetLogoAppController extends NetLogoController {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
-	public byte[][][] awaitScheduledReporterResults() {
+	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
 		throw new UnsupportedOperationException("Method unimplemented!");
 	}
-	public byte[][][] getScheduledReporterResults () {
+	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
 		ArrayList<ArrayList<String>> buffer  = new ArrayList<ArrayList<String>>();		
-		try {
+		try {	
 			synchronized(scheduledReporterResults){
 				scheduledReporterResults.drainTo(buffer);
-			}		
+			}	
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
-		byte[][][] results = new byte[buffer.size()][][];
-		for (int i=0; i<buffer.size();i++){
-			ArrayList<String> resultsThisTickString = buffer.get(i);
-			byte[][] resultsThisTickBytes = new byte[resultsThisTickString.size()][];
-			for (int j=0; j<resultsThisTickString.size();j++){
-				resultsThisTickBytes[j] = resultsThisTickString.get(j).getBytes();
-			}
-			results[i] = resultsThisTickBytes;
 		}
-		return results;
+		return buffer;//buffer.toArray(new byte[buffer.size()][][]);
 	}	
 	
 	

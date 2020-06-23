@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.lang.Math;
 import nl4py.server.HeadlessWorkspaceController;
+import py4j.GatewayServer;
 
 public class HeadlessWorkspaceControllerPool {
     private HashSet<HeadlessWorkspaceController> allWorkers;
@@ -33,7 +34,6 @@ public class HeadlessWorkspaceControllerPool {
         this.modelName = modelName;
         allWorkers = new HashSet<HeadlessWorkspaceController>();
         resultsMap = new ConcurrentHashMap<String, byte[][][]>(); //run name -> results
-        notifier = new Phaser(1);
         runNameInitStringPairs = new ArrayList<ArrayList<ArrayList<String>>>(namesToInitStringsChunks);
         this.reporters = reporters;
         this.startTick = startTick;
@@ -50,9 +50,9 @@ public class HeadlessWorkspaceControllerPool {
     }
     public HashMap<String, byte[][][]> run() {
         int countWorkspacesStarted = 0;
-
+        GatewayServer gs = new GatewayServer(this);
         while(countWorkspacesStarted != countProcessors){
-            HeadlessWorkspaceController ws = new HeadlessWorkspaceController(notifier);
+            HeadlessWorkspaceController ws = new HeadlessWorkspaceController();
             ws.openModel(modelName);
             allWorkers.add(ws);
             countWorkspacesStarted += 1;             
@@ -65,7 +65,6 @@ public class HeadlessWorkspaceControllerPool {
             ws.attachPoolTasks(tasksSubList,this.reporters, this.startTick,this.tickInterval,this.stopTick,this.goCommand,this.resultsMap);
             i += 1;
         }
-        notifier.arriveAndAwaitAdvance();
         allWorkers.clear();
         return new HashMap<String, byte[][][]>(resultsMap);
     }

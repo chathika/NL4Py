@@ -53,13 +53,9 @@ public abstract class NetLogoController {
 	 * @param command: The value to report.
 	 * @return Java Object containing return info
 	 */
-	public abstract Object report(String command);
+	//public abstract Object report(String command);
 	
-	public abstract void scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand);
-
-	public abstract byte[][][] awaitScheduledReporterResults();
-
-	public abstract byte[][][] getScheduledReporterResults ();
+	//public abstract ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand);
 	
 	public abstract SearchSpace getParamList(String path);
 	
