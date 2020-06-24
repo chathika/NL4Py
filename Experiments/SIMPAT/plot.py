@@ -107,39 +107,19 @@ def plot5_2():
     os.system("output\\\\5.2.eps")
 ############### 5.3 ################
 def plot5_3_1():
-    times = readData("output/5.3_output.csv")
-    sns.stripplot(x = "runs", y = "time.s", hue = "connector", palette = ["lightblue", "red"], data = times)
-    #sns.despine(offset=10, trim =True)
-    
-    """hB, = plot([1,1],'b-')
-    hR, = plot([1,1],'r-')
-    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo')
-    circB= mpatches.Patch( facecolor="red",hatch='////',label='NL4Py')
-
-    legend(handles = [circA,circB])
-    hB.set_visible(False)
-    hR.set_visible(False)"""
-    plt.xlabel("Model Runs")
-    plt.ylabel("Execution Time in Seconds")
+    times = pd.read_csv("output/5.3_output.csv")
+    times["time.s"] = times["time.ms"] / 1024
+    g = sns.catplot(x="runs", y="time.s", hue = "function", col="model", kind="box", sharey=False, data=times)
+    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
     savefig('output/5.3.1.eps')
     plt.show()
     #os.system("./output/5.3.1.eps")
 
 def plot5_3_2():
     memory = readData("output/5.3_output.csv")
-    sns.stripplot(x = "runs", y = "max.memory.used.kb", hue = "connector", palette = ["lightblue", "red"], data = memory)
-    #sns.despine(offset=10, trim =True)
-    
-    """hB, = plot([1,1],'b-')
-    hR, = plot([1,1],'r-')
-    circA = mpatches.Patch( facecolor="lightblue",hatch='\\\\\\\\',label='PyNetLogo')
-    circB= mpatches.Patch( facecolor="red",hatch='////',label='NL4Py')
-
-    legend(handles = [circA,circB])
-    hB.set_visible(False)
-    hR.set_visible(False)"""
-    plt.xlabel("Model Runs")
-    plt.ylabel("Max Memory Used in kB")
+    memory["max.memory.used.MiB"] = memory["max.memory.used.kb"] / (1024*2)
+    g = sns.catplot(x="runs", y="max.memory.used.MiB", hue = "function", col="model", kind="box", sharey=False, data=memory)
+    g.set_titles("{col_name}").set(ylabel="Max Memory Used in MiB", xlabel = "Runs")
     savefig('output/5.3.2.eps')
     plt.show()
-    #os.system("output\\\\5.3.2.eps")
+    #os.system("output\\\\5.3.2.eps") 
