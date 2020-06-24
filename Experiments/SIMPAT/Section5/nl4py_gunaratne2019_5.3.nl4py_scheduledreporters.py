@@ -3,16 +3,27 @@ import sys
 import multiprocessing
 import nl4py
 
-netlogo_path = os.path.join(str(sys.argv[1]))
-runsNeeded = int(sys.argv[2])
-ticksNeeded = int(sys.argv[3])
+netlogo_path = str(sys.argv[1])
+model_path = str(sys.argv[2])
+runs_needed = int(sys.argv[3])
+ticks_needed = int(sys.argv[4])
 
-def init(modelfile):   
+def init(model_path):   
     global netlogo
     netlogo = nl4py.newNetLogoHeadlessWorkspace()
-    netlogo.openModel(modelfile)
+    netlogo.openModel(model_path)
     
-def run_simulation(runId):
+def run_simulation_fire(runId):
+    global netlogo
+    # Same netlogo commands as used for the NL4Py evaluation
+    netlogo.command("random-seed " + str(runId))
+    netlogo.command("set density 57")
+    netlogo.command('setup')
+    measures = ['ticks','burned-trees']
+    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    return results   
+
+def run_simulation_ethnocentrism(runId):
     global netlogo
     # Same netlogo commands as used for the NL4Py evaluation
     netlogo.command("random-seed " + str(runId))
@@ -24,18 +35,37 @@ def run_simulation(runId):
     netlogo.command("set initial-PTR 0.12")
     netlogo.command("set cost-of-giving 0.01")
     netlogo.command("set gain-of-receiving 0.03")
-    netlogo.command('setup-empty')
-    measures = ['ticks','count turtles']
-    netlogo.scheduleReportersAndRun(measures, stopAtTick=ticksNeeded)
-    results = netlogo.awaitScheduledReporterResults()
-    return results
+    netlogo.command('setup-full')
+    measures = ['ticks','count turtles with [shape = \"circle\"]']
+    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    return results   
+
+def run_simulation_wsp(runId):
+    global netlogo
+    # Same netlogo commands as used for the NL4Py evaluation
+    netlogo.command("random-seed " + str(runId))
+    netlogo.command("set model-version \"sheep-wolves\"")
+    netlogo.command("set initial-number-sheep 100")
+    netlogo.command("set initial-number-wolves 50")
+    netlogo.command("set grass-regrowth-time 30")
+    netlogo.command("set sheep-gain-from-food 4")
+    netlogo.command("set wolf-gain-from-food 20")
+    netlogo.command("set sheep-reproduce 4")
+    netlogo.command("set wolf-reproduce 5")
+    netlogo.command('setup')
+    measures = ['ticks','count sheep']
+    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    return results   
 
 if __name__ == '__main__':     
-    nl4py.startServer(netlogo_path) 
-    modelfile = os.path.abspath('./Models/Ethnocentrism.nlogo')
-    names = list(range(runsNeeded))
-    with multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(modelfile,)) as pool:
+    nl4py(netlogo_path) 
+    model_path = os.path.join(model_path)
+    names = list(range(runs_needed))
+    with multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(model_path,)) as pool:
         results = []
-        for result in pool.map(run_simulation, names):
+        simulate_function = run_simulation_fire if ("Fire" in model_path) else (
+                                run_simulation_ethnocentrism if ("Ethnocentrism" in model_path)
+                                    else run_simulation_wsp
+                                )
+        for result in pool.map(simulate_function, names):
             results.append(result)
-    nl4py.stopServer()
