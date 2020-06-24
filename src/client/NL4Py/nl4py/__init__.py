@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 import shutil
 import os
+import traceback
 
 from py4j.java_gateway import JavaGateway
 
@@ -23,26 +24,36 @@ from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 from .NetLogoControllerServerStarter import NetLogoControllerServerStarter
 from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 from .NetLogoGUI import NetLogoGUI
+from .NL4PyException import deprecated
 
-serverStarter = NetLogoControllerServerStarter()
-netlogoWorkspaceFactory = NetLogoWorkspaceFactory()
-
+@deprecated("Please use nl4py(\"path\\to\\NetLogo\")")
 def startServer(netlogo_home):
-    try:
-        serverStarter.startServer(netlogo_home)
-    except:
-        print("Server failed to start!")
-    
+    '''
+    Deprecated.
+    '''
+    initialize(netlogo_home)
+
+@deprecated("Global shutdown not required anymore.")
 def stopServer():
-    try:
-        serverStarter.shutdownServer()
-        #print("Server stopped.")
-    except:
-        pass
-    global netlogoWorkspaceFactory 
-    del netlogoWorkspaceFactory
+    '''
+    Deprecated. Global shutdown not required anymore.
+    '''
+    pass 
     
 
+
+def initialize(netlogo_home):
+    '''
+    initializes nl4py, creating the NetLogoControllerServerStarter.
+    
+    :param netlogo_home: str path to netlog
+    '''
+
+    global server_starter
+    server_starter = NetLogoControllerServerStarter(netlogo_home)
+    global netlogoWorkspaceFactory
+    netlogoWorkspaceFactory = NetLogoWorkspaceFactory(server_starter)
+    
 def newNetLogoHeadlessWorkspace():
     '''
     Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it
@@ -74,9 +85,7 @@ def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0
     return netlogoWorkspaceFactory.runExperiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
 
 '''Opens the NetLogo Application'''
-nApp = -1
 def NetLogoApp():
-    global nApp
-    if nApp == -1:
+    if nApp == None:
         nApp = NetLogoGUI(JavaGateway())
     return nApp

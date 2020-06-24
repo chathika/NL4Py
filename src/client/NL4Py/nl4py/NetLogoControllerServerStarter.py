@@ -25,26 +25,30 @@ import platform
 import glob
 import pkg_resources
 
-from py4j.java_gateway import JavaGateway
+from py4j.java_gateway import JavaGateway, launch_gateway, GatewayParameters
 
 class NetLogoControllerServerStarter:
     '''
     Responsible for starting and stopping the NetLogo Controller Server
     '''
 
-    def __init__(self):
+    def __init__(self, netlogo_home):
+        self.netlogo_home = netlogo_home
         self.SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
-        self.__gw = JavaGateway()
-        #self.shutdownServer()
-        #atexit.register(self.shutdownServer)
+        self.server_port = self.init_server()
+        self.jg = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=self.server_port))
     
-    def __runServer(self,netlogo_home): 
+    def init_server(self): 
         '''
-        Internal method to start JavaGateway server. Will be called by starServer on seperate thread
+        Internal method to start a new JavaGateway server. Will be on seperate thread using Py4J.
+
+        :returns: int port to listen on for new JavaGateway server. 
         '''
+
+        py4j_jar_path = glob.glob(os.path.join(self.SERVER_PATH, "py4j*.jar"))[0]
         __server_name = "nl4py.server.NetLogoControllerServer"
         nl_path = ""
-        if netlogo_home == None:
+        if self.netlogo_home == None:
             #Following is legacy for 0.3.0 support and is deprecated with 0.3.1
             try:
                 nl_home = os.environ['NETLOGO_HOME']
@@ -68,9 +72,9 @@ class NetLogoControllerServerStarter:
             #End
         else:
             if(platform.system() == "Darwin"):
-                nl_path = os.path.join(netlogo_home,"Java")
+                nl_path = os.path.join(self.netlogo_home,"Java")
             else:
-                nl_path = os.path.join(netlogo_home,"app")
+                nl_path = os.path.join(self.netlogo_home,"app")
         if len(glob.glob(os.path.join(nl_path,"netlogo-[0-9]*.jar"))) == 0:
             print("NetLogo not found! Please provide netlogo_home directory to nl4py.startServer()")
             return
@@ -95,29 +99,23 @@ class NetLogoControllerServerStarter:
             nl_extensions = "-Dnetlogo.extensions.dir=" + os.path.join(nl_path,"../extensions")
             nl_models = "-Dnetlogo.docs.dir=" + os.path.join(nl_path,"../models")
         nl_path = os.path.join(os.path.abspath(nl_path),"*")
-        server_path = os.path.join(os.path.abspath(self.SERVER_PATH),"*")
-        classpath = nl_path + os.pathsep + server_path 
+        server_path = os.path.join(os.path.abspath(self.SERVER_PATH),"NetLogoControllerServer.jar")
         xmx = psutil.virtual_memory().available / 1024 / 1024 / 1024
         xms = "-Xms" + str(int(math.floor(xmx - 2))) + "G"
         xmx = "-Xmx" + str(int(math.floor(xmx))) + "G"
-        levelspace = "-Dorg.nlogo.preferHeadless=true"
-        subprocess.call(["java",levelspace,xmx,"-XX:-UseGCOverheadLimit","-cp", classpath,nl_docs,nl_extensions,nl_models,__server_name])
-                
-    '''Starts JavaGateway server'''
-    def startServer(self, netlogo_home):
-        #Fire up the NetLogo Controller server through python
-        thread = threading.Thread(target=self.__runServer, args=[netlogo_home])
-        thread.start()
-        time.sleep(3)
-        
+        preferHeadless = "-Dorg.nlogo.preferHeadless=true" #important for levelspace
+        classpath = os.pathsep.join([server_path, nl_path])
+        port = launch_gateway(port=0, classpath=classpath, 
+                    javaopts=[preferHeadless,nl_docs,nl_extensions,nl_models,xmx,"-XX:-UseGCOverheadLimit"], die_on_exit=True, java_path='java')
+        return port
+   
     '''Send shutdown signal to the JavaGateway server. No further communication is possible unless server is restarted'''
-    def shutdownServer(self):
-         if(self.__gw != None):    
+    def shutdown_server(self):
+         if(self.jg != None):    
             try:
                 logging.disable(logging.CRITICAL)
-                __bridge = self.__gw.entry_point
-                __bridge.shutdownServer()
-                self.__gw.close(keep_callback_server=False, close_callback_server_connections=True)
-                self.__gw = None
+                self.jg.shutdownServer()
+                self.jg.close(keep_callback_server=False, close_callback_server_connections=True)
+                self.jg = None
             except Exception as e:
                 pass

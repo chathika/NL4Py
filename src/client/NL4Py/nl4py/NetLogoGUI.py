@@ -18,7 +18,7 @@ from py4j.java_gateway import JavaGateway
 from py4j.protocol import Py4JNetworkError
 from py4j.protocol import Py4JJavaError
 
-from .NL4PyControllerServerException import NL4PyControllerServerException
+from .NL4PyException import NL4PyControllerServerException
 import py4j.java_gateway as jg
 import py4j.java_collections as jcol
 import subprocess
