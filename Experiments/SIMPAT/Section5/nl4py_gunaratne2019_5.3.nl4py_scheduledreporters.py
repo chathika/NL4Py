@@ -9,6 +9,7 @@ runs_needed = int(sys.argv[3])
 ticks_needed = int(sys.argv[4])
 
 def init(model_path):   
+    nl4py.initialize(netlogo_path) 
     global netlogo
     netlogo = nl4py.newNetLogoHeadlessWorkspace()
     netlogo.openModel(model_path)
@@ -58,7 +59,7 @@ def run_simulation_wsp(runId):
     return results   
 
 if __name__ == '__main__':     
-    nl4py(netlogo_path) 
+    
     model_path = os.path.join(model_path)
     names = list(range(runs_needed))
     with multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(model_path,)) as pool:
