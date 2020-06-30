@@ -13,5 +13,5 @@ def log_mem(connector,model,runsNeeded,ticksNeeded,rep):
         while True:
             mem_stats = dict(psutil.virtual_memory()._asdict())
             writer.writerow(mem_stats.values())
-            time.sleep(1)
+            time.sleep(0.011)
             out.flush()
