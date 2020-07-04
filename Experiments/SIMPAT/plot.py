@@ -107,7 +107,7 @@ def plot5_2():
     os.system("output\\\\5.2.eps")
 ############### 5.3 ################
 def plot5_3_1():
-    times = pd.read_csv("output/5.3_output_windows_local.csv")
+    times = pd.read_csv("output/5.3_output.csv")
     times["time.s"] = times["time.ms"] / 1024
     g = sns.catplot(x="runs", y="time.s", hue = "function", col="model", kind="box", sharey=False, data=times)
     g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
@@ -116,7 +116,7 @@ def plot5_3_1():
     #os.system("./output/5.3.1.eps")
 
 def plot5_3_2():
-    memory = readData("output/5.3_output_windows_local.csv")
+    memory = readData("output/5.3_output.csv")
     memory["max.memory.used.MiB"] = memory["max.memory.used.b"] / (1024*2)
     g = sns.catplot(x="runs", y="max.memory.used.MiB", hue = "function", col="model", kind="box", sharey=False, data=memory)
     g.set_titles("{col_name}").set(ylabel="Max Memory Used in MiB", xlabel = "Runs")
