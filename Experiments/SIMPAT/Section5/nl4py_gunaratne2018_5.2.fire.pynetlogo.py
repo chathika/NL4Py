@@ -10,7 +10,7 @@ startTime = int(round(time.time() * 1000))
 import pyNetLogo
 
 n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = sys.argv[1], netlogo_version = '6.0')
-modelRuns = 10
+modelRuns = 100
 ticks_to_run = 100
 n.load_model(r"Models/Fire.nlogo")
 def is_running(netlogo): 

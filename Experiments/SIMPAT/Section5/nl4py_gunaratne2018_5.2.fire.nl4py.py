@@ -12,7 +12,7 @@ import nl4py
 
 nl4py.initialize(sys.argv[1])
 workspace = nl4py.newNetLogoHeadlessWorkspace()
-modelRuns = 10
+modelRuns = 100
 ticks_to_run = 100
 workspace.openModel("Models/Fire.nlogo")
 def is_running(workspace): 
