@@ -88,7 +88,7 @@ class NetLogoHeadlessWorkspace:
         Sends a signal to the server to tell the respective controller to execute a
         reporter on its HeadlessWorkspace object
         '''
-        result = self.hwc.report(reporter.encode())
+        result = self.hwc.report(reporter.encode()).decode()
         return result
     
     def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
