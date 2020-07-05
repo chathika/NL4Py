@@ -3,15 +3,24 @@
 ### To run provide the location of your NetLogo installation as a commandline argument
 ### Example: >>>python nl4py_gunaratne2018_5.3.2.py "C:/Program Files/NetLogo 6.0.2"
 import time
-startTime = int(round(time.time() * 1000))
-import pyNetLogo
 import sys
-workspaces = []
-modelRuns = 200
+
+startTime = int(round(time.time() * 1000))
+
+import pyNetLogo
+
+n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = sys.argv[1], netlogo_version = '6.0')
+modelRuns = 10
+ticks_to_run = 100
+n.load_model(r"Models/Wolf Sheep Predation.nlogo")
+
+def is_running(netlogo): 
+    ticks = int(float(netlogo.report("ticks")))
+    stop1 = str(netlogo.report("not any? turtles")).lower()  
+    stop2 = str(netlogo.report("not any? wolves and count sheep > max-sheep")).lower()  
+    return ticks != 100 and stop1 != "true" and stop2 != "true"
+
 for i in range(0,modelRuns):
-    n = pyNetLogo.NetLogoLink(gui=False, netlogo_home = sys.argv[1],
-netlogo_version = '6')
-    n.load_model("Models/Wolf Sheep Predation.nlogo")
     n.command("set initial-number-sheep random-float 250")
     n.command("set initial-number-wolves random-float 250")
     n.command("set grass-regrowth-time random-float 100")
@@ -22,22 +31,14 @@ netlogo_version = '6')
     n.command("set show-energy? false")
     n.command('set model-version "sheep-wolves-grass"')
     n.command("setup")
-    n.command("repeat 100 [go]")
-    workspaces.append(n)
-while len(workspaces) > 0:
-    for workspace in workspaces:
-        #Check if workspaces are stopped
-        ticks = int(float(workspace.report("ticks")))
-        stop1 = str(workspace.report("not any? turtles")).lower()  
-        stop2 = str(workspace.report("not any? wolves and count sheep > max-sheep")).lower()  
-        if ticks == 100 or stop1 == "true" or stop2 == "true":
-            r1 = workspace.report('count sheep')
-            r2 = workspace.report('count wolves')
-            #print(str(modelRuns - len(workspaces))+" "+str(r1)+" "+str(r2)+str(ticks))
-            workspaces.remove(workspace)
+    n.command("repeat {} [go]".format(ticks_to_run))
+    while is_running(n):
+        time.sleep(0.001)
+    r1 = n.report('count sheep')
+    r2 = n.report('count wolves')
+
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime
-print(totalTime)
 with open("output/5.2_output.csv", "a") as myfile:
     myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',PyNetLogo,' + str(totalTime) + '\n')
-
+print(totalTime)
