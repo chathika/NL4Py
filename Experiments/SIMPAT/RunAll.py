@@ -121,14 +121,14 @@ if __name__=="__main__":
         print("\n\n5.3 Starting execution time comparisons between NL4Py runExperiment and PyNetLogo with multiprocessing...\n")
         outputFile = os.path.join('output','5.3_output.csv')
         with open (outputFile, "w") as out:
-            out.write("connector,function,runs,ticks,time.ms,max.memory.used.b\n")
+            out.write("connector,function,model,runs,ticks,time.ms,max.memory.used.b\n")
             out.flush()
             out.close()
         # 5.3 NL4Py
         print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
         print("Please wait. This may take a while...")
-        totalRepeats = 10
-        runsNeededList = list(range(200,1200,200))
+        totalRepeats = 1#10
+        runsNeededList = [8]#list(range(200,1200,200))
         models = ["Fire.nlogo","Ethnocentrism.nlogo","Wolf Sheep Predation.nlogo"]
         ticks = [100,1000,100]
         all_memory_data_bytes = pd.DataFrame(columns=["connector","model","rep","runs","ticks","total","used","free"])    
@@ -142,7 +142,6 @@ if __name__=="__main__":
                             mem_proc = Process(target=LogMem.log_mem, args = ("nl4py",models[idx],runs_needed,ticks_needed,rep,))
                             mem_proc.start()
                             experiment_path = os.path.join("Section5","nl4py_gunaratne2019_5.3.nl4py_scheduledreporters.py")
-                            print("{0} \"{1}\" \"{2}\" \"{3}\" {4} {5}".format("python",experiment_path,netlogo_path,model_path,runs_needed,ticks_needed))
                             startTime = int(round(time.time() * 1000))
                             os.system("{0} \"{1}\" \"{2}\" \"{3}\" {4} {5}".format("python",experiment_path,netlogo_path,model_path,runs_needed,ticks_needed))
                             stopTime = int(round(time.time() * 1000))
