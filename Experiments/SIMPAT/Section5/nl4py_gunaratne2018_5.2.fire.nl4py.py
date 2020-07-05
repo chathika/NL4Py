@@ -16,6 +16,8 @@ modelRuns = 100
 ticks_to_run = 100
 workspace.openModel("Models/Fire.nlogo")
 def is_running(workspace): 
+    #print("{} {}".format(float(workspace.report("ticks")) ,
+    #         str(workspace.report("not any? turtles")).lower()))
     return (float(workspace.report("ticks")) != ticks_to_run 
             and str(workspace.report("not any? turtles")).lower() != "true")
 
@@ -25,7 +27,7 @@ for i in range(0,modelRuns):
     workspace.command("repeat {} [go]".format(ticks_to_run))
     while is_running(workspace):
         time.sleep(0.001)
-    workspace.report("")
+    r1 = workspace.report("burned-trees")
 
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime

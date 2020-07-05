@@ -23,6 +23,7 @@ for i in range(0,modelRuns):
     n.command("repeat {} [go]".format(ticks_to_run))
     while is_running(n):
         time.sleep(0.001)
+    r1 = n.report("burned-trees")
 
 stopTime = int(round(time.time() * 1000))
 totalTime = stopTime - startTime
