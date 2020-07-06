@@ -12,6 +12,7 @@ import psutil
 import csv
 import LogMem
 if __name__=="__main__":
+   
     #If user provides NetLogo path as argument, override the config file
     if len(sys.argv) > 1:
         netlogo_path = os.path.join(sys.argv[1])
@@ -50,6 +51,16 @@ if __name__=="__main__":
 
 
     # Section5
+    def getMemoryUsedForConnector(connector,model,runsNeeded,ticksNeeded,rep):
+            mem_output_file = os.path.join("output","memory","{0}_model{1}_runs{2}_ticks{3}_rep{4}.csv".format(connector,str(model),str(runsNeeded),str(ticksNeeded),str(rep)))
+            df = pd.read_csv(mem_output_file)
+            df["connector"]=connector
+            df["model"]=model
+            df["rep"]=rep
+            df["runs"]=runsNeeded
+            df["ticks"]=ticksNeeded
+            return df
+
     if (experiment == 0):
         print("Beginning Section 5 Experiments...")
     if (experiment == 0 or experiment == 3):
@@ -60,64 +71,59 @@ if __name__=="__main__":
 
     if (experiment == 0 or experiment == 4):
         print("\n\n5.2 Starting execution time comparisons between NL4Py and PyNetLogo...\n")
-        outputFile = "output/5.2_output.csv"
-        if os.path.exists(outputFile):
-            os.remove(outputFile)
-        with open(outputFile, "w+") as out:
-            out.write('model,runs,connector,time.ms\n')
-
-        print("Performing 10 repetitions of 200 model runs of the Fire NetLogo model with NL4Py")
+        outputFile = os.path.join('output','5.2_output.csv')
+        with open (outputFile, "w") as out:
+            out.write("connector,function,model,runs,ticks,time.ms,max.memory.used.b\n")
+            out.flush()
+            out.close()
+        # 5.3 NL4Py
+        print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
+        print("Please wait. This may take a while...")
         totalRepeats = 10
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.fire.nl4py.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
-        print("Performing 10 repetitions of 200 model runs of the Fire NetLogo model with PyNetLogo")
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.fire.pynetlogo.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
-        print("Performing 10 repetitions of 200 model runs of the Ethnocentrism NetLogo model with NL4Py")
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.nl4py.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
-        print("Performing 10 repetitions of 200 model runs of the Ethnocentrism NetLogo model with PyNetLogo")
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.ethnocentrism.pynetlogo.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
-        print("Performing 10 repetitions of 200 model runs of the Wolf Sheep Predation NetLogo model with NL4Py")
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.nl4py.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
-        print("Performing 10 repetitions of 200 model runs of the Wolf Sheep Predation NetLogo model with PyNetLogo")
-        currentRepeat = 1
-        for i in range(0,totalRepeats):
-            print("Performing {0} out of {1}".format(currentRepeat, totalRepeats))
-            os.system('{0} -W ignore Section5/nl4py_gunaratne2018_5.2.wolfsheeppredation.pynetlogo.py "{1}"'.format(python_command,netlogo_path) )
-            currentRepeat = currentRepeat + 1
+        models = ["Fire","Ethnocentrism","Wolf Sheep Predation"]
+        ticks = [100,1000,100]
+        runs_needed = 100
+        all_memory_data_bytes = pd.DataFrame(columns=["model","rep","runs","ticks","total","used","free"])    
+        with open (outputFile, "a+") as time_out:
+                for rep in range(totalRepeats):
+                        for idx in range(len(models)):
+                            model_path = os.path.join("Models","{}.nlogo".format(models[idx]))
+                            ticks_needed = ticks[idx]
+                            #nl4py
+                            mem_proc = Process(target=LogMem.log_mem, args = ("nl4py",models[idx],100,ticks_needed,rep,))
+                            mem_proc.start()
+                            experiment_path = os.path.join("Section5","nl4py_gunaratne2018_5.2.{0}.nl4py.py".format(models[idx]).replace(" ","").lower())
+                            startTime = int(round(time.time() * 1000))
+                            os.system('{0} -W ignore "{1}" "{2}"'.format(python_command,experiment_path,netlogo_path) )
+                            stopTime = int(round(time.time() * 1000))
+                            mem_proc.terminate()
+                            mem_proc.join()
+                            executionTime = stopTime - startTime
+                            df = getMemoryUsedForConnector("nl4py",models[idx],runs_needed,ticks_needed,rep)
+                            all_memory_data_bytes=all_memory_data_bytes.append(df,sort=False)
+                            time_out.write("nl4py,scheduledreporters," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
+                            time_out.flush()
+                            print("nl4py,scheduledreporters," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))                        
+                            #pynetlogo
+                            mem_proc = Process(target=LogMem.log_mem, args = ("pynetlogo",models[idx],100,ticks_needed,rep,))
+                            mem_proc.start()   
+                            experiment_path = os.path.join("Section5","nl4py_gunaratne2018_5.2.{0}.pynetlogo.py".format(models[idx]).replace(" ","").lower())
+                            startTime = int(round(time.time() * 1000))
+                            os.system('{0} -W ignore "{1}" "{2}"'.format(python_command,experiment_path,netlogo_path) )
+                            stopTime = int(round(time.time() * 1000))
+                            mem_proc.terminate()
+                            mem_proc.join()
+                            executionTime = stopTime - startTime
+                            df = getMemoryUsedForConnector("pynetlogo",models[idx],runs_needed,ticks_needed,rep)
+                            all_memory_data_bytes=all_memory_data_bytes.append(df,sort=False)
+                            time_out.write("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
+                            time_out.flush()
+                            print("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))  
+        print(all_memory_data_bytes)        
         plot.plot5_2()
+        show()
 
     if (experiment == 0 or experiment == 5):
-
-
-        def getMemoryUsedForConnector(connector,model,runsNeeded,ticksNeeded,rep):
-            mem_output_file = os.path.join("output","memory","{0}_model{1}_runs{2}_ticks{3}_rep{4}.csv".format(connector,str(model),str(runsNeeded),str(ticksNeeded),str(rep)))
-            df = pd.read_csv(mem_output_file)
-            df["connector"]=connector
-            df["model"]=model
-            df["rep"]=rep
-            df["runs"]=runsNeeded
-            df["ticks"]=ticksNeeded
-            return df
-
         print("\n\n5.3 Starting execution time comparisons between NL4Py runExperiment and PyNetLogo with multiprocessing...\n")
         outputFile = os.path.join('output','5.3_output.csv')
         with open (outputFile, "w") as out:
@@ -129,14 +135,14 @@ if __name__=="__main__":
         print("Please wait. This may take a while...")
         totalRepeats = 1#10
         runsNeededList = [8]#list(range(200,1200,200))
-        models = ["Fire.nlogo","Ethnocentrism.nlogo","Wolf Sheep Predation.nlogo"]
+        models = ["Fire","Ethnocentrism","Wolf Sheep Predation"]
         ticks = [100,1000,100]
         all_memory_data_bytes = pd.DataFrame(columns=["connector","model","rep","runs","ticks","total","used","free"])    
         with open (outputFile, "a+") as time_out:
                 for rep in range(totalRepeats):
                     for runs_needed in runsNeededList:
                         for idx in range(len(models)):
-                            model_path = os.path.join("Models",models[idx])
+                            model_path = os.path.join("Models","{}.nlogo".format(models[idx]))
                             ticks_needed = ticks[idx]
                             #nl4py
                             mem_proc = Process(target=LogMem.log_mem, args = ("nl4py",models[idx],runs_needed,ticks_needed,rep,))
@@ -183,8 +189,7 @@ if __name__=="__main__":
                             time_out.write("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
                             time_out.flush()
                             print("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))  
-        print(all_memory_data_bytes)
-        
+        print(all_memory_data_bytes)        
         plot.plot5_3_1()
         plot.plot5_3_2()
         show()
