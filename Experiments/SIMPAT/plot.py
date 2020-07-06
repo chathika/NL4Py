@@ -83,7 +83,7 @@ def plot5_2():
     times_fire = []
     times_ethonocentrism = []
     times_wolfsheeppredation = []
-    for model in models:
+    for model in models: 
         times_fire.append(times[(times['model'] == "Fire") & (times['connector'] == model)]['time.ms'].values)
         times_ethonocentrism.append(times[(times['model'] == "Ethnocentrism") & (times['connector'] == model)]['time.ms'].values)
         times_wolfsheeppredation.append(times[(times['model'] == "Wolf Sheep Predation") & (times['connector'] == model)]['time.ms'].values)
