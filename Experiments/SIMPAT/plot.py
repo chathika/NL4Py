@@ -76,50 +76,42 @@ def plot5_1():
     savefig('output/5.1.eps')
     os.system("output\\\\5.1.eps")
 ############### 5.2 ################
-def plot5_2():
-    times = readData("output/5.2_output.csv")
-    models = pd.unique(times['connector'])
-    models.sort()
-    times_fire = []
-    times_ethonocentrism = []
-    times_wolfsheeppredation = []
-    for model in models: 
-        times_fire.append(times[(times['model'] == "Fire") & (times['connector'] == model)]['time.ms'].values)
-        times_ethonocentrism.append(times[(times['model'] == "Ethnocentrism") & (times['connector'] == model)]['time.ms'].values)
-        times_wolfsheeppredation.append(times[(times['model'] == "Wolf Sheep Predation") & (times['connector'] == model)]['time.ms'].values)
-    fig,axs = plt.subplots(1, 3)
-    bpFire = axs[0].boxplot(times_fire, positions = [1,3], widths = 0.6, patch_artist=True)
-    setBoxColors(bpFire, "red", None)
-    axs[0].set_xticklabels(models)
-    axs[0].set_title("Fire")
-    bpEthocentrism = axs[1].boxplot(times_ethonocentrism, positions = [1,3],  widths = 0.6, patch_artist=True)
-    setBoxColors(bpEthocentrism, "green", None)
-    axs[1].set_xticklabels(models)
-    axs[1].set_title("Ethnocentrism")
-    bpWolfSheepPredation = axs[2].boxplot(times_wolfsheeppredation, positions = [1,3], widths = 0.6, patch_artist=True)
-    setBoxColors(bpWolfSheepPredation, "lightblue", None)
-    axs[2].set_xticklabels(models)
-    axs[2].set_title("Wolf Sheep Predation")
-    fig.text(0.5, 0.02,"Connector", ha='center',size = 14)
-    fig.text(0.02, 0.5,"Execution Time in Seconds", va='center', rotation='vertical',size = 14)
-    fig.set_size_inches(10, 6)
-    savefig('output/5.2.eps')
-    os.system("output\\\\5.2.eps")
+def plot5_2_1():
+    times = pd.read_csv("output/5.2_output.csv")
+    times["time.s"] = times["time.ms"] / 1000
+    g = sns.catplot(x = "connector", y="time.s", hue = "connector", col = "model", sharey=False, data = times, kind="box")
+    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
+    savefig('output/5.2.1.eps')
+    plt.show()
+    #os.system("output\\\\5.2.eps")    
+
+def plot5_2_2():
+    memory = pd.read_csv("output/5.2_output.csv")
+    memory["max.memory.used.GiB"] = memory["max.memory.used.b"] / (1024**3)
+    g = sns.catplot(x = "connector", y="max.memory.used.GiB", hue = "connector", col = "model", sharey=False, data = memory, kind="box")
+    g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs")
+    savefig('output/5.2.2.eps')
+    plt.show()
+    #os.system("output\\\\5.2.eps") 
 ############### 5.3 ################
 def plot5_3_1():
     times = pd.read_csv("output/5.3_output.csv")
-    times["time.s"] = times["time.ms"] / 1024
-    g = sns.catplot(x="runs", y="time.s", hue = "function", col="model", kind="box", sharey=False, data=times)
-    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
+    times["time.s"] = times["time.ms"] / 1000
+    times["connector_function"] = times.apply(lambda x: "{} {}".format(x.connector, x.function),axis=1)
+    g = sns.FacetGrid(data=times,col="model", hue="connector_function", sharey=False)
+    g = g.map(sns.lineplot,"runs", "time.s",err_style="bars",ci="sd")
+    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs").add_legend(title="Function")    
     savefig('output/5.3.1.eps')
     plt.show()
     #os.system("./output/5.3.1.eps")
 
 def plot5_3_2():
-    memory = readData("output/5.3_output.csv")
-    memory["max.memory.used.MiB"] = memory["max.memory.used.b"] / (1024*2)
-    g = sns.catplot(x="runs", y="max.memory.used.MiB", hue = "function", col="model", kind="box", sharey=False, data=memory)
-    g.set_titles("{col_name}").set(ylabel="Max Memory Used in MiB", xlabel = "Runs")
+    memory = pd.read_csv("output/5.3_output.csv")
+    memory["max.memory.used.GiB"] = memory["max.memory.used.b"] / (1024**3)
+    memory["connector_function"] = memory.apply(lambda x: "{} {}".format(x.connector, x.function),axis=1)
+    g = sns.FacetGrid(data=memory,col="model", hue="connector_function", sharey=False)
+    g = g.map(sns.lineplot,"runs", "max.memory.used.GiB",err_style="bars",ci="sd")
+    g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs").add_legend(title="Function")
     savefig('output/5.3.2.eps')
     plt.show()
     #os.system("output\\\\5.3.2.eps") 
