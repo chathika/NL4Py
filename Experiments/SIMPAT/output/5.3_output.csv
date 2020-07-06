@@ -1,0 +1,451 @@
+connector,function,model,runs,ticks,time.ms,max.memory.used.b
+nl4py,scheduledreporters,Fire,200,100,24187,2672230400
+nl4py,runexperiment,Fire,200,100,8704,887578624
+pynetlogo,repeatreporter,Fire,200,100,23602,2749493248
+nl4py,scheduledreporters,Ethnocentrism,200,1000,360727,8176373760
+nl4py,runexperiment,Ethnocentrism,200,1000,306179,8893562880
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,329901,7200305152
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25783,2926718976
+nl4py,runexperiment,Wolf Sheep Predation,200,100,7919,915587072
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21279,3104813056
+nl4py,scheduledreporters,Fire,400,100,30593,3225612288
+nl4py,runexperiment,Fire,400,100,11645,1181868032
+pynetlogo,repeatreporter,Fire,400,100,24404,3221577728
+nl4py,scheduledreporters,Ethnocentrism,400,1000,707180,11414437888
+nl4py,runexperiment,Ethnocentrism,400,1000,600325,8494960640
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,643860,10076921856
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,37138,4000911360
+nl4py,runexperiment,Wolf Sheep Predation,400,100,10694,1153765376
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,29810,3765833728
+nl4py,scheduledreporters,Fire,600,100,37930,3621789696
+nl4py,runexperiment,Fire,600,100,13360,1410043904
+pynetlogo,repeatreporter,Fire,600,100,29457,3967123456
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1015047,13935087616
+nl4py,runexperiment,Ethnocentrism,600,1000,1041186,8950865920
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,932241,16429498368
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,45462,4459384832
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13832,1472921600
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,35634,4269604864
+nl4py,scheduledreporters,Fire,800,100,43435,4013838336
+nl4py,runexperiment,Fire,800,100,15887,1417457664
+pynetlogo,repeatreporter,Fire,800,100,33227,4169711616
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1345015,19249041408
+nl4py,runexperiment,Ethnocentrism,800,1000,1180672,8971292672
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1266320,18714210304
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,53023,5507661824
+nl4py,runexperiment,Wolf Sheep Predation,800,100,16058,1864876032
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,42504,4883603456
+nl4py,scheduledreporters,Fire,1000,100,50232,4626268160
+nl4py,runexperiment,Fire,1000,100,18213,1551974400
+pynetlogo,repeatreporter,Fire,1000,100,38027,4173221888
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1687433,17449684992
+nl4py,runexperiment,Ethnocentrism,1000,1000,1472291,8958943232
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1550086,16100622336
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,61325,5155774464
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18396,2710523904
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,47731,5000802304
+nl4py,scheduledreporters,Fire,200,100,22260,2924949504
+nl4py,runexperiment,Fire,200,100,8115,848392192
+pynetlogo,repeatreporter,Fire,200,100,19056,2814574592
+nl4py,scheduledreporters,Ethnocentrism,200,1000,359217,6829264896
+nl4py,runexperiment,Ethnocentrism,200,1000,301678,8751071232
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,328053,7218659328
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25204,2791370752
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8332,902168576
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21149,2963025920
+nl4py,scheduledreporters,Fire,400,100,32142,3357577216
+nl4py,runexperiment,Fire,400,100,11321,1135902720
+pynetlogo,repeatreporter,Fire,400,100,23978,3267756032
+nl4py,scheduledreporters,Ethnocentrism,400,1000,690722,11384819712
+nl4py,runexperiment,Ethnocentrism,400,1000,593118,8804438016
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,630372,12420390912
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35474,3224588288
+nl4py,runexperiment,Wolf Sheep Predation,400,100,10765,1262252032
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,29788,3712200704
+nl4py,scheduledreporters,Fire,600,100,38284,3644772352
+nl4py,runexperiment,Fire,600,100,13458,1614176256
+pynetlogo,repeatreporter,Fire,600,100,29664,3672543232
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1013806,16796794880
+nl4py,runexperiment,Ethnocentrism,600,1000,899026,8872751104
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,938091,14487044096
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44214,4346421248
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13412,1886355456
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,36023,4532998144
+nl4py,scheduledreporters,Fire,800,100,43776,3748556800
+nl4py,runexperiment,Fire,800,100,15645,1445330944
+pynetlogo,repeatreporter,Fire,800,100,33696,3938676736
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1349098,19305558016
+nl4py,runexperiment,Ethnocentrism,800,1000,1183572,9015959552
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1238928,19915272192
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,56924,3765936128
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15846,2068992000
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,41684,4605124608
+nl4py,scheduledreporters,Fire,1000,100,49592,4472569856
+nl4py,runexperiment,Fire,1000,100,17791,1456476160
+pynetlogo,repeatreporter,Fire,1000,100,37770,4127928320
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1701623,19742941184
+nl4py,runexperiment,Ethnocentrism,1000,1000,1502233,9422876672
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1809844,23493398528
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,63551,4505477120
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18899,2414702592
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,53078,5174296576
+nl4py,scheduledreporters,Fire,200,100,23546,2586132480
+nl4py,runexperiment,Fire,200,100,12553,477274112
+pynetlogo,repeatreporter,Fire,200,100,23061,2903506944
+nl4py,scheduledreporters,Ethnocentrism,200,1000,378588,9047674880
+nl4py,runexperiment,Ethnocentrism,200,1000,326785,9192280064
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,358994,6926970880
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,26141,2921115648
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8667,814632960
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,24098,2735427584
+nl4py,scheduledreporters,Fire,400,100,31804,3412815872
+nl4py,runexperiment,Fire,400,100,11628,1448820736
+pynetlogo,repeatreporter,Fire,400,100,25031,3371413504
+nl4py,scheduledreporters,Ethnocentrism,400,1000,692225,12430385152
+nl4py,runexperiment,Ethnocentrism,400,1000,601815,9241706496
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,634850,12559708160
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,37096,3708325888
+nl4py,runexperiment,Wolf Sheep Predation,400,100,11564,1142054912
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,31150,3634876416
+nl4py,scheduledreporters,Fire,600,100,38980,3694120960
+nl4py,runexperiment,Fire,600,100,13229,1196535808
+pynetlogo,repeatreporter,Fire,600,100,29107,3881840640
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1031111,16368422912
+nl4py,runexperiment,Ethnocentrism,600,1000,933988,9355329536
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,1011167,17642889216
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44938,4150050816
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13939,1624735744
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,40735,4124774400
+nl4py,scheduledreporters,Fire,800,100,44032,3989913600
+nl4py,runexperiment,Fire,800,100,16514,1412419584
+pynetlogo,repeatreporter,Fire,800,100,44502,4005490688
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1395298,15912857600
+nl4py,runexperiment,Ethnocentrism,800,1000,1189341,9210658816
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1243821,20453396480
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,51837,4725944320
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15238,1784815616
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,41817,4945330176
+nl4py,scheduledreporters,Fire,1000,100,49739,4891529216
+nl4py,runexperiment,Fire,1000,100,18485,1428295680
+pynetlogo,repeatreporter,Fire,1000,100,39125,4234600448
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1694407,18772905984
+nl4py,runexperiment,Ethnocentrism,1000,1000,1601877,9037119488
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1558633,21533396992
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,62083,5899075584
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,17546,2205675520
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,47745,5248212992
+nl4py,scheduledreporters,Fire,200,100,22034,2519842816
+nl4py,runexperiment,Fire,200,100,8277,847847424
+pynetlogo,repeatreporter,Fire,200,100,18390,2735456256
+nl4py,scheduledreporters,Ethnocentrism,200,1000,362483,7023616000
+nl4py,runexperiment,Ethnocentrism,200,1000,305953,9168834560
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,333021,7601811456
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25375,2941272064
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8514,940773376
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21525,2909704192
+nl4py,scheduledreporters,Fire,400,100,29927,3354836992
+nl4py,runexperiment,Fire,400,100,11395,1285107712
+pynetlogo,repeatreporter,Fire,400,100,24686,3277205504
+nl4py,scheduledreporters,Ethnocentrism,400,1000,694074,13522456576
+nl4py,runexperiment,Ethnocentrism,400,1000,582401,9214910464
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,637401,12198268928
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35452,4091183104
+nl4py,runexperiment,Wolf Sheep Predation,400,100,10996,1408983040
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,30373,4016119808
+nl4py,scheduledreporters,Fire,600,100,37618,3361693696
+nl4py,runexperiment,Fire,600,100,13123,1348714496
+pynetlogo,repeatreporter,Fire,600,100,30388,3892846592
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1034659,16427405312
+nl4py,runexperiment,Ethnocentrism,600,1000,897364,9341603840
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,949855,13751951360
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44439,4830781440
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13473,1776517120
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,36577,4575670272
+nl4py,scheduledreporters,Fire,800,100,44273,3921326080
+nl4py,runexperiment,Fire,800,100,16269,1726775296
+pynetlogo,repeatreporter,Fire,800,100,34825,3857575936
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1347963,15202779136
+nl4py,runexperiment,Ethnocentrism,800,1000,1181494,9378852864
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1257983,19263950848
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,52566,5111619584
+nl4py,runexperiment,Wolf Sheep Predation,800,100,16226,2011316224
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,43114,4738715648
+nl4py,scheduledreporters,Fire,1000,100,50646,4236529664
+nl4py,runexperiment,Fire,1000,100,17713,2050445312
+pynetlogo,repeatreporter,Fire,1000,100,39832,4202237952
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1675318,10751750144
+nl4py,runexperiment,Ethnocentrism,1000,1000,1503754,9720184832
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1556240,11683127296
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,60220,6052298752
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18747,2276057088
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,50092,5743370240
+nl4py,scheduledreporters,Fire,200,100,22260,2644074496
+nl4py,runexperiment,Fire,200,100,8038,867254272
+pynetlogo,repeatreporter,Fire,200,100,18982,2766893056
+nl4py,scheduledreporters,Ethnocentrism,200,1000,363623,8402997248
+nl4py,runexperiment,Ethnocentrism,200,1000,304350,9214980096
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,335223,7219900416
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25639,3062276096
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8142,924721152
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21757,3173670912
+nl4py,scheduledreporters,Fire,400,100,30541,3407216640
+nl4py,runexperiment,Fire,400,100,11405,1255723008
+pynetlogo,repeatreporter,Fire,400,100,24991,3218735104
+nl4py,scheduledreporters,Ethnocentrism,400,1000,696906,10118520832
+nl4py,runexperiment,Ethnocentrism,400,1000,596766,9244155904
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,639841,13006143488
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,34813,3983073280
+nl4py,runexperiment,Wolf Sheep Predation,400,100,10901,1287626752
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,29638,3959857152
+nl4py,scheduledreporters,Fire,600,100,38056,3655421952
+nl4py,runexperiment,Fire,600,100,13616,1174917120
+pynetlogo,repeatreporter,Fire,600,100,29810,3775799296
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1039741,15068401664
+nl4py,runexperiment,Ethnocentrism,600,1000,863910,9380986880
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,945068,17074171904
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,46477,4273287168
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13539,1552863232
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,38953,4403826688
+nl4py,scheduledreporters,Fire,800,100,43641,3918290944
+nl4py,runexperiment,Fire,800,100,15788,1856712704
+pynetlogo,repeatreporter,Fire,800,100,35097,3910217728
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1351128,17006153728
+nl4py,runexperiment,Ethnocentrism,800,1000,1149440,9444323328
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1255575,20131938304
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,53483,5313282048
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15765,2055634944
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,42844,4882493440
+nl4py,scheduledreporters,Fire,1000,100,50879,4336877568
+nl4py,runexperiment,Fire,1000,100,17793,1579208704
+pynetlogo,repeatreporter,Fire,1000,100,38849,4162211840
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1694450,18200080384
+nl4py,runexperiment,Ethnocentrism,1000,1000,1489436,9418584064
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1557952,17994039296
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,60387,5618593792
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,17626,3073748992
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,47393,5645885440
+nl4py,scheduledreporters,Fire,200,100,21845,2578853888
+nl4py,runexperiment,Fire,200,100,8363,998625280
+pynetlogo,repeatreporter,Fire,200,100,19004,3028152320
+nl4py,scheduledreporters,Ethnocentrism,200,1000,363637,7968841728
+nl4py,runexperiment,Ethnocentrism,200,1000,302564,9202421760
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,331679,7359750144
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25081,2712498176
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8097,909893632
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21370,2928242688
+nl4py,scheduledreporters,Fire,400,100,30596,3265892352
+nl4py,runexperiment,Fire,400,100,11091,1111805952
+pynetlogo,repeatreporter,Fire,400,100,24037,3258331136
+nl4py,scheduledreporters,Ethnocentrism,400,1000,697213,11606941696
+nl4py,runexperiment,Ethnocentrism,400,1000,600367,9330384896
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,637042,9847287808
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35847,3639496704
+nl4py,runexperiment,Wolf Sheep Predation,400,100,11295,1163550720
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,29910,3732480000
+nl4py,scheduledreporters,Fire,600,100,38452,3699605504
+nl4py,runexperiment,Fire,600,100,13417,1239449600
+pynetlogo,repeatreporter,Fire,600,100,29971,3869085696
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1023584,16013496320
+nl4py,runexperiment,Ethnocentrism,600,1000,892667,9235554304
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,930586,14203568128
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44190,4320706560
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13063,1539411968
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,35999,4294373376
+nl4py,scheduledreporters,Fire,800,100,43608,3917557760
+nl4py,runexperiment,Fire,800,100,15759,1733488640
+pynetlogo,repeatreporter,Fire,800,100,33610,4062244864
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1347203,14954029056
+nl4py,runexperiment,Ethnocentrism,800,1000,1184199,9395130368
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1266457,17953292288
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,54651,5375361024
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15935,1813516288
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,44436,5020884992
+nl4py,scheduledreporters,Fire,1000,100,49359,4597809152
+nl4py,runexperiment,Fire,1000,100,18466,1673420800
+pynetlogo,repeatreporter,Fire,1000,100,38540,4182679552
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1691805,17493368832
+nl4py,runexperiment,Ethnocentrism,1000,1000,1479919,9234415616
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1545601,11474300928
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,59950,5487935488
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18078,2414596096
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,48087,5528567808
+nl4py,scheduledreporters,Fire,200,100,22295,2793295872
+nl4py,runexperiment,Fire,200,100,8446,992837632
+pynetlogo,repeatreporter,Fire,200,100,18698,2833629184
+nl4py,scheduledreporters,Ethnocentrism,200,1000,365291,8980836352
+nl4py,runexperiment,Ethnocentrism,200,1000,303311,8846417920
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,328751,7564730368
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25394,2894970880
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8013,872689664
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21195,2813943808
+nl4py,scheduledreporters,Fire,400,100,30126,2999328768
+nl4py,runexperiment,Fire,400,100,10916,1095946240
+pynetlogo,repeatreporter,Fire,400,100,24684,3330891776
+nl4py,scheduledreporters,Ethnocentrism,400,1000,696356,12083650560
+nl4py,runexperiment,Ethnocentrism,400,1000,600806,8867381248
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,640161,11765907456
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35476,3896877056
+nl4py,runexperiment,Wolf Sheep Predation,400,100,10932,1687392256
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,29873,3758108672
+nl4py,scheduledreporters,Fire,600,100,38504,3825111040
+nl4py,runexperiment,Fire,600,100,13519,1258049536
+pynetlogo,repeatreporter,Fire,600,100,29832,3607781376
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1030089,16724897792
+nl4py,runexperiment,Ethnocentrism,600,1000,889600,8938258432
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,936906,14122676224
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44115,4363468800
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13652,1497391104
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,36781,4216631296
+nl4py,scheduledreporters,Fire,800,100,44305,4193845248
+nl4py,runexperiment,Fire,800,100,15730,1422524416
+pynetlogo,repeatreporter,Fire,800,100,34269,4246130688
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1342442,19420823552
+nl4py,runexperiment,Ethnocentrism,800,1000,1180766,9014493184
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1254947,12804575232
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,52445,4808323072
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15101,2013036544
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,43319,5133832192
+nl4py,scheduledreporters,Fire,1000,100,49580,4701790208
+nl4py,runexperiment,Fire,1000,100,18237,1529036800
+pynetlogo,repeatreporter,Fire,1000,100,39710,4153753600
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1682833,15407489024
+nl4py,runexperiment,Ethnocentrism,1000,1000,1482450,9021620224
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1558310,8674533376
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,59667,6138593280
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,17935,2237497344
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,51456,5432688640
+nl4py,scheduledreporters,Fire,200,100,22178,2838339584
+nl4py,runexperiment,Fire,200,100,8214,869597184
+pynetlogo,repeatreporter,Fire,200,100,19150,2757496832
+nl4py,scheduledreporters,Ethnocentrism,200,1000,363685,8944078848
+nl4py,runexperiment,Ethnocentrism,200,1000,301899,8826195968
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,330305,7365722112
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25301,2699374592
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8352,957046784
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,21965,2844741632
+nl4py,scheduledreporters,Fire,400,100,30474,3149565952
+nl4py,runexperiment,Fire,400,100,11534,1344782336
+pynetlogo,repeatreporter,Fire,400,100,25119,3460284416
+nl4py,scheduledreporters,Ethnocentrism,400,1000,693125,11372163072
+nl4py,runexperiment,Ethnocentrism,400,1000,591160,8857370624
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,640835,11640397824
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,37377,3510509568
+nl4py,runexperiment,Wolf Sheep Predation,400,100,11522,1267654656
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,33651,3602395136
+nl4py,scheduledreporters,Fire,600,100,37251,3729186816
+nl4py,runexperiment,Fire,600,100,13540,1506766848
+pynetlogo,repeatreporter,Fire,600,100,31818,3685167104
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1020839,16201089024
+nl4py,runexperiment,Ethnocentrism,600,1000,888177,8933777408
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,955743,16542048256
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,44235,4703805440
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13385,1520816128
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,37862,4609236992
+nl4py,scheduledreporters,Fire,800,100,43497,3835224064
+nl4py,runexperiment,Fire,800,100,15526,1455489024
+pynetlogo,repeatreporter,Fire,800,100,35950,3950145536
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1351277,17634455552
+nl4py,runexperiment,Ethnocentrism,800,1000,1194031,8966139904
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1289749,21661298688
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,54116,4702875648
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15789,2205278208
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,44248,4491116544
+nl4py,scheduledreporters,Fire,1000,100,49976,4567527424
+nl4py,runexperiment,Fire,1000,100,18005,1563709440
+pynetlogo,repeatreporter,Fire,1000,100,41502,4069363712
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1677203,19015892992
+nl4py,runexperiment,Ethnocentrism,1000,1000,1475356,9080205312
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1576371,17390764032
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,61602,5811286016
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18010,2269315072
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,51620,5274595328
+nl4py,scheduledreporters,Fire,200,100,21777,2625404928
+nl4py,runexperiment,Fire,200,100,8479,829788160
+pynetlogo,repeatreporter,Fire,200,100,19283,2825084928
+nl4py,scheduledreporters,Ethnocentrism,200,1000,359048,7817986048
+nl4py,runexperiment,Ethnocentrism,200,1000,294315,8848244736
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,340584,7690366976
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,24774,2919075840
+nl4py,runexperiment,Wolf Sheep Predation,200,100,8092,852074496
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,22140,2897772544
+nl4py,scheduledreporters,Fire,400,100,31045,3457507328
+nl4py,runexperiment,Fire,400,100,11347,1316577280
+pynetlogo,repeatreporter,Fire,400,100,25757,3252101120
+nl4py,scheduledreporters,Ethnocentrism,400,1000,686047,11333795840
+nl4py,runexperiment,Ethnocentrism,400,1000,599927,8849977344
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,650236,12542914560
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35616,3704287232
+nl4py,runexperiment,Wolf Sheep Predation,400,100,11285,1278951424
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,32007,3998629888
+nl4py,scheduledreporters,Fire,600,100,38022,3512664064
+nl4py,runexperiment,Fire,600,100,14090,1315753984
+pynetlogo,repeatreporter,Fire,600,100,32009,3841835008
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1021265,15811796992
+nl4py,runexperiment,Ethnocentrism,600,1000,891064,8878125056
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,959114,16378761216
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,43915,4449996800
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13213,1944305664
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,39098,4243722240
+nl4py,scheduledreporters,Fire,800,100,43552,3726802944
+nl4py,runexperiment,Fire,800,100,16350,1518952448
+pynetlogo,repeatreporter,Fire,800,100,36515,4316569600
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1374612,16934899712
+nl4py,runexperiment,Ethnocentrism,800,1000,1185479,8951521280
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1288508,12010749952
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,53396,5228380160
+nl4py,runexperiment,Wolf Sheep Predation,800,100,15763,2077548544
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,48224,4570529792
+nl4py,scheduledreporters,Fire,1000,100,49845,4610158592
+nl4py,runexperiment,Fire,1000,100,17882,1496686592
+pynetlogo,repeatreporter,Fire,1000,100,41506,4365840384
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1673598,17488379904
+nl4py,runexperiment,Ethnocentrism,1000,1000,1472986,9043136512
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1614059,23746924544
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,72297,4806713344
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,19066,2504912896
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,59310,5344100352
+nl4py,scheduledreporters,Fire,200,100,22777,2892750848
+nl4py,runexperiment,Fire,200,100,8221,816001024
+pynetlogo,repeatreporter,Fire,200,100,19998,2731606016
+nl4py,scheduledreporters,Ethnocentrism,200,1000,369394,8541839360
+nl4py,runexperiment,Ethnocentrism,200,1000,306100,8803962880
+pynetlogo,repeatreporter,Ethnocentrism,200,1000,337614,7405543424
+nl4py,scheduledreporters,Wolf Sheep Predation,200,100,25212,3205492736
+nl4py,runexperiment,Wolf Sheep Predation,200,100,7967,856150016
+pynetlogo,repeatreporter,Wolf Sheep Predation,200,100,22474,2841296896
+nl4py,scheduledreporters,Fire,400,100,30926,3302629376
+nl4py,runexperiment,Fire,400,100,11130,1245794304
+pynetlogo,repeatreporter,Fire,400,100,26219,3199090688
+nl4py,scheduledreporters,Ethnocentrism,400,1000,694705,12902928384
+nl4py,runexperiment,Ethnocentrism,400,1000,594352,8898158592
+pynetlogo,repeatreporter,Ethnocentrism,400,1000,647820,12262961152
+nl4py,scheduledreporters,Wolf Sheep Predation,400,100,35877,3828781056
+nl4py,runexperiment,Wolf Sheep Predation,400,100,11184,1134972928
+pynetlogo,repeatreporter,Wolf Sheep Predation,400,100,31946,3947302912
+nl4py,scheduledreporters,Fire,600,100,37955,3942182912
+nl4py,runexperiment,Fire,600,100,13585,1210478592
+pynetlogo,repeatreporter,Fire,600,100,32248,3810705408
+nl4py,scheduledreporters,Ethnocentrism,600,1000,1034221,14133006336
+nl4py,runexperiment,Ethnocentrism,600,1000,897877,8988741632
+pynetlogo,repeatreporter,Ethnocentrism,600,1000,972908,15007518720
+nl4py,scheduledreporters,Wolf Sheep Predation,600,100,43860,4506054656
+nl4py,runexperiment,Wolf Sheep Predation,600,100,13383,1537933312
+pynetlogo,repeatreporter,Wolf Sheep Predation,600,100,38263,4150419456
+nl4py,scheduledreporters,Fire,800,100,43439,4482883584
+nl4py,runexperiment,Fire,800,100,15572,1383448576
+pynetlogo,repeatreporter,Fire,800,100,36647,3801202688
+nl4py,scheduledreporters,Ethnocentrism,800,1000,1348876,17639825408
+nl4py,runexperiment,Ethnocentrism,800,1000,1182206,8932151296
+pynetlogo,repeatreporter,Ethnocentrism,800,1000,1295780,20564361216
+nl4py,scheduledreporters,Wolf Sheep Predation,800,100,53214,5803270144
+nl4py,runexperiment,Wolf Sheep Predation,800,100,16118,2082504704
+pynetlogo,repeatreporter,Wolf Sheep Predation,800,100,49228,4358017024
+nl4py,scheduledreporters,Fire,1000,100,50092,4377079808
+nl4py,runexperiment,Fire,1000,100,17784,1509273600
+pynetlogo,repeatreporter,Fire,1000,100,41483,4387831808
+nl4py,scheduledreporters,Ethnocentrism,1000,1000,1694866,21088514048
+nl4py,runexperiment,Ethnocentrism,1000,1000,1433358,9165389824
+pynetlogo,repeatreporter,Ethnocentrism,1000,1000,1633572,22809284608
+nl4py,scheduledreporters,Wolf Sheep Predation,1000,100,60672,6295547904
+nl4py,runexperiment,Wolf Sheep Predation,1000,100,18669,2232332288
+pynetlogo,repeatreporter,Wolf Sheep Predation,1000,100,53321,5448929280
