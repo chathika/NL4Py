@@ -5,8 +5,6 @@
 import time
 import sys
 
-startTime = int(round(time.time() * 1000))
-
 import nl4py
 
 nl4py.initialize(sys.argv[1])
@@ -37,8 +35,3 @@ for i in range(0,modelRuns):
     r3 = workspace.report('count turtles with [shape = "square"]')
     r4 = workspace.report('count turtles with [shape = "square 2"]')
     
-stopTime = int(round(time.time() * 1000))
-totalTime = stopTime - startTime
-with open("output/5.2_output.csv", "a") as myfile:
-        myfile.write('Ethnocentrism,' + str(modelRuns) + ',NL4Py,' + str(totalTime) + '\n')
-print(totalTime)

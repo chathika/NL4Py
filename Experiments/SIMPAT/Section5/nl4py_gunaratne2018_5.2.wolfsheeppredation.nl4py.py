@@ -5,8 +5,6 @@
 import time
 import sys
 
-startTime = int(round(time.time() * 1000))
-
 import nl4py
 
 nl4py.initialize(sys.argv[1])
@@ -37,9 +35,3 @@ for i in range(0,modelRuns):
         time.sleep(0.001)
     r1 = workspace.report('count sheep')
     r2 = workspace.report('count wolves')
-
-stopTime = int(round(time.time() * 1000))
-totalTime = stopTime - startTime
-with open("output/5.2_output.csv", "a") as myfile:
-    myfile.write('Wolf Sheep Predation,' + str(modelRuns) + ',NL4Py,' + str(totalTime) + '\n')
-print(totalTime)
