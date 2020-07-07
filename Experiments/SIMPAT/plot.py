@@ -6,6 +6,7 @@ from pylab import plot, draw, savefig, xlim, figure, ylim, legend, boxplot, setp
 import os
 import seaborn as sns
 
+plt.rcParams.update({'font.size': 20})
 # function for setting the colors of the box plots pairs
 # takes boxplot and color string and hatch pattern
 def setBoxColors(bp, color, hatch):
@@ -81,7 +82,7 @@ def plot5_2_1():
     times["time.s"] = times["time.ms"] / 1000
     g = sns.catplot(x = "connector", y="time.s", hue = "connector", col = "model", sharey=False, data = times, kind="box")
     g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
-    savefig('output/5.2.1.eps')
+    savefig('output/5_2_1.eps')
     plt.show()
     #os.system("output\\\\5.2.eps")    
 
@@ -90,28 +91,30 @@ def plot5_2_2():
     memory["max.memory.used.GiB"] = memory["max.memory.used.b"] / (1024**3)
     g = sns.catplot(x = "connector", y="max.memory.used.GiB", hue = "connector", col = "model", sharey=False, data = memory, kind="box")
     g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs")
-    savefig('output/5.2.2.eps')
+    savefig('output/5_2_2.eps')
     plt.show()
     #os.system("output\\\\5.2.eps") 
 ############### 5.3 ################
 def plot5_3_1():
-    times = pd.read_csv("output/5.3_output.csv")
+    times = pd.read_csv("output/5.3_output_windows_local.csv")
     times["time.s"] = times["time.ms"] / 1000
     times["connector_function"] = times.apply(lambda x: "{} {}".format(x.connector, x.function),axis=1)
-    g = sns.FacetGrid(data=times,col="model", hue="connector_function", sharey=False)
+    g = sns.FacetGrid(data=times,col="model", hue="connector_function", sharey=False,legend_out=False)
     g = g.map(sns.lineplot,"runs", "time.s",err_style="bars",ci="sd")
-    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs").add_legend(title="Function")    
-    savefig('output/5.3.1.eps')
+    g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")#.add_legend(title="Function",loc="lower center")    
+    g.fig.legend(labels = times.connector_function.unique(), ncol = 3, title="Function",loc="lower center")
+    savefig('output/5_3_1_local.eps')
     plt.show()
     #os.system("./output/5.3.1.eps")
 
 def plot5_3_2():
-    memory = pd.read_csv("output/5.3_output.csv")
+    memory = pd.read_csv("output/5.3_output_windows_local.csv")
     memory["max.memory.used.GiB"] = memory["max.memory.used.b"] / (1024**3)
     memory["connector_function"] = memory.apply(lambda x: "{} {}".format(x.connector, x.function),axis=1)
     g = sns.FacetGrid(data=memory,col="model", hue="connector_function", sharey=False)
     g = g.map(sns.lineplot,"runs", "max.memory.used.GiB",err_style="bars",ci="sd")
-    g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs").add_legend(title="Function")
-    savefig('output/5.3.2.eps')
+    g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs")#.add_legend(title="Function",loc="lower center")
+    g.fig.legend(labels = memory.connector_function.unique(), ncol = 3, title="Function",loc="lower center")
+    savefig('output/5_3_2_local.eps')
     plt.show()
     #os.system("output\\\\5.3.2.eps") 
