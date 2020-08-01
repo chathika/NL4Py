@@ -12,7 +12,6 @@ import org.nlogo.headless.HeadlessWorkspace;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class HeadlessWorkspaceController extends NetLogoController {
 	
@@ -113,27 +112,25 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		ArrayList<ArrayList<String>> scheduledReporterResults = new ArrayList<ArrayList<String>> ();//String[(int)((stopAtTick-startAtTick)/intervalTicks)][reporters.size()];
 		//Has start time passed?
 		int ticksOnModel = ((Double)ws.report("ticks")).intValue();
-		if(ticksOnModel <= startAtTick ){
-			if(ticksOnModel < startAtTick) {
-				//catch up if necessary
-				ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [" + goCommand + "]");
+		if(ticksOnModel < startAtTick) {
+			//catch up if necessary
+			ws.command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [" + goCommand + "]");
+		}
+		String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - ticksOnModel) +" [ " + goCommand + " let resultsThisTick (list " ; 
+		for(byte[] reporter : reporters) {
+			commandString = commandString + "( " + new String(reporter) + " ) ";
+		}
+		commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
+		ws.command(commandString);						
+		scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
+		for (int i = 0; i<(int)((stopAtTick-ticksOnModel)/intervalTicks); i++){
+			org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
+			scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
+			ArrayList<String> resultsThisTickArrayList = new ArrayList<String>();
+			for (int j = 0; j<reporters.size(); j++){
+				resultsThisTickArrayList.add(resultsThisTickIterator.next().toString());
 			}
-			String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - startAtTick) +" [ " + goCommand + " let resultsThisTick (list " ; 
-			for(byte[] reporter : reporters) {
-				commandString = commandString + "( " + new String(reporter) + " ) ";
-			}
-			commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
-			ws.command(commandString);						
-			scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)ws.report("[plabel] of patch 0 0")).toIterator();
-			for (int i = 0; i<(int)((stopAtTick-startAtTick)/intervalTicks); i++){
-				org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
-				scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
-				ArrayList<String> resultsThisTickArrayList = new ArrayList<String>();
-				for (int j = 0; j<reporters.size(); j++){
-					resultsThisTickArrayList.add(resultsThisTickIterator.next().toString());
-				}
-				scheduledReporterResults.add(i,resultsThisTickArrayList);
-			} 
+			scheduledReporterResults.add(i,resultsThisTickArrayList);
 		}
 		return scheduledReporterResults;
 	}

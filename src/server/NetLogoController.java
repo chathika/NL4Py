@@ -3,26 +3,10 @@ package nl4py.server;
 
 import py4j.GatewayServer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import bsearch.nlogolink.NetLogoLinkException;
-import javax.imageio.ImageIO;
 import bsearch.space.*;
-import java.util.HashMap;
-import org.nlogo.headless.HeadlessWorkspace; 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class NetLogoController {
-	
-	HeadlessWorkspace ws;
-	private ArrayBlockingQueue<String> commandQueue;
-	private Thread commandThread;
-	boolean controllerNeeded = false;
-	LinkedBlockingQueue<String> scheduledReporterResults = new LinkedBlockingQueue<String>();
 	
 	/**
 	 * Create a new workspace
@@ -36,6 +20,7 @@ public abstract class NetLogoController {
 	 * @param unique id for this model
 	 */
 	public abstract void closeModel();
+
 	public abstract void refresh();
 	/**
 	 * Export a view (the visualization area) to the Java file's working directory.
@@ -53,9 +38,9 @@ public abstract class NetLogoController {
 	 * @param command: The value to report.
 	 * @return Java Object containing return info
 	 */
-	//public abstract Object report(String command);
+	public abstract byte[] report(byte[] reporter);
 	
-	//public abstract ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand);
+	public abstract ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<byte[]> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand);
 	
 	public abstract SearchSpace getParamList(String path);
 	

@@ -3,128 +3,22 @@ package nl4py.server;
 
 import py4j.GatewayServer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import bsearch.nlogolink.NetLogoLinkException;
 import javax.imageio.ImageIO;
 import bsearch.space.*;
-import java.util.HashMap;
 import org.nlogo.app.App;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFrame;
 import nl4py.server.NetLogoVersionCompatibilityResolver;
 
 public class NetLogoAppController extends NetLogoController {
 
-	private ArrayBlockingQueue<String> commandQueue;
-	private Thread commandThread;
-	boolean controllerNeeded = false;
-	LinkedBlockingQueue<ArrayList<String>> scheduledReporterResults = new LinkedBlockingQueue<ArrayList<String>>();
-	
-	public NetLogoAppController() {
-		
+	GatewayServer gs;
+
+	public NetLogoAppController(GatewayServer gs) {
+		this.gs = gs;
 		App.main(new String[]{});
-		commandQueue = new ArrayBlockingQueue<String>(100);
-		commandThread = new Thread(new Runnable() {
-			/**
-			* Checks if the queue has been poisoned with the thread stop condition
-			* If yes, interrupt and free resources.
-			* If no, return the intended command String
-			* Blocks on the commandQueue
-			*/
-			private String safelyGetNextCommand() throws InterruptedException{
-				String nextCommand = commandQueue.take();
-				if(nextCommand.equalsIgnoreCase("~stop~")) {
-					nextCommand = "";
-					controllerNeeded = false;
-					Thread.currentThread().interrupt();
-				}
-				return nextCommand;
-			}
-			@Override
-			public void run() {
-				//System.out.println("command thread started");
-				controllerNeeded = true;
-				while (controllerNeeded || !Thread.currentThread().interrupted()) {
-					//get next command out of queue
-					try{
-						//System.out.println("taking next command");
-						String nextCommand = safelyGetNextCommand();
-						if(nextCommand.equalsIgnoreCase("~ScheduledReporters~")){
-							//Read in the schedule
-							ArrayList<String> reporters = new ArrayList<String>();
-							nextCommand = safelyGetNextCommand();
-							while (!nextCommand.equalsIgnoreCase("~StartAt~")) {
-								reporters.add(nextCommand);
-								nextCommand = safelyGetNextCommand();
-								if (nextCommand == null ) {nextCommand = "";}
-							} 
-							int startAtTick = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							int intervalTicks = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							int stopAtTick = Integer.parseInt(safelyGetNextCommand());
-							nextCommand = safelyGetNextCommand();
-							String goCommand = safelyGetNextCommand();
-							//Now execute the schedule
-							//Has start time passed?
-							int ticksAtStart = ((Double)App.app().report("ticks")).intValue();
-							if(ticksAtStart <= startAtTick ){
-								int tickCounter = ticksAtStart;
-								while (controllerNeeded && (tickCounter < stopAtTick || stopAtTick < 0)) {
-									//tick the interval
-									/*for (int i = 0; i < intervalTicks; i ++ ){
-										//go
-										App.app.command(goCommand);
-										//increment counter
-										tickCounter++;
-									}*/
-									App.app().command("repeat " + Integer.toString(intervalTicks) +" [" + goCommand + "]");
-									tickCounter = tickCounter + intervalTicks;
-									//run reporters
-									ArrayList<String> reporterResults = new ArrayList<String>();
-									try{
-										for(String reporter : reporters) {
-											//record results
-											String reporterResult = App.app().report(reporter).toString();
-											reporterResults.add(reporterResult);
-										}
-									} catch (org.nlogo.nvm.RuntimePrimitiveException e) {
-										//This can throw a netlogo exception if the model is done running due to custom stop condition
-										continue;
-									}
-									//for(String resultI : reporterResults) {
-									scheduledReporterResults.put(reporterResults);
-									//}
-								}
-							}
-						} else {
-							//System.out.println("sending next command");
-							App.app().command(nextCommand);
-							//System.out.println("command done");
-						}	
-						Thread.sleep(10);
-					} catch (InterruptedException e){
-						//System.out.println("Shutting down command thread" + Thread.currentThread().getName());
-						controllerNeeded = false;
-						Thread.currentThread().interrupt();
-						break;
-					} catch (NullPointerException e){
-						if (App.app() == null) {
-							break;
-						}
-					}
-				}
-			}
-		});
-		commandThread.start();
 	}
 	
 	/**
@@ -133,13 +27,8 @@ public class NetLogoAppController extends NetLogoController {
 	 * @param path: Path to the .nlogo file to load.
 	 */
 	public void openModel(String path) {
-		
 		NL4PySecutiryManager secManager = new NL4PySecutiryManager();
 		System.setSecurityManager(secManager);
-
-		
-		
-		//System.out.println("opening" + path);
 		try {
 			java.awt.EventQueue.invokeAndWait(
 			new Runnable() {
@@ -185,12 +74,12 @@ public class NetLogoAppController extends NetLogoController {
 	 * new instance of Netlogo. Great for multiple runs!
 	 */ 
 	public void refresh(){
-		//try {
-		//	App.app().dispose();
-		//} catch (InterruptedException e) {
-		//	e.printStackTrace();
-		//}
-		//App.app() = HeadlessWorkspace.newInstance();
+		/**try {
+			App.app().dispose();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		App.app() = HeadlessWorkspace.newInstance();*/
 	}
 	
 	/**
@@ -198,14 +87,14 @@ public class NetLogoAppController extends NetLogoController {
 	 * @param filename: Name used to save the file. Include .png (ex: file.png)
 	 */
 	public void exportView(String filename){
-		//try {
-		//	BufferedImage img = App.app().exportView();
-		//    File outputfile = new File(filename);
-		//	ImageIO.write(img, "png", outputfile);
-		//} catch (IOException e) {
-		//    e.printStackTrace();
-		//}		
-		//Not Yet Implmeneted
+		System.out.println("Not Implemented.");
+		/*try {
+			BufferedImage img = App.app().exportView();
+			File outputfile = new File(filename);
+		    ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}*/	
 	}
 	
 	/**
@@ -214,15 +103,8 @@ public class NetLogoAppController extends NetLogoController {
 	 */
 	public void command(String command) {
 		try {
-			this.scheduleCommand(command);
+			App.app().command(command);
 		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	}
-	private void scheduleCommand(String newCommand) {
-		try{
-			commandQueue.put(newCommand);
-		} catch (InterruptedException e){
 			e.printStackTrace();
 		}
 	}
@@ -232,63 +114,51 @@ public class NetLogoAppController extends NetLogoController {
 	 * @param reporter: The value to report.
 	 * @return Java Object containing return info
 	 */	
-	public Object report(String reporter) {
+	public byte[] report(byte[] reporter) {
 		Object result = null;
 		try {
-			result = ws.report(reporter);
+			result = App.app().report(new String(reporter));
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = e.getMessage();
 		}
-		return result;
+		return result.toString().getBytes();
 	}
 	
-	public ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<String> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
-		
-		try{
-			commandQueue.put("~ScheduledReporters~");
-			for (String reporter : reporters) {
-				commandQueue.put(reporter);
+	public ArrayList<ArrayList<String>> scheduleReportersAndRun (ArrayList<byte[]> reporters, int startAtTick, int intervalTicks, int stopAtTick, String goCommand){
+		ArrayList<ArrayList<String>> scheduledReporterResults = new ArrayList<ArrayList<String>> ();//String[(int)((stopAtTick-startAtTick)/intervalTicks)][reporters.size()];
+		//Has start time passed?
+		int ticksOnModel = ((Double)App.app().report("ticks")).intValue();
+		if(ticksOnModel < startAtTick) {
+			//catch up if necessary
+			App.app().command("repeat " + Double.toString(startAtTick - ticksOnModel) +" [" + goCommand + "]");
+		}
+		String commandString = "let nl4pyData (list) repeat " + Integer.toString(stopAtTick - ticksOnModel) +" [ " + goCommand + " let resultsThisTick (list " ; 
+		for(byte[] reporter : reporters) {
+			commandString = commandString + "( " + new String(reporter) + " ) ";
+		}
+		commandString = commandString + ") set nl4pyData lput resultsThisTick nl4pyData ] ask patch 0 0 [set plabel nl4pyData]";
+		App.app().command(commandString);						
+		scala.collection.Iterator resultsIterator = ((org.nlogo.core.LogoList)App.app().report("[plabel] of patch 0 0")).toIterator();
+		for (int i = 0; i<(int)((stopAtTick-ticksOnModel)/intervalTicks); i++){
+			org.nlogo.core.LogoList resultsThisTick = (org.nlogo.core.LogoList)resultsIterator.next();
+			scala.collection.Iterator resultsThisTickIterator = resultsThisTick.toIterator();
+			ArrayList<String> resultsThisTickArrayList = new ArrayList<String>();
+			for (int j = 0; j<reporters.size(); j++){
+				resultsThisTickArrayList.add(resultsThisTickIterator.next().toString());
 			}
-			commandQueue.put("~StartAt~");
-			commandQueue.put(Integer.toString(startAtTick));
-			commandQueue.put("~Interval~");
-			commandQueue.put(Integer.toString(intervalTicks));
-			commandQueue.put("~StopAt~");
-			commandQueue.put(Integer.toString(stopAtTick));
-			commandQueue.put("~RunReporters~");
-			commandQueue.put(goCommand);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			scheduledReporterResults.add(i,resultsThisTickArrayList);
 		}
-		return null;
-	}
-	public ArrayList<ArrayList<String>> awaitScheduledReporterResults() {
-		throw new UnsupportedOperationException("Method unimplemented!");
-	}
-	public ArrayList<ArrayList<String>> getScheduledReporterResults () {
-		ArrayList<ArrayList<String>> buffer  = new ArrayList<ArrayList<String>>();		
-		try {	
-			synchronized(scheduledReporterResults){
-				scheduledReporterResults.drainTo(buffer);
-			}	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return buffer;//buffer.toArray(new byte[buffer.size()][][]);
+		return scheduledReporterResults;
 	}	
-	
 	
 	protected void disposeWorkspace(){
 		this.closeModel();
-		//App.app() = null;
-		try{
-			commandQueue.put("~stop~");
+		/*try{
+			App.app().dispose();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
-		controllerNeeded = false;
-		commandThread.interrupt();
+		}*/
 		System.gc();
 	}
 	
