@@ -14,132 +14,182 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-from py4j.java_gateway import JavaGateway
-from py4j.protocol import Py4JNetworkError
-from py4j.protocol import Py4JJavaError
-
-from .NL4PyException import NL4PyControllerServerException
-import py4j.java_gateway as jg
-import py4j.java_collections as jcol
-import subprocess
-import threading
-import os
-import atexit
-import sys
 import numpy as np
+from py4j.java_gateway import JavaGateway, GatewayParameters
+from py4j.protocol import Py4JNetworkError, Py4JJavaError
+import py4j.java_gateway as jg
 
-'''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
+from .NL4PyException import deprecated
+
 class NetLogoGUI:
-    __bridge = None
-    __gateway = None 
-    __session = None
-    __path = None
-    __reporters_length = 0
-    '''and creates a headless workspace controller on the server'''
-    '''Returns a session id for this controller to be used for further use of this ABM'''
-    def __init__(self, java_gateway):
-        self.__gateway = java_gateway# New gateway connection
-        self.__bridge = self.__gateway.entry_point
-        self.__session = self.__bridge.newNetLogoApp()
-    #######################################################
-    ###Below are public functions of the NL4Py interface###
-    #######################################################
+    '''
+    Responsible for communicating with the NetLogo controller, a Java executable
+    and creates a GUI workspace controller on the server.
     
-    '''Opens a NetLogo model'''
-    def openModel(self, path):
-        try:
-            self.__path = path
-            self.__bridge.openModel(self.__session,self.__path)
-        except Py4JNetworkError as e:
-            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running nl4py.stopServer() and trying again.")#, None, sys.exc_info()[2])
-        #except Py4JJavaError as e:
-        #    raise NL4PyControllerServerException("Looks like the server couldn't find NetLogo. Perhaps you didn't set the NETLOGO_APP environment variable? Try setting it on your system and restarting Python.")#, None, sys.exc_info()[2])
-        #Also, just in case, check if this model actually exists and responds
-        #try: 
-        #    self.getParamRanges()
-        #except AttributeError as e:
-        #    raise NL4PyControllerServerException("There doesn't seem to be a NetLogo model under that name! Please recheck the .nlogo model path.")
-    '''Sends a signal to the server to tell the respective controller to close its'''
-    '''HeadlessWorkspace object'''
-    def closeModel(self):
-        self.__bridge.closeModel(self.__session)
-    '''Sends a signal to the server to tell the respective controller to send a'''
-    '''NetLogo command to its HeadlessWorkspace object'''
-    def command(self, command):
-        self.__bridge.command(self.__session, command)
-    '''Sends a signal to the server to tell the respective controller to execute a'''
-    '''reporter on its HeadlessWorkspace object'''
-    def report(self, command):
-        result = self.__bridge.report(self.__session, command)
-        return result
-    '''Schedules a set of reporters at a start tick for an interval until a stop tick'''
-    def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
-        self.__reporters_length = len(reporters)
-        reporterArray = self.__gateway.new_array(self.__gateway.jvm.java.lang.String,len(reporters))
-        for idx, reporter in enumerate(reporters):
-            reporterArray[idx] = reporter
-        self.__bridge.scheduleReportersAndRun(self.__session,reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
-    '''Gets back results from scheduled reporters as a Java Array'''
-    def getScheduledReporterResults (self):
-        result = self.__bridge.getScheduledReporterResults(self.__session)
-        if self.__reporters_length == 0:
-            return result
-        ticks_returned = len(result) / self.__reporters_length
-        result = np.reshape(np.ravel(list(result), order='F'),(int(self.__reporters_length),int(ticks_returned)),order='F').transpose()
-        return result
-    '''Sends a signal to the server to tell the respective controller to get the'''
-    '''parameter specs of its HeadlessWorkspace object'''
-    def getParamSpace(self):
-        return self.__bridge.getParamList(self.__session,self.__path)
-    #An extra helpful method:
-    '''Sets the parameters randomly through the JavaGateway using'''
-    '''Random parameter initialization code from BehaviorSearch'''
-    def setParamsRandom(self):
-        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
+    '''
+    def __init__(self, server_starter : 'nl4py.NetLogoControllerServerStarter.NetLogoControllerServerStarter' ):
+        self.server_starter = server_starter
+        self.java_server = self.server_starter.jg.jvm.nl4py.server.NetLogoControllerServer()
+        self.server_gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=server_starter.server_port))
+        gs = self.java_server.newGateway()
+        self.gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=gs.getPort(),auto_close=True))
+        self.app = self.gateway.jvm.nl4py.server.NetLogoAppController(gs)
+    
+    def open_model(self, path : str):
+        '''Opens a NetLogo model'''
+        self.path = path
+        self.app.openModel(self.path)
         
-        ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
+    def close_model(self):
+        '''Sends a signal to the server to tell the respective controller to close its'''
+        '''HeadlessWorkspace object'''
+        pass
+        #self.app.closeModel(self.__session)
+    
+    def command(self, command : str):
+        '''
+        Sends a signal to the server to tell the respective controller to send a
+        NetLogo command to its HeadlessWorkspace object
+        
+        '''
+        self.app.command(command)
+    
+    def report(self, reporter : str) -> str:
+        '''
+        Sends a signal to the server to tell the respective controller to execute a
+        reporter on its HeadlessWorkspace object
+        
+        '''   
+        result = self.app.report(reporter.encode()).decode()
+        return result
+
+    def schedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, 
+                                        stopAtTick : int = -1, goCommand : str = 'go') -> list:
+        '''
+        Schedules a set of reporters at a start tick for an interval until a stop tick
+        
+        '''
+        reporterArray = []
+        for idx, reporter in enumerate(reporters):
+            reporterArray.append(str(reporter).encode())
+        ticks_reporters_results = self.app.scheduleReportersAndRun(
+                                reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+        out_ticks_reporter_results = []
+        for reporters_results in ticks_reporters_results:
+            out_reporter_results = []
+            for result in reporters_results:
+                out_reporter_results.append(result)
+            out_ticks_reporter_results.append(out_reporter_results)
+        return out_ticks_reporter_results
+    
+    def get_param_space(self) -> 'jvm.nl4py.server.bsearch.space.SearchSpace':
+        '''
+        Sends a signal to the server to tell the respective controller to get the
+        parameter specs of its HeadlessWorkspace object
+        
+        '''
+        return self.app.getParamList(self.path)
+    
+    def set_params_random(self):
+        '''
+        Sets the parameters randomly through the JavaGateway using
+        Random parameter initialization code from BehaviorSearch
+        
+        '''    
+        paramSpecs = self.app.getParamList(self.path).getParamSpecs()
+        
+        ##Using some bsearch code here thanks to Forrest Stonedahl
         for paramSpec in paramSpecs:
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
-                paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
-                paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
-                paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleDiscreteSpec'):
+                paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleContinuousSpec'):
+                paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.CategoricalSpec'):
+                paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
                 if type(paramValue) != bool:#isinstance(data[i][k], bool)
-                    paramValue = '"{}"'.format(paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
-                paramValue = paramSpec.generateRandomValue(self.__gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
-            self.__bridge.command(self.__session, "set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
+                    paramValue = '"{}"'.format(paramSpec.generateRandomValue(
+                                                            self.gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.ConstantSpec'):
+                paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
+            print('NetLogo command: set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
+            self.app.command('set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
             
-    '''Returns the names of the parameters in the model'''
-    def getParamNames(self):
-        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
+    
+    def get_param_names(self) -> list:
+        '''
+        Returns the names of the parameters in the model
+        
+        '''
+        paramSpecs = self.app.getParamList(self.path).getParamSpecs()
         parameterNames = []
-        ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
+        ##Using some bsearch code here thanks to Forrest Stonedahl
         for paramSpec in paramSpecs:
             parameterNames.append(paramSpec.getParameterName())
         return parameterNames
     
-    '''Returns the parameter ranges'''
-    def getParamRanges(self):
-        paramSpecs = self.__bridge.getParamList(self.__session, self.__path).getParamSpecs()
+    def get_param_ranges(self) -> list:
+        '''
+        Returns the parameter ranges
+        
+        '''
+        paramSpecs = self.app.getParamList(self.path).getParamSpecs()
         paramRanges = []
-        ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
+        ##Using some bsearch code here thanks to Forrest Stonedahl
         for paramSpec in paramSpecs:
             paramRange = []
-            if (jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec") | jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.DoubleContinuousSpec")) :
+            if (jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleDiscreteSpec') | 
+                                    jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleContinuousSpec')) :
                 count = paramSpec.choiceCount()
                 val_min = paramSpec.getValueFromChoice(0,count)
                 val_max = paramSpec.getValueFromChoice(count - 1,count)
                 step = (val_max - val_min)/(count - 1)
                 paramRange = [val_min,step,val_max]
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.CategoricalSpec'):
                 count = paramSpec.choiceCount()
                 paramRange = []
                 for choice in range(0,count):
                     paramRange.append(paramSpec.getValueFromChoice(choice,count))
-            if jg.is_instance_of(self.__gateway,paramSpec,"bsearch.space.ConstantSpec"):
+            if jg.is_instance_of(self.gateway,paramSpec,'bsearch.space.ConstantSpec'):
                 paramRange = [paramSpec.getValueFromChoice(0,1)]
             paramRanges.append(paramRange)
         return paramRanges
+    
+
+
+
+    @deprecated('Alias left for backward compatibility. Use open_model() since version 1.0.0.')
+    def openModel(self, path):
+        self.open_model(path)
+
+    @deprecated('Alias left for backward compatibility. Use close_model() since version 1.0.0.')
+    def closeModel(self):
+        self.close_model()
+
+    @deprecated(('Alias left for backward compatibility. Use schedule_reporters(reporters, startAtTick=0, '
+                                'intervalTicks=1, stopAtTick=-1, goCommand=\'go\') since version 1.0.0.'))
+    def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand='go'):
+        return self.schedule_reporters(reporters, startAtTick, intervalTicks, stopAtTick, goCommand)
+
+    @deprecated('scheduleReportersAndRun(...) returns result since version 1.0.0.')
+    def awaitScheduledReporterResults(self):
+        pass
+
+    @deprecated('scheduleReportersAndRun(...) returns result since version 1.0.0.')
+    def getScheduledReporterResults (self):
+        pass
+
+    @deprecated('Alias left for backward compatibility. Use getParamSpace() since version 1.0.0.')
+    def getParamSpace(self):
+        return self.get_param_space()
+
+    @deprecated('Alias left for backward compatibility. Use setParamsRandom() since version 1.0.0.')
+    def setParamsRandom(self):
+        self.set_params_random()
+
+    @deprecated('Alias left for backward compatibility. Use getParamNames() since version 1.0.0.')
+    def getParamNames(self):
+        return self.get_param_names()
+
+    @deprecated('Alias left for backward compatibility. Use getParamRanges() since version 1.0.0.')
+    def getParamRanges(self):
+        return self.get_param_ranges()

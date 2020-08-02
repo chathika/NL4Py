@@ -26,57 +26,40 @@ from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 from .NetLogoGUI import NetLogoGUI
 from .NL4PyException import deprecated
 
-@deprecated("Please use nl4py(\"path\\to\\NetLogo\")")
-def startServer(netlogo_home):
-    '''
-    Deprecated.
-    '''
-    initialize(netlogo_home)
-
-@deprecated("Global shutdown not required anymore.")
-def stopServer():
-    '''
-    Deprecated. Global shutdown not required anymore.
-    '''
-    pass 
-    
-
-
 def initialize(netlogo_home):
     '''
     initializes nl4py, creating the NetLogoControllerServerStarter.
     
     :param netlogo_home: str path to netlog
     '''
-
     global server_starter
     server_starter = NetLogoControllerServerStarter(netlogo_home)
     global netlogoWorkspaceFactory
     netlogoWorkspaceFactory = NetLogoWorkspaceFactory(server_starter)
-    
-def newNetLogoHeadlessWorkspace():
+
+def create_headless_workspace():
     '''
     Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it
     '''
     return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 
-def getAllHeadlessWorkspaces():
+def get_all_headless_workspaces():
     '''
     Returns a list of all live HeadlessWorkspaces
     '''
     return netlogoWorkspaceFactory.getAllExistingWorkspaces()
 
-def deleteAllHeadlessWorkspaces():
+def delete_all_headless_workspaces():
     '''
     Deletes all existing HeadlessWorkspaces
     '''
     netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
-
-def deleteHeadlessWorkspace(headlessWorkspace):
+    
+def delete_headless_workspace(headlessWorkspace):
     '''
     Deletes the headlessworkspace given as an argument
     '''
-    netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)    
+    netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)
 
 def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
     '''
@@ -84,8 +67,39 @@ def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0
     '''
     return netlogoWorkspaceFactory.runExperiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
 
-'''Opens the NetLogo Application'''
-def NetLogoApp():
-    if nApp == None:
-        nApp = NetLogoGUI(JavaGateway())
+def netlogo_app():
+    '''
+    Opens the NetLogo Application
+    '''
+    nApp = NetLogoGUI(server_starter)
     return nApp
+
+
+
+@deprecated("Please use initialize(netlogo_home)")
+def startServer(netlogo_home):
+    initialize(netlogo_home)
+
+@deprecated("Global shutdown not required anymore.")
+def stopServer():
+    pass
+
+@deprecated('Alias left for backward compatibility. Use create_headless_workspace() since version 1.0.0.')
+def newNetLogoHeadlessWorkspace():
+    return create_headless_workspace()
+
+@deprecated('Alias left for backward compatibility. Use get_all_headless_workspaces() since version 1.0.0.')
+def getAllHeadlessWorkspaces():
+    return get_all_headless_workspaces()
+    
+@deprecated('Alias left for backward compatibility. Use delete_headless_workspace() since version 1.0.0.')
+def deleteHeadlessWorkspace(headlessWorkspace):
+    delete_headless_workspace(headlessWorkspace)
+    
+@deprecated('Alias left for backward compatibility. Use delete_all_headless_workspaces() since version 1.0.0.')
+def deleteAllHeadlessWorkspaces():
+    deleteAllHeadlessWorkspaces()
+
+@deprecated('Alias left for backward compatibility. Use netlogo_app() since version 1.0.0.')
+def NetLogoApp():
+    return netlogo_app()

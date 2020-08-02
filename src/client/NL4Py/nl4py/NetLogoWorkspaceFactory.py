@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 import multiprocessing
+
 import numpy as np
 import pandas as pd
-
 from py4j.java_gateway import JavaGateway,GatewayParameters
 from py4j.java_collections import SetConverter, MapConverter, ListConverter
 
@@ -27,13 +27,14 @@ class NetLogoWorkspaceFactory:
 
     def __init__ (self, server_starter):
         self.server_starter = server_starter
-        self.__java_gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=self.server_starter.server_port))
+        self.__java_gateway = JavaGateway(gateway_parameters=GatewayParameters(
+                                            auto_convert=True,port=self.server_starter.server_port))
         self.java_server = self.__java_gateway.jvm.nl4py.server.NetLogoControllerServer()
         self.__all_workspaces = []
 
     '''Create a new Headless Workspace and get a pointer to it'''
     def newNetLogoHeadlessWorkspace(self):
-        n = NetLogoHeadlessWorkspace(self.server_starter,self.java_server)
+        n = NetLogoHeadlessWorkspace(self.server_starter)
         self.__all_workspaces.append(n)
         return n
 
@@ -92,5 +93,3 @@ def validate_init_strings(init_strings):
     if type(init_strings) != str:
         init_strings = " ".join(init_strings)
     return init_strings
-
-##############################################################################

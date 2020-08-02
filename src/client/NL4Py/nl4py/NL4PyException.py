@@ -64,14 +64,6 @@ def deprecated(reason):
 
     elif inspect.isclass(reason) or inspect.isfunction(reason):
 
-        # The @deprecated is used without any 'reason'.
-        #
-        # .. code-block:: python
-        #
-        #    @deprecated
-        #    def old_function(x, y):
-        #      pass
-
         func2 = reason
 
         if inspect.isclass(func2):

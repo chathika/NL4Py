@@ -20,12 +20,14 @@ import socket
 from py4j.protocol import Py4JNetworkError
 from py4j.java_gateway import JavaGateway, GatewayParameters, is_instance_of
 
-from .NL4PyException import NL4PyControllerServerException
+from .NL4PyException import NL4PyControllerServerException, deprecated
 
 class NetLogoHeadlessWorkspace:
-    '''Internal class: Responsible for communicating with the NetLogo controller, a Java executable'''
+    '''
+    Responsible for communicating with the NetLogo controller Java executable
+    '''
     
-    def __init__(self, server_starter, java_server):
+    def __init__(self, server_starter : 'nl4py.NetLogoControllerServerStarter.NetLogoControllerServerStarter'):
         '''
         Returns a session id for this controller to be used for further use of this ABM
         and creates a headless workspace controller on the server.
@@ -35,16 +37,14 @@ class NetLogoHeadlessWorkspace:
 
         self.server_starter = server_starter
         self.java_server = self.server_starter.jg.jvm.nl4py.server.NetLogoControllerServer()
-        self.server_gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=server_starter.server_port))
+        self.server_gateway = JavaGateway(gateway_parameters=GatewayParameters(
+                                            auto_convert=True,port=server_starter.server_port))
         gs = self.java_server.newGateway()
-        self.gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=gs.getPort(),auto_close=True))
+        self.gateway = JavaGateway(gateway_parameters=GatewayParameters(
+                                            auto_convert=True,port=gs.getPort(),auto_close=True))
         self.hwc = self.gateway.jvm.nl4py.server.HeadlessWorkspaceController(gs)
-    
-    #######################################################
-    ###Below are public API functions of the NL4Py interface###
-    #######################################################   
-    
-    def openModel(self, path):
+
+    def open_model(self, path : str):
         '''
         Opens a NetLogo model
         '''
@@ -52,55 +52,41 @@ class NetLogoHeadlessWorkspace:
             self.__path = path
             self.hwc.openModel(self.__path)
         except Py4JNetworkError as e:
-            raise NL4PyControllerServerException("Looks like the server is unreachable! Maybe the socket is busy? Trying running nl4py.stopServer() and trying again.")
-        
+            raise NL4PyControllerServerException(('Looks like the server is unreachable! Maybe '
+                            'the socket is busy? Trying running nl4py.stopServer() and trying again.'))
     
-    def closeModel(self):
+    def close_model(self):
         '''
         Sends a signal to the server to tell the respective controller to close its
         HeadlessWorkspace object
         '''
         self.hwc.closeModel()
-    
-    def refresh(self):
-        '''
-        Sends a signal to the server to tell the respective controller to create a
-        new instance of its HeadlessWorkspace object
-        '''
-        self.hwc.refresh()
-    
-    def exportView(self, filename):
-        '''
-        Sends a signal to the server to tell the respective controller to export the view
-        of its HeadlessWorkspace object
-        '''
-        self.hwc.exportView(filename)
-    
-    def command(self, command):
+
+    def command(self, command : str):
         '''
         Sends a signal to the server to tell the respective controller to send a
         NetLogo command to its HeadlessWorkspace object
         '''
         self.hwc.command(command)
     
-    def report(self, reporter):
+    def report(self, reporter : str) -> str:
         '''
         Sends a signal to the server to tell the respective controller to execute a
         reporter on its HeadlessWorkspace object
         '''
         result = self.hwc.report(reporter.encode()).decode()
         return result
-    
-    def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go"):
+
+    def schedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, 
+                                        stopAtTick : int = -1, goCommand : str = 'go') -> list:
         '''
         Schedules a set of reporters at a start tick for an interval until a stop tick
         '''
-        self.__reporters_length = len(reporters)
-        reporterArray = []#self.gateway.new_array(self.gateway.jvm.java.lang.reflect.Array,len(reporters))
+        reporterArray = []
         for idx, reporter in enumerate(reporters):
             reporterArray.append(str(reporter).encode())
-            #reporterArray[idx] = reporter
-        ticks_reporters_results =   self.hwc.scheduleReportersAndRun(reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+        ticks_reporters_results = self.hwc.scheduleReportersAndRun(
+                                reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
         out_ticks_reporter_results = []
         for reporters_results in ticks_reporters_results:
             out_reporter_results = []
@@ -108,48 +94,30 @@ class NetLogoHeadlessWorkspace:
                 out_reporter_results.append(result)
             out_ticks_reporter_results.append(out_reporter_results)
         return out_ticks_reporter_results
+
+    def refresh(self):
+        '''
+        Sends a signal to the server to tell the respective controller to create a
+        new instance of its HeadlessWorkspace object
+        '''
+        self.hwc.refresh()
     
-    def awaitScheduledReporterResults(self):
+    def export_view(self, filename : str):
         '''
-        Waits for completion of scheduled reporters and returns result as Python list.
+        Sends a signal to the server to tell the respective controller to export the view
+        of its HeadlessWorkspace object
         '''
-        bytes_result =  self.hwc.awaitScheduledReporterResults()
-        decoded_results = []
-        for bytes_results_in_tick in bytes_result:
-            decoded_results_in_tick = []
-            for bytes_result_in_tick in bytes_results_in_tick:
-                decoded_results_in_tick.append(NetLogoHeadlessWorkspace.decodeServerResult(bytes_result_in_tick))
-            decoded_results.append(decoded_results_in_tick)
-        return decoded_results
-    
-    def getScheduledReporterResults (self):
-        '''
-        Gets back results from scheduled reporters as a Python list
-        returns None if simulation has not finished yet.
-        '''
-        bytes_result = self.hwc.getScheduledReporterResults()
-        if self.__reporters_length == 0:
-            return bytes_result
-        decoded_results = []
-        for bytes_results_in_tick in bytes_result:
-            decoded_results_in_tick = []
-            for bytes_result_in_tick in bytes_results_in_tick:
-                decoded_results_in_tick.append(NetLogoHeadlessWorkspace.decodeServerResult(bytes_result_in_tick))
-            decoded_results.append(decoded_results_in_tick)
-        return decoded_results
-    def pause(self):
-        self.hwc.pause()
-    def unpause(self):
-        self.hwc.unpause()
-    
-    def getParamSpace(self):
+        self.hwc.exportView(filename)
+
+     
+    def get_param_space(self):
         '''
         Sends a signal to the server to tell the respective controller to get the
         parameter specs of its HeadlessWorkspace object
         '''
         return self.hwc.getParamList(self.__path)
     
-    def setParamsRandom(self):
+    def set_params_random(self):
         '''
         Sets the parameters randomly through the JavaGateway using
         Random parameter initialization code from BehaviorSearch
@@ -157,21 +125,21 @@ class NetLogoHeadlessWorkspace:
         paramSpecs = self.hwc.getParamList(self.__path).getParamSpecs()        
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec"):
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleDiscreteSpec'):
                 paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.DoubleContinuousSpec"):
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleContinuousSpec'):
                 paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.CategoricalSpec'):
                 paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-                if type(paramValue) != bool:#isinstance(data[i][k], bool)
-                    paramValue = '"{}"'.format(paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.ConstantSpec"):
+                if type(paramValue) != bool:
+                    paramValue = '"{}"'.format(paramSpec.generateRandomValue(
+                                                        self.gateway.jvm.org.nlogo.api.MersenneTwisterFast()))
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.ConstantSpec'):
                 paramValue = paramSpec.generateRandomValue(self.gateway.jvm.org.nlogo.api.MersenneTwisterFast())
-            print("NetLogo command: set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
-            self.hwc.command("set " + str(paramSpec.getParameterName()) + " " + str(paramValue))
+            print('NetLogo command: set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
+            self.hwc.command('set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
             
-
-    def getParamNames(self):
+    def get_param_names(self) -> list:
         '''
         Returns the names of the parameters in the model
         '''
@@ -182,7 +150,7 @@ class NetLogoHeadlessWorkspace:
             parameterNames.append(paramSpec.getParameterName())
         return parameterNames
     
-    def getParamRanges(self):
+    def get_param_ranges(self) -> list:
         '''
         Returns the parameter ranges
         '''
@@ -191,22 +159,22 @@ class NetLogoHeadlessWorkspace:
         ##Using some bsearch code here thanks to Forrest Stonedahl and the NetLogo team
         for paramSpec in paramSpecs:
             paramRange = []
-            if (is_instance_of(self.gateway,paramSpec,"bsearch.space.DoubleDiscreteSpec") | is_instance_of(self.gateway,paramSpec,"bsearch.space.DoubleContinuousSpec")) :
+            if (is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleDiscreteSpec') | 
+                                is_instance_of(self.gateway,paramSpec,'bsearch.space.DoubleContinuousSpec')) :
                 count = paramSpec.choiceCount()
                 val_min = paramSpec.getValueFromChoice(0,count)
                 val_max = paramSpec.getValueFromChoice(count - 1,count)
                 step = (val_max - val_min)/(count - 1)
                 paramRange = [val_min,step,val_max]
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.CategoricalSpec"):
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.CategoricalSpec'):
                 count = paramSpec.choiceCount()
                 paramRange = []
                 for choice in range(0,count):
                     paramRange.append(paramSpec.getValueFromChoice(choice,count))
-            if is_instance_of(self.gateway,paramSpec,"bsearch.space.ConstantSpec"):
+            if is_instance_of(self.gateway,paramSpec,'bsearch.space.ConstantSpec'):
                 paramRange = [paramSpec.getValueFromChoice(0,1)]
             paramRanges.append(paramRange)
         return paramRanges
-    
     
     def deleteWorkspace(self):
         '''
@@ -214,23 +182,44 @@ class NetLogoHeadlessWorkspace:
         '''
         self.hwc.removeControllerFromStore()
         self.gateway.close()
+    
+    @deprecated('Alias left for backward compatibility. Use open_model() since version 1.0.0.')
+    def openModel(self, path):
+        self.open_model(path)
 
+    @deprecated('Alias left for backward compatibility. Use close_model() since version 1.0.0.')
+    def closeModel(self):
+        self.close_model()
 
-    def getSession(self):
-        return self.session
+    @deprecated(('Alias left for backward compatibility. Use schedule_reporters(reporters, startAtTick=0, '
+                                'intervalTicks=1, stopAtTick=-1, goCommand=\'go\') since version 1.0.0.'))
+    def scheduleReportersAndRun(self, reporters, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand='go'):
+        return self.schedule_reporters(reporters, startAtTick, intervalTicks, stopAtTick, goCommand)
+    
+    @deprecated('Alias left for backward compatibility. Use export_view(filename) since version 1.0.0.')
+    def exportView(self, filename):
+        self.export_view(filename)
 
-    def decodeServerResult(result_bytes):
-        #result = result_bytes.decode()
-        result = str(result_bytes)
-        try:
-            result = float(result)
-        except ValueError:
-            pass
-        return result
+    @deprecated('scheduleReportersAndRun(...) returns result since version 1.0.0.')
+    def awaitScheduledReporterResults(self):
+        pass
 
-    def findFreePort(self):
-        for port in range(1025, 8081):
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                res = sock.connect_ex(('localhost', port))
-                if res !=0:
-                    return port
+    @deprecated('scheduleReportersAndRun(...) returns result since version 1.0.0.')
+    def getScheduledReporterResults (self):
+        pass
+
+    @deprecated('Alias left for backward compatibility. Use getParamSpace() since version 1.0.0.')
+    def getParamSpace(self):
+        return self.get_param_space()
+
+    @deprecated('Alias left for backward compatibility. Use setParamsRandom() since version 1.0.0.')
+    def setParamsRandom(self):
+        self.set_params_random()
+
+    @deprecated('Alias left for backward compatibility. Use getParamNames() since version 1.0.0.')
+    def getParamNames(self):
+        return self.get_param_names()
+
+    @deprecated('Alias left for backward compatibility. Use getParamRanges() since version 1.0.0.')
+    def getParamRanges(self):
+        return self.get_param_ranges()
