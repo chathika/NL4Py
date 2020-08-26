@@ -46,11 +46,11 @@ parameter_names = n.get_param_names()
 parameterRanges = n.get_param_ranges()
 parameterInitializers = []
 # Iterate over the names and ranges and create DEAP initializers for all the parameters of the model
-print("Search Space: ")
 for parameterName, parameterRange in zip(parameter_names, parameterRanges):
     parameterName = ''.join(filter(str.isalnum, str(parameterName)))
     if len(parameterRange) == 3:
         if __name__=="__main__":
+            print("Search Space: ")
             print(f'{parameterName} \t\t\t\t min: {str(parameterRange[0])} max: {str(parameterRange[2])} step: {str(parameterRange[1])}')
         toolbox.register(parameterName, random.randrange, parameterRange[0], parameterRange[2], 
             parameterRange[1])
@@ -90,21 +90,8 @@ def init(model_path):
     workspace = nl4py.create_headless_workspace()
     workspace.open_model(model_path)    
 
-def evaluate_wolf_sheep_predation(individual):
-    '''
-    The EA individual evaluation is defined as a simulation run of the model for the parameter values 
-    specified and reports the total stability metric of the population.
-    
-    '''
-    global workspace
-    for name, value in zip(parameter_names, individual):
-        cmd = 'set {0} {1}'.format(name, value)
-        workspace.command(cmd)
-    workspace.command('set model-version "sheep-wolves-grass"')
-    workspace.command('setup')
-    newResults = workspace.schedule_reporters(["ticks",'count sheep','count wolves'], 0,1,500,"go") 
-    ###Process simulation results###
-    df = pd.DataFrame(newResults)
+def calculate_population_stability(simulation_results):
+    df = pd.DataFrame(simulation_results)
     sheep_pop = pd.to_numeric(df.iloc[:,1])
     wolves_pop = pd.to_numeric(df.iloc[:,2])
     #since time is in simulation ticks, this is the absolute rate of change of sheep population.
@@ -120,7 +107,22 @@ def evaluate_wolf_sheep_predation(individual):
     population_stability_total = (population_stability_sheep + population_stability_wolves) / 2
     #the aggregate metric is the mean, total population stability over time
     aggregate_metric = population_stability_total.sum()/len(population_stability_total)
-    ###Done processing simulation results###
+    return aggregate_metric
+
+def evaluate_wolf_sheep_predation(individual):
+    '''
+    The EA individual evaluation is defined as a simulation run of the model for the parameter values 
+    specified and reports the total stability metric of the population.
+    
+    '''
+    global workspace
+    for name, value in zip(parameter_names, individual):
+        cmd = 'set {0} {1}'.format(name, value)
+        workspace.command(cmd)
+    workspace.command('set model-version "sheep-wolves-grass"')
+    workspace.command('setup')
+    simulation_results = workspace.schedule_reporters(["ticks",'count sheep','count wolves'], 0,1,500,"go") 
+    aggregate_metric = calculate_population_stability(simulation_results)
     return aggregate_metric,
 
 toolbox.register("evaluate", evaluate_wolf_sheep_predation)
