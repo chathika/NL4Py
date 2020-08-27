@@ -68,7 +68,7 @@ lowerBounds = [row[1] for row in parameterRanges[:-2]]
 upperBounds = [row[2] for row in parameterRanges[:-2]]
 toolbox.register("mutate", tools.mutUniformInt, low = lowerBounds, up = upperBounds, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=3)
-POP = 2
+POP = 200
 
 '''
 Next, we define a simulation run. This involves:
@@ -139,7 +139,7 @@ if __name__=="__main__":
     with multiprocessing.Pool(initializer=init, initargs=(model_path,)) as pool:
         toolbox.register("map", pool.map)
         final_pop, log= algorithms.eaSimple(toolbox.population(n=POP), toolbox, cxpb=0.8, mutpb=0.2, 
-                    ngen=2,stats = stats,halloffame = hof)
+                    ngen=100,stats = stats,halloffame = hof)
 
     print("The best individual over the complete calibration:")
     print(parameter_names)
