@@ -114,8 +114,8 @@ if __name__=="__main__":
                             time_out.flush()
                             print("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))  
         print(all_memory_data_bytes)        
-        plot.plot5_2()
-        show()
+        plot.plot5_1_1()
+        plot.plot5_1_2()
 
     if (experiment == 0 or experiment == 4):
         print("\n\n5.3 Starting execution time comparisons between NL4Py runExperiment and PyNetLogo with multiprocessing...\n")
@@ -183,8 +183,7 @@ if __name__=="__main__":
                             time_out.flush()
                             print("pynetlogo,repeatreporter," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))  
         print(all_memory_data_bytes)        
-        plot.plot5_3_1()
-        plot.plot5_3_2()
-        show()
+        plot.plot5_2_1()
+        plot.plot5_2_2()
             
     print("All Experiments Done.")
