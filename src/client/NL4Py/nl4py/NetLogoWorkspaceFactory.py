@@ -50,7 +50,7 @@ class NetLogoWorkspaceFactory:
         headlessWorkspace.deleteWorkspace()
         self.__all_workspaces.remove(headlessWorkspace)
 
-    def runExperiment(self, model_name, callback, data, reporters, 
+    def run_experiment(self, model_name, callback, data, reporters, 
                                                 start_at_tick, interval, stop_at_tick,go_command,num_procs):
         num_procs = multiprocessing.cpu_count() if num_procs <= 0 else num_procs
         # assemble the init strings

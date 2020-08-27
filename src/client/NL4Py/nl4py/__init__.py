@@ -61,11 +61,11 @@ def delete_headless_workspace(headlessWorkspace):
     '''
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)
 
-def runExperiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
+def run_experiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
     '''
     Creates and returns a NetLogo experiment
     '''
-    return netlogoWorkspaceFactory.runExperiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
+    return netlogoWorkspaceFactory.run_experiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
 
 def netlogo_app():
     '''
