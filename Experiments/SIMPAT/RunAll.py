@@ -73,7 +73,7 @@ if __name__=="__main__":
         # 5.3 NL4Py
         print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
         print("Please wait. This may take a while...")
-        totalRepeats = 1
+        totalRepeats = 10
         models = ["Fire","Ethnocentrism","Wolf Sheep Predation"]
         ticks = [100,1000,100]
         runs_needed = 100
