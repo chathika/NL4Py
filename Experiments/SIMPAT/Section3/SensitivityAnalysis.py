@@ -33,7 +33,6 @@ def init(model_path):
     global workspace
     workspace = nl4py.create_headless_workspace()
     workspace.open_model(model_path)    
-    print(workspace)
 
 def calculate_population_stability(simulation_results):
     ###Process simulation results###

@@ -7,21 +7,21 @@ netlogo_path = str(sys.argv[1])
 model_path = str(sys.argv[2])
 runs_needed = int(sys.argv[3])
 ticks_needed = int(sys.argv[4])
+nl4py.initialize(netlogo_path)
 
 def init(model_path):   
-    nl4py.initialize(netlogo_path) 
     global netlogo
-    netlogo = nl4py.newNetLogoHeadlessWorkspace()
-    netlogo.openModel(model_path)
+    netlogo = nl4py.create_headless_workspace()
+    netlogo.open_model(model_path)
     
 def run_simulation_fire(runId):
     global netlogo
     # Same netlogo commands as used for the NL4Py evaluation
     netlogo.command("random-seed " + str(runId))
-    netlogo.command("set density 57")
+    netlogo.command("set dddddensity 57")
     netlogo.command('setup')
     measures = ['ticks','burned-trees']
-    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    results = netlogo.schedule_reporters(measures, stopAtTick=ticks_needed)
     return results   
 
 def run_simulation_ethnocentrism(runId):
@@ -37,8 +37,8 @@ def run_simulation_ethnocentrism(runId):
     netlogo.command("set cost-of-giving 0.01")
     netlogo.command("set gain-of-receiving 0.03")
     netlogo.command('setup-full')
-    measures = ['ticks','count turtles with [shape = \"circle\"]']
-    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    measures = ['ticks',"count turtles with [shape = \"circle\"]"]
+    results = netlogo.schedule_reporters(measures, stopAtTick=ticks_needed)
     return results   
 
 def run_simulation_wsp(runId):
@@ -55,14 +55,14 @@ def run_simulation_wsp(runId):
     netlogo.command("set wolf-reproduce 5")
     netlogo.command('setup')
     measures = ['ticks','count sheep']
-    results = netlogo.scheduleReportersAndRun(measures, stopAtTick=ticks_needed)
+    results = netlogo.schedule_reporters(measures, stopAtTick=ticks_needed)
     return results   
 
 if __name__ == '__main__':     
     
     model_path = os.path.join(model_path)
     names = list(range(runs_needed))
-    with multiprocessing.Pool(multiprocessing.cpu_count(),initializer=init, initargs=(model_path,)) as pool:
+    with multiprocessing.Pool(initializer=init, initargs=(model_path,)) as pool:
         results = []
         simulate_function = run_simulation_fire if ("Fire" in model_path) else (
                                 run_simulation_ethnocentrism if ("Ethnocentrism" in model_path)

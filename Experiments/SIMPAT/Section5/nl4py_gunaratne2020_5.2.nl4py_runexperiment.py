@@ -78,7 +78,7 @@ def testRunExperiment(model_path,runs_needed,ticks_needed):
                                     else ['ticks','count sheep']
                                 )
     data = list(range(runs_needed))
-    results = nl4py.runExperiment(model_name = model_path, callback=simulate_function,data=data,reporters=measures, start_at_tick=0,interval=1,stop_at_tick=ticks_needed,go_command="go",num_procs=multiprocessing.cpu_count())    
+    results = nl4py.run_experiment(model_name = model_path, callback=simulate_function,data=data,reporters=measures, start_at_tick=0,interval=1,stop_at_tick=ticks_needed,go_command="go",num_procs=multiprocessing.cpu_count())    
     return results
 
 nl4py.initialize(netlogo_path) 

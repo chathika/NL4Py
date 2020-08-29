@@ -8,10 +8,10 @@ import sys
 import nl4py
 
 nl4py.initialize(sys.argv[1])
-workspace = nl4py.newNetLogoHeadlessWorkspace()
+workspace = nl4py.create_headless_workspace()
 modelRuns = 100
 ticks_to_run = 100
-workspace.openModel("Models/Wolf Sheep Predation.nlogo")
+workspace.open_model("Models/Wolf Sheep Predation.nlogo")
 
 def is_running(workspace):
     ticks = int(float(workspace.report("ticks")))

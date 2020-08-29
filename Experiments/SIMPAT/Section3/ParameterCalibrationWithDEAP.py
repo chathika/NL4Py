@@ -24,8 +24,8 @@ from deap import base, creator, tools, algorithms
 import nl4py
 
 netlogo_path = sys.argv[1]
-nl4py.initialize(netlogo_path)
 model_path = "Models/Wolf Sheep Predation.nlogo"
+nl4py.initialize(netlogo_path)
 
 # In this experiment we intend to maximize fitness. Fitness is the measure of population stability, 
 # an indicator of equilibrium in the Wolf Sheep Predation model.

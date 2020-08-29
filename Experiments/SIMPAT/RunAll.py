@@ -23,11 +23,11 @@ if __name__=="__main__":
     python_command = "python"#os.path.basename(sys.executable)
 
     print("Please enter experiment number you want to run: ")
-    print("0 Run all experiments (Full Replication)")
+    #print("0 Run all experiments (Full Replication)")
     print("1 Parameter Calibration with NL4Py and DEAP")
     print("2 Sensitvity Analysis with NL4Py and SALib")
     print("3 Execution time and memory comparisons between NL4Py and PyNetLogo sequential runs")
-    print("4 Execution time and memory comparisons between NL4Py and PyNetLogo multiprocessing runs")
+    print("4 Execution time and memory comparisons between 6     NL4Py and PyNetLogo multiprocessing runs")
     experiment = int(input("Run experiment: "))
 
     print("All experiment outputs will be generated in the output folder.")
@@ -73,7 +73,7 @@ if __name__=="__main__":
         # 5.3 NL4Py
         print("Starting 10 repititions of 5000, 10000, and 15000 Ethnocentrism model runs for 2000, 4000, and 8000 ticks...")
         print("Please wait. This may take a while...")
-        totalRepeats = 10
+        totalRepeats = 1
         models = ["Fire","Ethnocentrism","Wolf Sheep Predation"]
         ticks = [100,1000,100]
         runs_needed = 100
@@ -152,6 +152,7 @@ if __name__=="__main__":
                             time_out.write("nl4py,scheduledreporters," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
                             time_out.flush()
                             print("nl4py,scheduledreporters," + str(models[idx]) + "," + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))                        
+                            time.sleep(5)
                             #nl4py
                             mem_proc = Process(target=LogMem.log_mem, args = ("nl4py",models[idx],runs_needed,ticks_needed,rep,))
                             mem_proc.start()
@@ -167,6 +168,7 @@ if __name__=="__main__":
                             time_out.write("nl4py,runexperiment," + str(models[idx]) + ","  + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()) + "\n")
                             time_out.flush()
                             print("nl4py,runexperiment," + str(models[idx]) + ","  + str(runs_needed) + "," + str(ticks_needed) + "," + str(executionTime) + "," + str(df.used.max()-df.used.min()))                        
+                            time.sleep(5)
                             #pynetlogo
                             mem_proc = Process(target=LogMem.log_mem, args = ("pynetlogo",models[idx],runs_needed,ticks_needed,rep,))
                             mem_proc.start()   
