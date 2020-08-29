@@ -30,13 +30,14 @@ class NetLogoControllerServerStarter:
     Responsible for starting and stopping the NetLogo Controller Server
     '''
 
-    def __init__(self, netlogo_home : str):
+    def __init__(self, netlogo_home : str,server_port : int = 25333):
         '''
         path to NetLogo installation's root folder
         '''
         self.netlogo_home = netlogo_home
         self.SERVER_PATH = pkg_resources.resource_filename('nl4py', 'nl4pyServer/')
-        self.server_port = self.init_server()
+        self.server_port = server_port
+        self.init_server()
         self.jg = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=self.server_port))
     
     def init_server(self) -> int: 
@@ -104,12 +105,10 @@ class NetLogoControllerServerStarter:
         preferHeadless = "-Dorg.nlogo.preferHeadless=true" #important for levelspace
         classpath = os.pathsep.join([server_path, nl_path])
         #Py4j uses port 25333 by default, check if available before connecting
-        server_port = 25333
-        if not is_port_in_use(server_port):
-            port = launch_gateway(classpath=classpath, port = server_port,
+        if not is_port_in_use(self.server_port):
+            port = launch_gateway(classpath=classpath, port = self.server_port,
                     javaopts=[preferHeadless,nl_docs,nl_extensions,nl_models,xmx,"-XX:-UseGCOverheadLimit"], die_on_exit=True, java_path='java'
                     )
-        return server_port
    
     
     def shutdown_server(self):

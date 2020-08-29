@@ -26,6 +26,8 @@ from .NetLogoWorkspaceFactory import NetLogoWorkspaceFactory
 from .NetLogoGUI import NetLogoGUI
 from .NL4PyException import deprecated
 
+SERVER_PORT = 25333
+
 def initialize(netlogo_home):
     '''
     initializes nl4py, creating the NetLogoControllerServerStarter.
@@ -33,9 +35,9 @@ def initialize(netlogo_home):
     :param netlogo_home: str path to netlog
     '''
     global server_starter
-    server_starter = NetLogoControllerServerStarter(netlogo_home)
+    server_starter = NetLogoControllerServerStarter(netlogo_home,SERVER_PORT)
     global netlogoWorkspaceFactory
-    netlogoWorkspaceFactory = NetLogoWorkspaceFactory(server_starter)
+    netlogoWorkspaceFactory = NetLogoWorkspaceFactory(SERVER_PORT)
 
 def create_headless_workspace():
     '''

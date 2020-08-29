@@ -25,16 +25,16 @@ from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 
 class NetLogoWorkspaceFactory:
 
-    def __init__ (self, server_starter):
-        self.server_starter = server_starter
+    def __init__ (self, server_port):
+        self.server_port = server_port
         self.__java_gateway = JavaGateway(gateway_parameters=GatewayParameters(
-                                            auto_convert=True,port=self.server_starter.server_port))
+                                            auto_convert=True,port=self.server_port))
         self.java_server = self.__java_gateway.jvm.nl4py.server.NetLogoControllerServer()
         self.__all_workspaces = []
 
     '''Create a new Headless Workspace and get a pointer to it'''
     def newNetLogoHeadlessWorkspace(self):
-        n = NetLogoHeadlessWorkspace(self.server_starter)
+        n = NetLogoHeadlessWorkspace(self.server_port)
         self.__all_workspaces.append(n)
         return n
 

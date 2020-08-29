@@ -27,18 +27,18 @@ class NetLogoHeadlessWorkspace:
     Responsible for communicating with the NetLogo controller Java executable
     '''
     
-    def __init__(self, server_starter : 'nl4py.NetLogoControllerServerStarter.NetLogoControllerServerStarter'):
+    def __init__(self, server_port : int):
         '''
         Returns a session id for this controller to be used for further use of this ABM
         and creates a headless workspace controller on the server.
 
-        :param server_starter: NetLogoControllerServerStarter object
+        :param server_port: server port
         '''
 
-        self.server_starter = server_starter
-        self.java_server = self.server_starter.jg.jvm.nl4py.server.NetLogoControllerServer()
-        self.server_gateway = JavaGateway(gateway_parameters=GatewayParameters(
-                                            auto_convert=True,port=server_starter.server_port))
+        server_gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True,port=server_port))
+        self.java_server = server_gateway.jvm.nl4py.server.NetLogoControllerServer()
+        #self.server_gateway = JavaGateway(gateway_parameters=GatewayParameters(
+        #                                    auto_convert=True,port=server_port))
         gs = self.java_server.newGateway()
         self.gateway = JavaGateway(gateway_parameters=GatewayParameters(
                                             auto_convert=True,port=gs.getPort(),auto_close=True))
