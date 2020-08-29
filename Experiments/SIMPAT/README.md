@@ -4,23 +4,20 @@ This supplement contains the code used to generate results for "NL4Py: Agent-Bas
 
 ## Requirements
 
-The experiments in the article have been conducted on a Windows 64 Bit, Intel Core i7 machine with 32 GB of memory. Windows 64 Bit is recommended for the replication of the experiments due to restrictions with running PyNetLogo with IPyParallel in experiment 5.3. The other experiments in the article can be reproduced on MacOS or Linux.
+The experiments in the article have been conducted on a  Intel(R)  Corei7-7700  CPU  (7th  generation)  PC  with  16GB  of  RAM running  Windows  10  (64Bit),  and  an  AWS  m5.8xlarge  EC2  instance  with  32cores  and  128  GB  memory. Windows 64 Bit or Ubuntu 16.04+ is recommended for the replication of the experiments.
 
 
 The general requirements to run NL4Py are:
 * System must have NetLogo 6 or higher installed. https://ccl.northwestern.edu/netlogo/download.shtml
 * System must have JDK 8 or higher installed and set path to java bin included in environment variables. JDK 1.8 is recommended http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-* System must have Python 2.7 or higher or Python 3.6 or higher installed (Python 3 recommended). Recommend using Anaconda to setup Python, as Experiment 5.3 requires IPython, and Jupyter notebook (packaged and installed with Anaconda) a requirement of parallelizing PyNetLogo, a platform used to benchmark NL4Py. Anaconda will also install common Python packages (Numpy, Pandas, and Matplotlib) that are used in the experiments. https://repo.anaconda.com/archive/Anaconda3-5.2.0-Windows-x86_64.exe
+* System must have Python 2.7 or higher or Python 3.6 or higher installed (Python 3 recommended). Recommend using Anaconda to setup Python. Anaconda will also install common Python packages (Numpy, Pandas, and Matplotlib) that are used in the experiments. https://repo.anaconda.com/archive/Anaconda3-5.2.0-Windows-x86_64.exe
 
 
 NL4Py has been tested with NetLogo 6.
 
-###Additional Requirements for Experiment 5.3
+###Additional Requirements for Experiment 5.2
 
-To run experiment 5.3, PyNetLogo requires Jupyter notebook and IPyParallel:
-* Please install Anaconda 1.8.7. Jupyter notebook will be installed with Anaconda. and Jupyter notebook ( tested with version 5.5.0). Jupyter notebook is opened through the Anaconda navigator and can be used with either version of Python above.
-
-Finally, please use pip as follows to install the following packages:
+Please use pip as follows to install the following packages:
 
 ```
 >pip install nl4py
@@ -39,14 +36,12 @@ To start the experiments, please use the following command to start the master s
 ```
 
 You will be prompted to enter which experiment you want to run. Please enter one of the following options:
-*0: Run all experiments (Full Replication)
 *1: For experiment 3.1, Parameter Calibration with NL4Py and DEAP
 *2: For experiment 3.2, Sensitvity Analysis with NL4Py and SALib
-*3: For experiment 5.1, Thread execution time comparisons using NL4Py
-*4: For experiment 5.2, Execution time comparisons between NL4Py and PyNetLogo on three different models
-*5: For experiment 5.3, Execution time comparison between NL4Py and PyNetLogo with IPCluster
+*4: For experiment 5.1, Execution time comparisons between NL4Py and PyNetLogo on three different models wihtout parallelism
+*5: For experiment 5.2, Execution time comparison between NL4Py schedule_reporters and run_experiment and PyNetLogo run_experiment with multiprocessing
 
-Due to the many replicate runs of simulations and large sample sizes and generations during sensitivity analysis and calibration, full replication of the entire experiment set takes around 48 hours to complete. Therefore, it is recommended to use the master script (RunAlly.py) to run each experimentone at a time.
+Due to the many replicate runs of simulations and large sample sizes and generations during sensitivity analysis and calibration, full replication of the entire experiment set takes around 48 hours to complete. Therefore, it is recommended to use the master script (RunAlly.py) to run each experiment one at a time.
 
 ### Folder structure
 
@@ -72,14 +67,10 @@ Calibraiton of the wolf sheep predation model towards equilibrium using DEAP.
 
 In Section 5 of the article we present results for execution time comparisons of NL4Py under different thread configurations and results for execution time comparisons between NL4Py, PyNetLogo, and PyNetLogo in combination with IPyParallel (as demonstrated by [Jaxa-Rozen & Kwakkel, 2018](http://jasss.soc.surrey.ac.uk/21/2/4.html)).
 
-#### Thread Count Comparison
-
-Runs the Wolf Sheep Predation model via NL4Py under varying thread counts, comparing execution times.
-
 #### NL4Py vs PyNetLogo Execution Time Comparison
 
-Performs NL4Py vs PyNetLogo simple reporter execution time comparisons on the Fire, Ethnocentrism, and Wolf Sheep Predation models.
+Performs NL4Py vs PyNetLogo simple reporter execution time comparisons on the Fire, Ethnocentrism, and Wolf Sheep Predation models in serial.
 
-#### NL4Py vs PyNetLogo on IPyParallel Cluster Execution Time Comparison
+#### NL4Py schedule_reporters and run_experiment vs PyNetLogo repeat_report with Multiprocessing
 
-Here we compare the execution time of NL4Py's scheduled reporters against the PyNetLogo equivalent, repeat_reporter. This code is split across two Jupyter Notebooks. 
+Here we compare the execution time of NL4Py's scheduled reporters and run_experiment against the PyNetLogo equivalent, repeat_report in parallel using multiprocessing library.

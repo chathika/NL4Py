@@ -26,8 +26,8 @@ if __name__=="__main__":
     #print("0 Run all experiments (Full Replication)")
     print("1 Parameter Calibration with NL4Py and DEAP")
     print("2 Sensitvity Analysis with NL4Py and SALib")
-    print("3 Execution time and memory comparisons between NL4Py and PyNetLogo sequential runs")
-    print("4 Execution time and memory comparisons between 6     NL4Py and PyNetLogo multiprocessing runs")
+    print("3 Execution time comparisons between NL4Py and PyNetLogo on three different models wihtout parallelism")
+    print("4 Execution time comparison between NL4Py schedule_reporters and run_experiment and PyNetLogo run_experiment with multiprocessing")
     experiment = int(input("Run experiment: "))
 
     print("All experiment outputs will be generated in the output folder.")
