@@ -30,7 +30,7 @@ def plot5_1_1():
     g = sns.catplot(x = "connector", y="time.s", hue = "connector", col = "model", sharey=False, data = times, kind="box")
     g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")
     savefig('output/5_1_1.eps')
-    os.system(os.path.join("output"."5_1_1.eps"))
+    os.system(os.path.join("output","5_1_1.eps"))
 
 def plot5_1_2():
     memory = pd.read_csv("output/5.1_output.csv")
@@ -38,7 +38,7 @@ def plot5_1_2():
     g = sns.catplot(x = "connector", y="max.memory.used.GiB", hue = "connector", col = "model", sharey=False, data = memory, kind="box")
     g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs")
     savefig('output/5_1_2.eps')
-    os.system(os.path.join("output"."5_1_2.eps"))
+    os.system(os.path.join("output","5_1_2.eps"))
 ############### 5.2 ################
 def plot5_2_1():
     times = pd.read_csv("output/5.2_output.csv")
@@ -49,7 +49,7 @@ def plot5_2_1():
     g.set_titles("{col_name}").set(ylabel="Time in Seconds", xlabel = "Runs")#.add_legend(title="Function",loc="lower center")    
     g.fig.legend(labels = times.connector_function.unique(), ncol = 3, title="Function",loc="lower center")
     savefig('output/5_2_1.eps')
-    os.system(os.path.join("output"."5_2_1.eps"))
+    os.system(os.path.join("output","5_2_1.eps"))
 
 def plot5_2_2():
     memory = pd.read_csv("output/5.2_output.csv")
@@ -60,4 +60,4 @@ def plot5_2_2():
     g.set_titles("{col_name}").set(ylabel="Max Memory Used in GiB", xlabel = "Runs")#.add_legend(title="Function",loc="lower center")
     g.fig.legend(labels = memory.connector_function.unique(), ncol = 3, title="Function",loc="lower center")
     savefig('output/5_2_2.eps')
-    os.system(os.path.join("output"."5_2_2.eps"))
+    os.system(os.path.join("output","5_2_2.eps"))
