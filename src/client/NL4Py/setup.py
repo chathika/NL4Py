@@ -2,7 +2,7 @@ from setuptools  import setup
 
 setup(
     name='NL4Py',
-    version='0.5.11',
+    version='0.7.0',
     author='Chathika Gunaratne',
     author_email='chathikagunaratne@gmail.com',
     packages=['nl4py', 'nl4py.test'],
