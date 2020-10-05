@@ -20,9 +20,11 @@ jobs:
       run: tar zxvf NetLogo-6.1.1-64.tgz
     - name: javac 
       run: javac -version
+    - name: Install NL4Py
+      run: pip install nl4py
     - name: clone NL4Py
       run: |
           git clone https://github.com/chathika/NL4Py.git
           cd NL4Py
     - name: Run Unittests
-      run: python -m unittest discover
+      run: python -m unittest tests.test.TestNL4Py
