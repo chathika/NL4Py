@@ -1,0 +1,40 @@
+# Workflow for running unittests
+
+name: Run Unittests
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on: [push]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  run_tests:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Download NetLogo
+      run: wget "https://ccl.northwestern.edu/netlogo/6.1.1/NetLogo-6.1.1-64.tgz"
+    - name: Extract NetLogo
+      run: tar zxvf NetLogo-6.1.1-64.tgz
+    - name: javac 
+      run: javac -version
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: clone NL4Py
+      run: |
+          git clone https://github.com/chathika/NL4Py.git 
+    - name: Install NL4Py
+      run: |
+        # gcc needed to install psutil
+        sudo apt-get install gcc
+        pip install wheel
+        pip install NL4Py/src/client/NL4Py             
+    - name: Run Unittests
+      run: |
+          cd NL4Py
+          ls
+          python -m unittest -v tests.test_nl4py.TestNL4Py

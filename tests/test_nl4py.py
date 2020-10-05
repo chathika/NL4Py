@@ -14,6 +14,7 @@ class TestNL4Py(unittest.TestCase):
             self.config = json.load(f)
         self.nl_path = self.config["nl_path"]
         self.ethnocentrism_model = os.path.join(tests_dir,self.config["ethnocentrism_model"])
+        print(help(nl4py))
 
     def test_int(self):
         """
