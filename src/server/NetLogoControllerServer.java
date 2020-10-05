@@ -129,7 +129,7 @@ class HeadlessWorkspaceCallable implements Runnable
 		for (int i = 0; i<runNameInitStringPairs.size(); i++) {
 			ws.command(runNameInitStringPairs.get(i).get(1));
 			ArrayList<ArrayList<String>> result = ws.scheduleReportersAndRun(reporters, startTick, tickInterval, stopTick, goCommand);
-			results.put(runNameInitStringPairs.get(i).get(1), result);
+			results.put(runNameInitStringPairs.get(i).get(0), result);
 		}
 	} 
 	public HashMap<String, ArrayList<ArrayList<String>>> getResult(){
