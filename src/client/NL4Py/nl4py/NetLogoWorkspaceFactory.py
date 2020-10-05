@@ -72,9 +72,7 @@ class NetLogoWorkspaceFactory:
         init_strings = list(map(validate_init_strings, init_strings_arrays))
         
         names = [str(i) for i in range(len(setup_data))]
-        print(names)
         names_to_init_strings = [list(a) for a in zip(names, init_strings)]
-        print(names_to_init_strings)
         reporterArray=[]
         for idx, reporter in enumerate(reporters):
             reporterArray.append(str(reporter).encode())
