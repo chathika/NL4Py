@@ -6,7 +6,9 @@ Read the NL4Py article is on arXiv: https://arxiv.org/pdf/1808.03292.pdf
 
 NetLogo with GUI is now supported with NL4Py v0.5.0! [Here's a demo video](https://www.youtube.com/watch?v=TXLqbYNYyVg)
 
-NL4Py has been tested on both Python 3.6.2 and 2.7.13
+NL4Py has been tested Python 3.6.2
+
+![Run Unittests](https://github.com/chathika/NL4Py/workflows/Run%20Unittests/badge.svg)
 
 ### Requirements
 * NL4Py works with NetLogo 6.0 and 6.1
