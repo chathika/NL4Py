@@ -32,7 +32,7 @@ jobs:
         # gcc needed to install psutil
         sudo apt-get install gcc
         pip install wheel
-        pip install nl4py/src/client/NL4Py             
+        pip install NL4Py/src/client/NL4Py             
     - name: Run Unittests
       run: |
           cd NL4Py
