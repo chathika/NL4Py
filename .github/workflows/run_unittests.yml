@@ -21,7 +21,8 @@ jobs:
     - name: javac 
       run: javac -version
     - name: clone NL4Py
-      run: git clone https://github.com/chathika/NL4Py.git
+      run: |
+          git clone https://github.com/chathika/NL4Py.git
           cd NL4Py
     - name: Run Unittests
       run: python -m unittest discover
