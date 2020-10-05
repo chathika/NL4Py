@@ -32,5 +32,10 @@ jobs:
       run: wget "https://ccl.northwestern.edu/netlogo/6.1.1/NetLogo-6.1.1-64.tgz"
     - name: Extract NetLogo
       run: tar zxvf NetLogo-6.1.1-64.tgz
-    - name: Show
+    - name: javac 
       run: javac -version
+    - name: clone NL4Py
+      run: git clone https://github.com/chathika/NL4Py.git
+          cd NL4Py
+    - name: Run Unittests
+      run: python -m unittest discover
