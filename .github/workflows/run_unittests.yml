@@ -21,10 +21,14 @@ jobs:
     - name: javac 
       run: javac -version
     - name: Install NL4Py
-      run: pip install nl4py
+      run: |
+        # gcc needed to install psutil
+        apt get install --user gcc
+        pip install nl4py
     - name: clone NL4Py
       run: |
           git clone https://github.com/chathika/NL4Py.git
           cd NL4Py
+          ls
     - name: Run Unittests
       run: python -m unittest tests.test.TestNL4Py
