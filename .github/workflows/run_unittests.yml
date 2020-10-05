@@ -23,7 +23,7 @@ jobs:
     - name: Install NL4Py
       run: |
         # gcc needed to install psutil
-        apt get install gcc
+        apt-get install gcc
         pip install nl4py
     - name: clone NL4Py
       run: |
