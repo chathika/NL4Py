@@ -20,6 +20,10 @@ jobs:
       run: tar zxvf NetLogo-6.1.1-64.tgz
     - name: javac 
       run: javac -version
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
     - name: Install NL4Py
       run: |
         # gcc needed to install psutil
