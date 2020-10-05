@@ -28,8 +28,9 @@ jobs:
         pip install nl4py
     - name: clone NL4Py
       run: |
-          git clone https://github.com/chathika/NL4Py.git
+          git clone https://github.com/chathika/NL4Py.git          
+    - name: Run Unittests
+      run: |
           cd NL4Py
           ls
-    - name: Run Unittests
-      run: python -m unittest tests.test_nl4py.TestNL4Py
+          python -m unittest tests.test_nl4py.TestNL4Py
