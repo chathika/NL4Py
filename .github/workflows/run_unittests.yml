@@ -24,6 +24,7 @@ jobs:
       run: |
         # gcc needed to install psutil
         sudo apt-get install gcc
+        pip install wheel
         pip install nl4py
     - name: clone NL4Py
       run: |
