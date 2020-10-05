@@ -32,4 +32,4 @@ jobs:
           cd NL4Py
           ls
     - name: Run Unittests
-      run: python -m unittest tests.test.TestNL4Py
+      run: python -m unittest discover
