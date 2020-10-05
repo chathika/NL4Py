@@ -33,4 +33,4 @@ jobs:
     - name: Extract NetLogo
       run: tar zxvf NetLogo-6.1.1-64.tgz
     - name: Show
-      run: ls
+      run: javac -version
