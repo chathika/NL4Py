@@ -37,4 +37,4 @@ jobs:
       run: |
           cd NL4Py
           ls
-          python -m unittest tests.test_nl4py.TestNL4Py
+          python -m unittest -v tests.test_nl4py.TestNL4Py
