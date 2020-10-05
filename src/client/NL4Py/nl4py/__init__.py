@@ -65,7 +65,7 @@ def delete_headless_workspace(headlessWorkspace):
 
 def run_experiment(model_name, callback, data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
     '''
-    Creates and returns a NetLogo experiment
+    Runs and returns result of a NetLogo experiment
     '''
     return netlogoWorkspaceFactory.run_experiment(model_name, callback, data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
 

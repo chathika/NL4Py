@@ -57,7 +57,7 @@ class NetLogoWorkspaceFactory:
         # Make sure that data is either iterable or None
         try:
             iterator = iter(data)
-        except TypeException:
+        except TypeError:
             if data is not None:
                 print("data is not iterable")
             else:
@@ -72,19 +72,24 @@ class NetLogoWorkspaceFactory:
         init_strings = list(map(validate_init_strings, init_strings_arrays))
         
         names = [str(i) for i in range(len(data))]
+        print(names)
         names_to_init_strings = [list(a) for a in zip(names, init_strings)]
+        print(names_to_init_strings)
         reporterArray=[]
         for idx, reporter in enumerate(reporters):
             reporterArray.append(str(reporter).encode())
-        all_results = self.java_server.runPoolOfTasks(model_name, names_to_init_strings, reporterArray, 
+        raw_results = self.java_server.runPoolOfTasks(model_name, names_to_init_strings, reporterArray, 
                                                 start_at_tick, interval, stop_at_tick, go_command, num_procs)
-        return all_results
+        results = []
+        for key in raw_results:
+            results.append([init_strings[int(key)], raw_results[key]])
+        return results
 
 def validate_init_strings(init_strings):
     is_iterable = True
     try:
         iterator = iter(init_strings)
-    except TypeException:
+    except TypeError:
         print("callback must return a string or an iterable!")
         return
     except:
