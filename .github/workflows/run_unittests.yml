@@ -24,15 +24,15 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
+    - name: clone NL4Py
+      run: |
+          git clone https://github.com/chathika/NL4Py.git 
     - name: Install NL4Py
       run: |
         # gcc needed to install psutil
         sudo apt-get install gcc
         pip install wheel
-        pip install nl4py
-    - name: clone NL4Py
-      run: |
-          git clone https://github.com/chathika/NL4Py.git          
+        pip install nl4py\src\client\NL4Py             
     - name: Run Unittests
       run: |
           cd NL4Py
