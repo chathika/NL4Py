@@ -1,10 +1,10 @@
 # Workflow for running unittests
 
-name: Run Unittests
+name: Build wheel and Run Unittests
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
-on: [push]
+on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
