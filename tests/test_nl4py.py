@@ -14,7 +14,6 @@ class TestNL4Py(unittest.TestCase):
             self.config = json.load(f)
         self.nl_path = self.config["nl_path"]
         self.ethnocentrism_model = os.path.join(tests_dir,self.config["ethnocentrism_model"])
-        print(help(nl4py))
 
     def test_int(self):
         """
@@ -53,6 +52,26 @@ class TestNL4Py(unittest.TestCase):
         ticks = workspace.report("ticks")
         self.assertEqual(ticks,10)
     
+    def test_schedule_reporters(self):
+        """
+        Tests if schedule_reporters works properly
+        """
+        try:
+            nl4py.initialize(self.nl_path)
+        except:
+            self.fail("NL4Py.intialize() fails!")
+        workspace = nl4py.create_headless_workspace()
+        workspace.open_model(self.ethnocentrism_model)
+        workspace.command("setup-full")
+        tick_count = 10
+        reporters = ["ticks","count turtles"]
+        results = workspace.schedule_reporters(reporters=reporters, startAtTick = 0, 
+            intervalTicks = 1, stopAtTick = tick_count, goCommand = 'go')
+        self.assertEqual(len(results),tick_count)
+        for idx, result in enumerate(results):
+            self.assertEqual(len(result),len(reporters))
+            self.assertEqual(eval(result[0]),idx+1)
+
     def test_run_experiment(self):
         """
         Tests if run_experiment works properly
@@ -63,10 +82,19 @@ class TestNL4Py(unittest.TestCase):
             self.fail("NL4Py.intialize() fails!")
         def setup_model(run):
             return "setup-full"
-        run_count = 10
-        results = nl4py.run_experiment(model_name=self.ethnocentrism_model, setup_callback=setup_model, setup_data=range(run_count), 
-            reporters=["count turtles"], start_at_tick=0, interval=1, stop_at_tick=10)
-        self.assertEqual(len(results), run_count)
+        run_count = 20
+        tick_count = 10
+        reporters = ["ticks","count turtles"]
+        all_runs_results = nl4py.run_experiment(model_name=self.ethnocentrism_model, setup_callback=setup_model, setup_data=range(run_count), 
+            reporters=reporters, start_at_tick=0, interval=1, stop_at_tick=tick_count)
+        self.assertEqual(len(all_runs_results), run_count)
+        for run_results in all_runs_results:
+            self.assertEqual(run_results[0],setup_model(0))
+            self.assertEqual(len(run_results[1]), tick_count)
+            for idx, result in enumerate(run_results[1]):
+                self.assertEqual(len(result),len(reporters))
+                self.assertEqual(eval(result[0]),idx+1)
+
  
 if __name__ == '__main__':
     unittest.main()
