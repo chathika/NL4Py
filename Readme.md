@@ -1,5 +1,5 @@
 
-![Run Unittests](https://github.com/chathika/NL4Py/workflows/Run%20Unittests/badge.svg)
+![Build wheel and Run Unittests](https://github.com/chathika/NL4Py/workflows/Build%20wheel%20and%20Run%20Unittests/badge.svg) ![Run Unittests](https://github.com/chathika/NL4Py/workflows/Run%20Unittests/badge.svg)
 ## NL4Py
 
 A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call architecture, allowing Python client code to control NetLogo workspaces on a NetLogoWorkspaceController server. NL4Py supports controlling multiple workspaces through a single Python client. 
