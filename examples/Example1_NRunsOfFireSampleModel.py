@@ -12,7 +12,7 @@ import sys
 
 print("\n1) Starting the NetLogoControllerServer with: nl4py.startServer()\n")
 
-nl4py.startServer(sys.argv[2])
+nl4py.initialize(sys.argv[2])
 
 
 
@@ -25,25 +25,24 @@ except:
 
 model = "./Fire.nlogo"
 
-print('\n2.1) Creating ' + n + ' NetLogo HeadlessWorkspaces with: workspace = nl4py.newNetLogoHeadlessWorkspace()')
-print('\n2.2) Opening ' + str(n) + ' copies of the model at ' + model + ' on the NetLogo HeadlessWorkspaces with: workspace.openModel("model")')
+print(f'\n2.1) Creating {n} NetLogo HeadlessWorkspaces with: workspace = nl4py.newNetLogoHeadlessWorkspace()')
+print(f'\n2.2) Opening {n} copies of the model at {model} on the NetLogo HeadlessWorkspaces with: workspace.openModel("model")')
+workspaces = []
 for i in range(0,int(n)):
-	workspace = nl4py.netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
-	workspace.openModel(model)
+	workspaces.append(nl4py.create_headless_workspace())
+	workspaces[i].open_model(model)
 	
-print("\n2.3) Get all workspaces back with: workspaces = nl4py.getAllExistingWorkspaces() \n\tSetting the parameters for all " + str(n) + " models to random values with workspace.setParamsRandom()")
-for workspace in nl4py.getAllHeadlessWorkspaces():
-	workspace.setParamsRandom()
+print("\n2.3) Get all workspaces back with: workspaces = nl4py.getAllExistingWorkspaces() \n\tSetting the parameters for all {n} models to random values with workspace.setParamsRandom()")
+for workspace in workspaces:
+	workspace.set_params_random()
 
 print('\n2.4) Send setup and go commands to each model using: workspace.command("setup") and workspace.command("go") ')
-for workspace in nl4py.getAllHeadlessWorkspaces():
+for workspace in workspaces:
 	workspace.command("setup")
 	workspace.command("go")
 
 print('\n2.5) Get back current state from all executing models using a NetLogo reporter: workspace.report("burned-trees")')
-for workspace in nl4py.getAllHeadlessWorkspaces():
+for workspace in workspaces:
 	print(workspace.report("burned-trees"))
 
-print('\n3) Shutdown the server to release compute resources using: nl4py.stopServer()')
-nl4py.stopServer()
 print('\n\n------------------------ Thanks for trying NL4PY -------------------------\n')
