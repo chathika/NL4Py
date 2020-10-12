@@ -1,5 +1,5 @@
 
-![Run Unittests](https://github.com/chathika/NL4Py/workflows/Run%20Unittests/badge.svg)
+![Build wheel and Run Unittests](https://github.com/chathika/NL4Py/workflows/Build%20wheel%20and%20Run%20Unittests/badge.svg) ![Run Unittests](https://github.com/chathika/NL4Py/workflows/Run%20Unittests/badge.svg)
 ## NL4Py
 
 A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call architecture, allowing Python client code to control NetLogo workspaces on a NetLogoWorkspaceController server. NL4Py supports controlling multiple workspaces through a single Python client. 
@@ -36,7 +36,7 @@ import nl4py
 And start the NetLogoControllerServer with:
 
 ```python
-nl4py.startServer(netlogo_home)
+nl4py.initialize(netlogo_home)
 ```
 
 Where netlogo_home refers to the top level directory of your NetLogo installation.
@@ -60,36 +60,26 @@ Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/ma
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
-nl4py.newNetLogoHeadlessWorkspace()
+nl4py.create_headless_workspace()
 ```
 
 The following HeadlessWorkspace functions are available:
 
 ```python
-nl4py.NetLogoHeadlessWorkspace.openModel(path_to_model)
+nl4py.NetLogoHeadlessWorkspace.open_model(path_to_model)
 nl4py.NetLogoHeadlessWorkspace.closeModel()
 nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
 nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
-nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults() # non-blocking and returns nothing if the simulation is not finished
-nl4py.NetLogoHeadlessWorkspace.awaitScheduledReporterResults() # blocking and returns only after the simulation has finished
-nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
-nl4py.NetLogoHeadlessWorkspace.getParamNames()
-nl4py.NetLogoHeadlessWorkspace.getParamRanges()
-```
-
-Additionally, the nl4py provides the following functions:
-
-```python
-nl4py.deleteAllHeadlessWorkspaces() 
-nl4py.getAllHeadlessWorkspaces()
-nl4py.deleteHeadlessWorkspace(nl4py.NetLogoHeadlessWorkspace)
+nl4py.NetLogoHeadlessWorkspace.schedule_reporters(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
+nl4py.NetLogoHeadlessWorkspace.set_params_random()
+nl4py.NetLogoHeadlessWorkspace.get_param_names()
+nl4py.NetLogoHeadlessWorkspace.get_param_ranges()
 ```
 
 To open the NetLogo application in GUI mode use:
 
 ```python
-nl4py.NetLogoApp()
+nl4py.netlogo_app()
 ```
 
 ### Referencing:
