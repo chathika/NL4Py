@@ -6,7 +6,7 @@ A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call arc
 
 Read the NL4Py article is on arXiv: https://arxiv.org/pdf/1808.03292.pdf
 
-[NetLogo with GUI control demo:](https://www.youtube.com/watch?v=TXLqbYNYyVg)
+[NetLogo with GUI control demo](https://www.youtube.com/watch?v=TXLqbYNYyVg)
 
 NL4Py has been tested Python 3.6.2
 
