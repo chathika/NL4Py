@@ -6,7 +6,7 @@ A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call arc
 
 Read the NL4Py article is on arXiv: https://arxiv.org/pdf/1808.03292.pdf
 
-NetLogo with GUI is now supported with NL4Py v0.5.0! [Here's a demo video](https://www.youtube.com/watch?v=TXLqbYNYyVg)
+[NetLogo with GUI control demo:](https://www.youtube.com/watch?v=TXLqbYNYyVg)
 
 NL4Py has been tested Python 3.6.2
 
@@ -42,19 +42,36 @@ nl4py.initialize(netlogo_home)
 Where netlogo_home refers to the top level directory of your NetLogo installation.
 
 #### Examples
-[Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs and the path to your netlogo installation as command line arguments:
+1. [Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs and the path to your netlogo installation as command line arguments:
 
 ```
-python Example1_NRunsOfFireSampleModel.py 200 "C:\Program Files\NetLogo 6.0.2"
+python Example1_NRunsOfFireSampleModel.py 200 "C:\Program Files\NetLogo 6.0.4"
 ```
 
-[Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_ScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run pass in the path to your netlogo installation as a command line argument:
+2. [Example2](https://github.com/chathika/NL4Py/blob/master/examples/Example2_NRunsOfFireSampleModelScheduledReporters.py) : An example of how to schedule reporters to return simulation state over a range of ticks at a custom tick interval. To run pass in the path to your netlogo installation as a command line argument:
 
 ```
-python Example2_ScheduledReporters.py "C:\Program Files\NetLogo 6.0.2"
+python Example2_ScheduledReporters.py 200 "C:\Program Files\NetLogo 6.0.4"
 ```
 
-Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/master/examples/Demo%20NL4Py.ipynb)
+3. [Example3](https://github.com/chathika/NL4Py/blob/master/examples/Example3_NRunsOfFireRunExperiment.py
+) : An example of how to run_experiment can be used to easily execute an experiment with parameter variation and return results of multiple reporters. To run pass in the path to your netlogo installation as a command line argument:
+
+```
+python Example3_NRunsOfFireRunExperiment.py 20 "C:\Program Files\NetLogo 6.0.4"
+```
+
+4. [Example4](https://github.com/chathika/NL4Py/blob/master/examples/Example4_NetLogoGUIAppControl.py
+) : An example of how to control the NetLogoGUI. To run pass in the path to your netlogo installation as a command line argument:
+
+```
+python Example4_NetLogoGUIAppControl.py "C:\Program Files\NetLogo 6.0.4"
+```
+
+Also, see these demo jupyter notebooks:
+
+1. [Parameter Calibration](https://github.com/chathika/NL4Py/blob/master/examples/ParameterCalibrationWithDEAP.ipynb)
+2. [Sensitivity Analysis](https://github.com/chathika/NL4Py/blob/master/examples/SensitivityAnalysis.ipynb)
 
 #### Functions
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
