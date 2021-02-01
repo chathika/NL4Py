@@ -12,7 +12,7 @@ NL4Py has been tested Python 3.6.2
 
 
 ### Requirements
-* NL4Py works with NetLogo 6.0 and 6.1
+* NL4Py works with NetLogo 6.0, 6.1, and 6.2
 * NL4Py requires JDK 1.8 
 * NL4Py requires [py4j](https://www.py4j.org/) to be installed with your Python distrubtion
 
