@@ -21,9 +21,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Download NetLogo
-      run: wget "https://ccl.northwestern.edu/netlogo/6.1.1/NetLogo-6.1.1-64.tgz"
+      run: wget "https://ccl.northwestern.edu/netlogo/6.2.0/NetLogo-6.2.0-64.tgz"
     - name: Extract NetLogo
-      run: tar zxvf NetLogo-6.1.1-64.tgz
+      run: tar zxvf NetLogo-6.2.0-64.tgz
     - name: javac 
       run: javac -version
     - name: Set up Python 3.6
