@@ -60,7 +60,7 @@ Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/ma
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
-nl4py.create_headless_workspace()
+nl4py.create_headless_workspace() -> nl4py.NetLogoHeadlessWorkspace
 ```
 
 The following HeadlessWorkspace functions are available:
