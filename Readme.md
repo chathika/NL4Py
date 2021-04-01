@@ -79,11 +79,11 @@ nl4py.create_headless_workspace() -> nl4py.NetLogoHeadlessWorkspace.NetLogoHeadl
 The following HeadlessWorkspace functions are available:
 
 ```python
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.open_model(path_to_model)
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.closeModel()
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.command(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.report(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.schedule_reporters(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.open_model(self, path : str)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.close_model(self)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.command(self, command : str)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.report(self, reporter : str) -> str
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.chedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, stopAtTick : int = -1, goCommand : str = 'go') -> list
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.set_params_random()
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_names()
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_ranges()
