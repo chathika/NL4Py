@@ -4,6 +4,9 @@ A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call arc
 
 NetLogo with GUI is now supported with NL4Py v0.3.0!
 
+**New: Changes to the NL4Py API have been made with v0.7.0 to make things more PEP-like. The new function signatures are described below, but I've allowed for backward compatibility and the older API calls should still work but throw deprecated warnings. **
+**New: With 0.7.0 you can now let NL4Py take care of parallelization and execute batches of simulation runs with `run_experiment` (see below for details). **
+
 NL4Py has been tested on both Python 3.6.2 and 2.7.13
 
 ### Requirements
@@ -31,6 +34,11 @@ To use nl4py in your python code use:
 ```python
 import nl4py 
 ```
+Then initialize with:
+```python
+nl4py.initialize(path_to_netlogo)
+```
+
 #### Examples
 
 [Example1](https://github.com/chathika/NL4Py/blob/master/examples/Example1_NRunsOfFireSampleModel.py) : An example of how to run concurrent NetLogo models. To run this example enter the number of desired concurrent runs as a command line argument:
@@ -52,35 +60,40 @@ Also, see this [demo jupyter notebook](https://github.com/chathika/NL4Py/blob/ma
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
-nl4py.newNetLogoHeadlessWorkspace()
+nl4py.create_headless_workspace()
 ```
 
 The following HeadlessWorkspace functions are available:
 
 ```python
-nl4py.NetLogoHeadlessWorkspace.openModel(path_to_model)
-nl4py.NetLogoHeadlessWorkspace.closeModel()
-nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.scheduleReportersAndRun(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
-nl4py.NetLogoHeadlessWorkspace.getScheduledReporterResults()
-nl4py.NetLogoHeadlessWorkspace.setParamsRandom()
-nl4py.NetLogoHeadlessWorkspace.getParamNames()
-nl4py.NetLogoHeadlessWorkspace.getParamRanges()
+nl4py.NetLogoHeadlessWorkspace.open_model(self, path : str)
+nl4py.NetLogoHeadlessWorkspace.close_model(self)
+nl4py.NetLogoHeadlessWorkspace.command(self, command : str)
+nl4py.NetLogoHeadlessWorkspace.report(self, reporter : str) -> str
+nl4py.NetLogoHeadlessWorkspace.schedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, 
+                                        stopAtTick : int = -1, goCommand : str = 'go') -> list
+nl4py.NetLogoHeadlessWorkspace.set_params_random(self)
+nl4py.NetLogoHeadlessWorkspace.get_param_ranges(self) -> list
+nl4py.NetLogoHeadlessWorkspace.get_param_names(self) -> list
+```
+
+Alternatively, you can execute an entire batch of NetLogo runs and let NL4Py take care of parallelization with:
+
+```python
+nl4py.run_experiment(model_name, setup_callback, setup_data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1)
 ```
 
 Additionally, the nl4py provides the following functions:
 
 ```python
-nl4py.deleteAllHeadlessWorkspaces() 
-nl4py.getAllHeadlessWorkspaces()
-nl4py.deleteHeadlessWorkspace(nl4py.NetLogoHeadlessWorkspace)
+nl4py.get_all_headless_workspaces()
+nl4py.delete_headless_workspace(headlessWorkspace)
 ```
 
 To open the NetLogo application in GUI mode use:
 
 ```python
-nl4py.NetLogoApp()
+nl4py.netlogo_app()
 ```
 
 ### Referencing:
