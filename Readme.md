@@ -83,7 +83,8 @@ nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.open_model(self, path : 
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.close_model(self)
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.command(self, command : str)
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.report(self, reporter : str) -> str
-nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.chedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, stopAtTick : int = -1, goCommand : str = 'go') -> list
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.schedule_reporters(self, reporters : list, startAtTick : int = 0, 
+                                                                      intervalTicks : int = 1, stopAtTick : int = -1, goCommand : str = 'go') -> list
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.set_params_random()
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_names()
 nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_ranges()
