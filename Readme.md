@@ -32,7 +32,7 @@ import nl4py
 And start the NetLogoControllerServer with:
 
 ```python
-nl4py.initialize(netlogo_home)
+nl4py.initialize(netlogo_home : str)
 ```
 
 Where netlogo_home refers to the top level directory of your NetLogo installation.
@@ -73,26 +73,26 @@ Also, see these demo jupyter notebooks:
 You can create multiple NetLogo HeadlessWorkspaces from Python using the netLogoWorkspaceFactory: 
 
 ```python
-nl4py.create_headless_workspace()
+nl4py.create_headless_workspace() -> nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace
 ```
 
 The following HeadlessWorkspace functions are available:
 
 ```python
-nl4py.NetLogoHeadlessWorkspace.open_model(path_to_model)
-nl4py.NetLogoHeadlessWorkspace.closeModel()
-nl4py.NetLogoHeadlessWorkspace.command(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.report(netlogo_command_string)
-nl4py.NetLogoHeadlessWorkspace.schedule_reporters(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
-nl4py.NetLogoHeadlessWorkspace.set_params_random()
-nl4py.NetLogoHeadlessWorkspace.get_param_names()
-nl4py.NetLogoHeadlessWorkspace.get_param_ranges()
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.open_model(path_to_model)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.closeModel()
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.command(netlogo_command_string)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.report(netlogo_command_string)
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.schedule_reporters(reporters_array, startAtTick=0, intervalTicks=1, stopAtTick=-1, goCommand="go")
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.set_params_random()
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_names()
+nl4py.NetLogoHeadlessWorkspace.NetLogoHeadlessWorkspace.get_param_ranges()
 ```
 
 To open the NetLogo application in GUI mode use:
 
 ```python
-nl4py.netlogo_app()
+nl4py.netlogo_app() -> nl4py.NetLogoGUI.NetLogoGUI
 ```
 
 ### Referencing:
