@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 import shutil
 import os
 import traceback
+from typing import Callable, List, Any
 
 from py4j.java_gateway import JavaGateway
+import pandas as pd
 
 from .NetLogoHeadlessWorkspace import NetLogoHeadlessWorkspace
 from .NetLogoControllerServerStarter import NetLogoControllerServerStarter
@@ -28,7 +30,7 @@ from .NL4PyException import deprecated
 
 SERVER_PORT = 25333
 
-def initialize(netlogo_home):
+def initialize(netlogo_home : str):
     '''
     initializes nl4py, creating the NetLogoControllerServerStarter.
     
@@ -39,13 +41,13 @@ def initialize(netlogo_home):
     global netlogoWorkspaceFactory
     netlogoWorkspaceFactory = NetLogoWorkspaceFactory(SERVER_PORT)
 
-def create_headless_workspace():
+def create_headless_workspace() -> NetLogoHeadlessWorkspace:
     '''
     Requests the NetLogoControllerServer to create a new HeadlessWorkspace and its controller and returns it
     '''
     return netlogoWorkspaceFactory.newNetLogoHeadlessWorkspace()
 
-def get_all_headless_workspaces():
+def get_all_headless_workspaces() -> NetLogoHeadlessWorkspace:
     '''
     Returns a list of all live HeadlessWorkspaces
     '''
@@ -57,17 +59,20 @@ def delete_all_headless_workspaces():
     '''
     netlogoWorkspaceFactory.deleteAllExistingWorkspaces()
     
-def delete_headless_workspace(headlessWorkspace):
+def delete_headless_workspace(headlessWorkspace : NetLogoHeadlessWorkspace):
     '''
     Deletes the headlessworkspace given as an argument
     '''
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)
 
-def run_experiment(model_name, setup_callback, setup_data=None, reporters=[], start_at_tick=0,interval=1,stop_at_tick=10000000,go_command="go",num_procs=-1):
+def run_experiment(model_name : str, setup_callback : Callable, setup_data : List[Any] = None, reporters : List[str] = [], 
+            start_at_tick : int = 0, interval : int = 1, stop_at_tick : int = 10000000,
+            go_command : str = "go", num_procs : int = -1) -> pd.DataFrame:
     '''
     Runs and returns result of a NetLogo experiment
     '''
-    return netlogoWorkspaceFactory.run_experiment(model_name, setup_callback, setup_data, reporters, start_at_tick,interval,stop_at_tick,go_command,num_procs)
+    return netlogoWorkspaceFactory.run_experiment(model_name, setup_callback, setup_data, reporters, 
+                                start_at_tick,interval,stop_at_tick,go_command,num_procs)
 
 def netlogo_app():
     '''

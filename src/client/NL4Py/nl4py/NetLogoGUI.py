@@ -14,6 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
+from typing import List, Any, Union
+
 import numpy as np
 from py4j.java_gateway import JavaGateway, GatewayParameters
 from py4j.protocol import Py4JNetworkError, Py4JJavaError
@@ -63,17 +65,17 @@ class NetLogoGUI:
         result = self.app.report(reporter.encode()).decode()
         return result
 
-    def schedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, 
-                                        stopAtTick : int = -1, goCommand : str = 'go') -> list:
+    def schedule_reporters(self, reporters : List[str], start_at_tick : int = 0, interval_ticks : int = 1, 
+                                        stop_at_tick : int = -1, go_command : str = 'go') -> List[str]:
         '''
         Schedules a set of reporters at a start tick for an interval until a stop tick
         
         '''
-        reporterArray = []
+        reporter_array = []
         for idx, reporter in enumerate(reporters):
-            reporterArray.append(str(reporter).encode())
+            reporter_array.append(str(reporter).encode())
         ticks_reporters_results = self.app.scheduleReportersAndRun(
-                                reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+                                reporter_array,start_at_tick,interval_ticks,stop_at_tick,go_command)
         out_ticks_reporter_results = []
         for reporters_results in ticks_reporters_results:
             out_reporter_results = []
@@ -115,7 +117,7 @@ class NetLogoGUI:
             self.app.command('set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
             
     
-    def get_param_names(self) -> list:
+    def get_param_names(self) -> List[str]:
         '''
         Returns the names of the parameters in the model
         
@@ -127,7 +129,7 @@ class NetLogoGUI:
             parameterNames.append(paramSpec.getParameterName())
         return parameterNames
     
-    def get_param_ranges(self) -> list:
+    def get_param_ranges(self) -> List[List[Union[str, int, float]]]:
         '''
         Returns the parameter ranges
         

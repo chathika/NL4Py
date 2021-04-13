@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
 import os
 import socket
+from typing import List, Any, Union
 
 from py4j.protocol import Py4JNetworkError
 from py4j.java_gateway import JavaGateway, GatewayParameters, is_instance_of
@@ -77,16 +78,16 @@ class NetLogoHeadlessWorkspace:
         result = eval(self.hwc.report(reporter.encode()).decode())
         return result
 
-    def schedule_reporters(self, reporters : list, startAtTick : int = 0, intervalTicks : int = 1, 
-                                        stopAtTick : int = -1, goCommand : str = 'go') -> list:
+    def schedule_reporters(self, reporters : List[str], start_at_tick : int = 0, interval_ticks : int = 1, 
+                                        stop_at_tick : int = -1, go_command : str = 'go') -> List[str]:
         '''
         Schedules a set of reporters at a start tick for an interval until a stop tick
         '''
-        reporterArray = []
+        reporter_array = []
         for idx, reporter in enumerate(reporters):
-            reporterArray.append(str(reporter).encode())
-        ticks_reporters_results = self.hwc.scheduleReportersAndRun(
-                                reporterArray,startAtTick,intervalTicks,stopAtTick,goCommand)
+            reporter_array.append(str(reporter).encode())
+        ticks_reporters_results = self.hwc.scheduleReportersAndRun(reporter_array,start_at_tick,
+                                                            interval_ticks,stop_at_tick,go_command)
         out_ticks_reporter_results = []
         for reporters_results in ticks_reporters_results:
             out_reporter_results = []
@@ -110,7 +111,7 @@ class NetLogoHeadlessWorkspace:
         self.hwc.exportView(filename)
 
      
-    def get_param_space(self):
+    def get_param_space(self) -> "jvm.nl4py.server.bsearch.space.SearchSpace":
         '''
         Sends a signal to the server to tell the respective controller to get the
         parameter specs of its HeadlessWorkspace object
@@ -139,7 +140,7 @@ class NetLogoHeadlessWorkspace:
             print('NetLogo command: set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
             self.hwc.command('set ' + str(paramSpec.getParameterName()) + ' ' + str(paramValue))
             
-    def get_param_names(self) -> list:
+    def get_param_names(self) -> List[str]:
         '''
         Returns the names of the parameters in the model
         '''
@@ -150,7 +151,7 @@ class NetLogoHeadlessWorkspace:
             parameterNames.append(paramSpec.getParameterName())
         return parameterNames
     
-    def get_param_ranges(self) -> list:
+    def get_param_ranges(self) -> List[List[Union[str, int, float]]]:
         '''
         Returns the parameter ranges
         '''
