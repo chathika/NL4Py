@@ -66,7 +66,7 @@ def delete_headless_workspace(headlessWorkspace : NetLogoHeadlessWorkspace):
     netlogoWorkspaceFactory.deleteHeadlessWorkspace(headlessWorkspace)
 
 def run_experiment(model_name : str, setup_callback : Callable, setup_data : List[Any] = None, reporters : List[str] = [], 
-            start_at_tick : int = 0, interval : int = 1, stop_at_tick : int = 10000000,
+            start_at_tick : int = 0, interval_ticks : int = 1, stop_at_tick : int = 10000000,
             go_command : str = "go", num_procs : int = -1) -> pd.DataFrame:
     '''
     Runs and returns result of a NetLogo experiment
