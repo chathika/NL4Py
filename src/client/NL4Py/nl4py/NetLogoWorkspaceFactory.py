@@ -14,6 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
+from typing import Callable, List, Any
 import multiprocessing
 
 import numpy as np
@@ -50,8 +51,9 @@ class NetLogoWorkspaceFactory:
         headlessWorkspace.deleteWorkspace()
         self.__all_workspaces.remove(headlessWorkspace)
 
-    def run_experiment(self, model_name, setup_callback, setup_data, reporters, 
-                                                start_at_tick, interval, stop_at_tick,go_command,num_procs):
+    def run_experiment(self, model_name : str, setup_callback : Callable, setup_data : List[Any], 
+                            reporters : List[str], start_at_tick : int, interval : int, 
+                            stop_at_tick : int,go_command : str, num_procs : int) -> pd.DataFrame:
         num_procs = multiprocessing.cpu_count() if num_procs <= 0 else num_procs
         # assemble the init strings
         # Make sure that data is either iterable or None
@@ -79,9 +81,14 @@ class NetLogoWorkspaceFactory:
         raw_results = self.java_server.runPoolOfTasks(model_name, names_to_init_strings, reporterArray, 
                                                 start_at_tick, interval, stop_at_tick, go_command, num_procs)
         results = []
-        for key in raw_results:
-            results.append([init_strings[int(key)], raw_results[key]])
-        return results
+        for run_id in raw_results:
+            for tick_results in raw_results[run_id]:
+                tick_result_dict = dict(zip(reporters, tick_results))
+                tick_result_dict['Setup Commands'] = init_strings[int(run_id)]
+                tick_result_dict['Run'] = run_id
+                print(tick_result_dict)
+                results.append(tick_result_dict)
+        return pd.DataFrame(results)
 
 def validate_init_strings(init_strings):
     is_iterable = True
