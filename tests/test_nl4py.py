@@ -65,8 +65,8 @@ class TestNL4Py(unittest.TestCase):
         workspace.command("setup-full")
         tick_count = 10
         reporters = ["ticks","count turtles"]
-        results = workspace.schedule_reporters(reporters=reporters, startAtTick = 0, 
-            intervalTicks = 1, stopAtTick = tick_count, goCommand = 'go')
+        results = workspace.schedule_reporters(reporters=reporters, start_at_tick = 0, 
+            interval_ticks = 1, stop_at_tick = tick_count, go_command = 'go')
         self.assertEqual(len(results),tick_count)
         for idx, result in enumerate(results):
             self.assertEqual(len(result),len(reporters))
@@ -87,13 +87,12 @@ class TestNL4Py(unittest.TestCase):
         reporters = ["ticks","count turtles"]
         all_runs_results = nl4py.run_experiment(model_name=self.ethnocentrism_model, setup_callback=setup_model, setup_data=range(run_count), 
             reporters=reporters, start_at_tick=0, interval=1, stop_at_tick=tick_count)
-        self.assertEqual(len(all_runs_results), run_count)
-        for run_results in all_runs_results:
-            self.assertEqual(run_results[0],setup_model(0))
-            self.assertEqual(len(run_results[1]), tick_count)
-            for idx, result in enumerate(run_results[1]):
-                self.assertEqual(len(result),len(reporters))
-                self.assertEqual(eval(result[0]),idx+1)
+        self.assertEqual(all_runs_results.Run.unique().shape[0], run_count)
+        for _, run_results in all_runs_results.groupby("Run"):
+            self.assertEqual(run_results['Setup Commands'].iloc[0].replace(" ",""),setup_model(0).replace(" ",""))
+            self.assertEqual(len(run_results['ticks'].unique()), tick_count)
+            self.assertEqual(run_results.drop(['Run','Setup Commands'], axis=1).shape[1], len(reporters))
+            self.assertEqual(run_results.ticks.astype(float).astype(int).tolist(), list(range(1,tick_count+1)))
 
  
 if __name__ == '__main__':
