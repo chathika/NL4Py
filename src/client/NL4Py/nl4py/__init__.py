@@ -72,7 +72,7 @@ def run_experiment(model_name : str, setup_callback : Callable, setup_data : Lis
     Runs and returns result of a NetLogo experiment
     '''
     return netlogoWorkspaceFactory.run_experiment(model_name, setup_callback, setup_data, reporters, 
-                                start_at_tick,interval,stop_at_tick,go_command,num_procs)
+                                start_at_tick,interval_ticks,stop_at_tick,go_command,num_procs)
 
 def netlogo_app():
     '''
