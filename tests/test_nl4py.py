@@ -86,7 +86,7 @@ class TestNL4Py(unittest.TestCase):
         tick_count = 10
         reporters = ["ticks","count turtles"]
         all_runs_results = nl4py.run_experiment(model_name=self.ethnocentrism_model, setup_callback=setup_model, setup_data=range(run_count), 
-            reporters=reporters, start_at_tick=0, interval=1, stop_at_tick=tick_count)
+            reporters=reporters, start_at_tick=0, interval_ticks=1, stop_at_tick=tick_count)
         self.assertEqual(all_runs_results.Run.unique().shape[0], run_count)
         for _, run_results in all_runs_results.groupby("Run"):
             self.assertEqual(run_results['Setup Commands'].iloc[0].replace(" ",""),setup_model(0).replace(" ",""))
