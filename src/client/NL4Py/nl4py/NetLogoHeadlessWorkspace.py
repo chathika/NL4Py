@@ -75,7 +75,12 @@ class NetLogoHeadlessWorkspace:
         Sends a signal to the server to tell the respective controller to execute a
         reporter on its HeadlessWorkspace object
         '''
-        result = eval(self.hwc.report(reporter.encode()).decode())
+        result = self.hwc.report(reporter.encode()).decode(encoding='UTF-8')
+        # Try to convert result to Python objects
+        try:
+            result = eval(result)
+        except SyntaxError:
+            pass
         return result
 
     def schedule_reporters(self, reporters : List[str], start_at_tick : int = 0, interval_ticks : int = 1, 
