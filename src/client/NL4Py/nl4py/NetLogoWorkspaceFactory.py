@@ -86,7 +86,6 @@ class NetLogoWorkspaceFactory:
                 tick_result_dict = dict(zip(reporters, tick_results))
                 tick_result_dict['Setup Commands'] = init_strings[int(run_id)]
                 tick_result_dict['Run'] = run_id
-                print(tick_result_dict)
                 results.append(tick_result_dict)
         return pd.DataFrame(results)
 
