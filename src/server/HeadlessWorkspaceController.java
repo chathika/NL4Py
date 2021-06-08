@@ -151,7 +151,7 @@ public class HeadlessWorkspaceController extends NetLogoController {
 		return ss;
 	}
 	
-	protected void disposeWorkspace(){
+	public void disposeWorkspace(){
 		this.closeModel();
 		try{
 			ws.dispose();
