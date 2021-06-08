@@ -14,9 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.'''
 
-import os
-import socket
-from typing import List, Any, Union
+from typing import List, Any, Union, Dict
 
 from py4j.protocol import Py4JNetworkError
 from py4j.java_gateway import JavaGateway, GatewayParameters, is_instance_of
@@ -76,12 +74,7 @@ class NetLogoHeadlessWorkspace:
         reporter on its HeadlessWorkspace object
         '''
         result = self.hwc.report(reporter.encode()).decode(encoding='UTF-8')
-        # Try to convert result to Python objects
-        try:
-            result = eval(result)
-        except SyntaxError:
-            pass
-        return result
+        return self._normalize(result)
 
     def schedule_reporters(self, reporters : List[str], start_at_tick : int = 0, interval_ticks : int = 1, 
                                         stop_at_tick : int = -1, go_command : str = 'go') -> List[str]:
@@ -92,15 +85,30 @@ class NetLogoHeadlessWorkspace:
         for idx, reporter in enumerate(reporters):
             reporter_array.append(str(reporter).encode())
         ticks_reporters_results = self.hwc.scheduleReportersAndRun(reporter_array,start_at_tick,
-                                                            interval_ticks,stop_at_tick,go_command)
+                                        interval_ticks,stop_at_tick,go_command)
         out_ticks_reporter_results = []
         for reporters_results in ticks_reporters_results:
             out_reporter_results = []
             for result in reporters_results:
-                out_reporter_results.append(result)
+                out_reporter_results.append(self._normalize(result))
             out_ticks_reporter_results.append(out_reporter_results)
         return out_ticks_reporter_results
-
+    
+    def _normalize(self, result : str) -> Union[str, int, float, List, Dict]:
+        '''
+        Tries to normalize result into Python constructs if possible
+        '''
+        try:
+            eval_result = eval(result)
+            t = type(eval_result)
+            if (t == str) or (t == int) or (t == float) or (t == list) or (t == dict):
+                result = eval_result 
+            else:
+                result = str(result)
+        except SyntaxError:
+            pass
+        return float(result)
+    
     def refresh(self):
         '''
         Sends a signal to the server to tell the respective controller to create a
@@ -186,7 +194,7 @@ class NetLogoHeadlessWorkspace:
         '''
         Kills the Workspace and its controller on the server
         '''
-        self.hwc.removeControllerFromStore()
+        self.hwc.disposeWorkspace()
         self.gateway.close()
     
     @deprecated('Alias left for backward compatibility. Use open_model() since version 1.0.0.')
