@@ -512,13 +512,65 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.2.0
 @#$#@#$#@
 set density 60.0
 setup
 repeat 180 [ go ]
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="200reps" repetitions="200" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>ticks</metric>
+    <metric>burned-trees</metric>
+    <enumeratedValueSet variable="density">
+      <value value="57"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="400reps" repetitions="400" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>ticks</metric>
+    <metric>burned-trees</metric>
+    <enumeratedValueSet variable="density">
+      <value value="57"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="600reps" repetitions="600" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>ticks</metric>
+    <metric>burned-trees</metric>
+    <enumeratedValueSet variable="density">
+      <value value="57"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="800reps" repetitions="800" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>ticks</metric>
+    <metric>burned-trees</metric>
+    <enumeratedValueSet variable="density">
+      <value value="57"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="1000reps" repetitions="1000" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>ticks</metric>
+    <metric>burned-trees</metric>
+    <enumeratedValueSet variable="density">
+      <value value="57"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default

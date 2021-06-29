@@ -937,7 +937,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.2.0
 @#$#@#$#@
 setup-full repeat 150 [ go ]
 @#$#@#$#@
@@ -1382,6 +1382,161 @@ setup-full repeat 150 [ go ]
     </enumeratedValueSet>
     <enumeratedValueSet variable="max-pycor">
       <value value="50"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="200reps" repetitions="200" runMetricsEveryStep="true">
+    <setup>setup-full</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>ticks</metric>
+    <metric>count turtles with [shape = "circle"]</metric>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-different">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrants-per-day">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain-of-receiving">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-PTR">
+      <value value="0.12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cost-of-giving">
+      <value value="0.01"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mutation-rate">
+      <value value="0.005"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="death-rate">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-same">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="400reps" repetitions="400" runMetricsEveryStep="true">
+    <setup>setup-full</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>ticks</metric>
+    <metric>count turtles with [shape = "circle"]</metric>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-different">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrants-per-day">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain-of-receiving">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-PTR">
+      <value value="0.12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cost-of-giving">
+      <value value="0.01"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mutation-rate">
+      <value value="0.005"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="death-rate">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-same">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="600reps" repetitions="600" runMetricsEveryStep="true">
+    <setup>setup-full</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>ticks</metric>
+    <metric>count turtles with [shape = "circle"]</metric>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-different">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrants-per-day">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain-of-receiving">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-PTR">
+      <value value="0.12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cost-of-giving">
+      <value value="0.01"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mutation-rate">
+      <value value="0.005"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="death-rate">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-same">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="800reps" repetitions="800" runMetricsEveryStep="true">
+    <setup>setup-full</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>ticks</metric>
+    <metric>count turtles with [shape = "circle"]</metric>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-different">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrants-per-day">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain-of-receiving">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-PTR">
+      <value value="0.12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cost-of-giving">
+      <value value="0.01"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mutation-rate">
+      <value value="0.005"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="death-rate">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-same">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="1000reps" repetitions="1000" runMetricsEveryStep="true">
+    <setup>setup-full</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>ticks</metric>
+    <metric>count turtles with [shape = "circle"]</metric>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-different">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrants-per-day">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gain-of-receiving">
+      <value value="0.03"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-PTR">
+      <value value="0.12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cost-of-giving">
+      <value value="0.01"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="mutation-rate">
+      <value value="0.005"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="death-rate">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="immigrant-chance-cooperate-with-same">
+      <value value="0.5"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
