@@ -70,7 +70,7 @@ class TestNL4Py(unittest.TestCase):
         self.assertEqual(len(results),tick_count)
         for idx, result in enumerate(results):
             self.assertEqual(len(result),len(reporters))
-            self.assertEqual(eval(result[0]),idx+1)
+            self.assertEqual(result[0],idx+1)
 
     def test_run_experiment(self):
         """
