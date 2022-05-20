@@ -4,7 +4,7 @@
 
 A Python controller interface to NetLogo. NL4Py uses a Remote Procedure Call architecture, allowing Python client code to control NetLogo workspaces on a NetLogoWorkspaceController server. NL4Py supports controlling multiple workspaces through a single Python client. 
 
-Read the NL4Py article is on arXiv: [https://arxiv.org/pdf/1808.03292.pdf](https://www.sciencedirect.com/science/article/pii/S2352711021001035)
+Read the NL4Py article is on arXiv: [https://www.sciencedirect.com/science/article/pii/S2352711021001035](https://www.sciencedirect.com/science/article/pii/S2352711021001035)
 
 [NetLogo with GUI control demo](https://www.youtube.com/watch?v=TXLqbYNYyVg)
 
